@@ -31,7 +31,8 @@ function App() {
     setCashItemRates,
     setMvpGrade,
     setVoucherDiscounts,
-    setExchangeOptions
+    setExchangeOptions,
+    resetToDefaults
   } = useCurrencySettings();
 
   // 숫자 입력 처리 함수
@@ -154,6 +155,7 @@ function App() {
             setVoucherDiscounts={setVoucherDiscounts}
             exchangeOptions={exchangeOptions}
             setExchangeOptions={setExchangeOptions}
+            resetToDefaults={resetToDefaults}
           />
         </div>
 

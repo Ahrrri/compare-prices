@@ -1,0 +1,73 @@
+{
+  "description": "메이플스토리 화폐 변환 계산기 설정 파일",
+  "version": "1.0",
+  "lastUpdated": "2025-06-22",
+  "settings": {
+    "mesoMarketRates": {
+      "GROUP1_3": 2600,
+      "GROUP2": 1400
+    },
+    "cashTradeRates": {
+      "GROUP1": 1800,
+      "GROUP2": 1100,
+      "GROUP3": 2200
+    },
+    "solTradeRates": {
+      "cash": {
+        "GROUP1": 100,
+        "GROUP2": 80,
+        "GROUP3": 120
+      },
+      "meso": {
+        "GROUP1": 5000000,
+        "GROUP2": 7000000,
+        "GROUP3": 5500000
+      }
+    },
+    "cashItemRates": {
+      "GROUP1": {
+        "meso": 78000000,
+        "nx": 2200
+      },
+      "GROUP2": {
+        "meso": 173333333,
+        "nx": 2200
+      },
+      "GROUP3": {
+        "meso": 78000000,
+        "nx": 2200
+      }
+    },
+    "mvpGrade": "SILVER_PLUS",
+    "voucherDiscounts": {
+      "culture": {
+        "rate": 5,
+        "limit": 200000,
+        "remainingLimit": 200000,
+        "enabled": true,
+        "name": "컬처랜드"
+      },
+      "book": {
+        "rate": 5,
+        "limit": 200000,
+        "remainingLimit": 200000,
+        "enabled": true,
+        "name": "도서문화상품권"
+      },
+      "nexon": {
+        "rate": 5,
+        "limit": 200000,
+        "remainingLimit": 200000,
+        "enabled": true,
+        "name": "넥슨카드"
+      },
+      "regular": {
+        "rate": 2,
+        "limit": 0,
+        "remainingLimit": 0,
+        "enabled": true,
+        "name": "상시 할인"
+      }
+    }
+  }
+}

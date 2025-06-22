@@ -1,5 +1,6 @@
 import React from 'react';
 import './SettingsPanel.css';
+import { saveUserSettings, loadUserSettings, downloadSettingsAsFile, importSettingsFromFile } from '../utils/configLoader';
 
 const SettingsPanel = ({
   mesoMarketRates,
@@ -15,11 +16,103 @@ const SettingsPanel = ({
   exchangeOptions,
   setExchangeOptions,
   cashItemRates,
-  setCashItemRates
+  setCashItemRates,
+  resetToDefaults
 }) => {
+  // 현재 설정을 객체로 수집
+  const getCurrentSettings = () => ({
+    mesoMarketRates,
+    cashTradeRates,
+    solTradeRates,
+    cashItemRates,
+    mvpGrade,
+    voucherDiscounts,
+    exchangeOptions
+  });
+
+  // 설정을 적용하는 함수
+  const applySettings = (settings) => {
+    if (settings.mesoMarketRates) setMesoMarketRates(settings.mesoMarketRates);
+    if (settings.cashTradeRates) setCashTradeRates(settings.cashTradeRates);
+    if (settings.solTradeRates) setSolTradeRates(settings.solTradeRates);
+    if (settings.cashItemRates) setCashItemRates(settings.cashItemRates);
+    if (settings.mvpGrade) setMvpGrade(settings.mvpGrade);
+    if (settings.voucherDiscounts) setVoucherDiscounts(settings.voucherDiscounts);
+    if (settings.exchangeOptions) setExchangeOptions(settings.exchangeOptions);
+  };
+
+  // 브라우저에 저장
+  const handleSaveToLocal = () => {
+    const success = saveUserSettings(getCurrentSettings());
+    if (success) {
+      alert('설정이 브라우저에 저장되었습니다.');
+    } else {
+      alert('설정 저장에 실패했습니다.');
+    }
+  };
+
+  // 브라우저에서 불러오기
+  const handleLoadFromLocal = () => {
+    const settings = loadUserSettings();
+    if (settings) {
+      applySettings(settings);
+      alert('저장된 설정을 불러왔습니다.');
+    } else {
+      alert('저장된 설정이 없습니다.');
+    }
+  };
+
+  // 파일로 내보내기
+  const handleExportToFile = () => {
+    downloadSettingsAsFile(getCurrentSettings());
+  };
+
+  // 파일에서 가져오기
+  const handleImportFromFile = async () => {
+    const settings = await importSettingsFromFile();
+    if (settings) {
+      applySettings(settings);
+      alert('설정 파일을 불러왔습니다.');
+    } else {
+      alert('설정 파일 불러오기에 실패했습니다.');
+    }
+  };
+
+  // 기본값으로 초기화
+  const handleResetToDefaults = () => {
+    if (confirm('모든 설정을 기본값으로 초기화하시겠습니까?')) {
+      resetToDefaults();
+      alert('설정이 초기화되었습니다.');
+    }
+  };
   return (
     <div className="settings">
       <h2>설정</h2>
+      
+      {/* 설정 관리 버튼들 */}
+      <div className="settings-management">
+        <div className="settings-buttons-row">
+          <button className="settings-btn save-btn" onClick={handleSaveToLocal}>
+            💾 브라우저에 저장
+          </button>
+          <button className="settings-btn load-btn" onClick={handleLoadFromLocal}>
+            📂 브라우저에서 불러오기
+          </button>
+        </div>
+        <div className="settings-buttons-row">
+          <button className="settings-btn export-btn" onClick={handleExportToFile}>
+            📤 파일로 내보내기
+          </button>
+          <button className="settings-btn import-btn" onClick={handleImportFromFile}>
+            📥 파일에서 가져오기
+          </button>
+        </div>
+        <div className="settings-buttons-row">
+          <button className="settings-btn reset-btn" onClick={handleResetToDefaults}>
+            🔄 기본값으로 초기화
+          </button>
+        </div>
+      </div>
       
       {/* MVP 등급 선택 */}
       <div className="mvp-selection">
