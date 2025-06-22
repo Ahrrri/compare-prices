@@ -70,12 +70,15 @@
 }
 
 .conversion-step .amount {
+  width: 100px;
   font-weight: bold;
   color: #1976d2;
   margin: 0 0.5rem;
+  text-align: right;
 }
 
 .conversion-step .currency {
+  width: 200px;
   color: #666;
   margin: 0 0.3rem;
 }
