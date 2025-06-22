@@ -266,7 +266,7 @@ export function createCurrencyGraph(settings) {
 }
 
 // 경로 계산 함수
-export function calculateConversion(fromAmount, edge, settings) {
+export function calculateConversion(fromAmount, edge) {
   const { fee, rate, type } = edge;
   
   if (type === 'direct') {
@@ -335,7 +335,7 @@ export function calculateConversion(fromAmount, edge, settings) {
 
 // DFS로 모든 경로 탐색
 export function findAllPaths(graph, fromNodeId, toNodeId, maxDepth = 4, amount = 1) {
-  const { nodes, edges } = graph;
+  const { edges } = graph;
   const paths = [];
   
   // 시작 금액

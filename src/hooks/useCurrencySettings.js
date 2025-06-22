@@ -32,9 +32,9 @@ export const useCurrencySettings = () => {
 
   // 캐시템 경매장 시세 (넥슨캐시로 캐시템 구매 후 메소로 판매)
   const [cashItemRates, setCashItemRates] = useState({
-    GROUP1: { meso: 50000000, nx: 1000 }, // 5천만 메소 / 1000 캐시
-    GROUP2: { meso: 30000000, nx: 1000 }, // 3천만 메소 / 1000 캐시  
-    GROUP3: { meso: 60000000, nx: 1000 }  // 6천만 메소 / 1000 캐시
+    GROUP1: { meso: 78000000, nx: 2200 }, // 7800만 메소 / 2200 캐시
+    GROUP2: { meso: 173333333, nx: 2200 }, // 17333만 메소 / 2200 캐시  
+    GROUP3: { meso: 78000000, nx: 2200 }  // 7800만 메소 / 2200 캐시
   });
 
   const [mvpGrade, setMvpGrade] = useState('SILVER_PLUS');
