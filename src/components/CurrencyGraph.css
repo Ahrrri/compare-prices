@@ -97,21 +97,48 @@
 
 .edges line {
   cursor: pointer;
+  /* 호버링 인식 범위를 늘리기 위한 스타일 */
+  stroke-linecap: round;
+}
+
+/* 호버링 효과 - 하이라이트된 엣지만 (시각적 변경 없음, 툴팁만) */
+
+/* 일반 엣지는 호버링 비활성화 */
+.edge-dimmed {
+  pointer-events: none;
 }
 
 /* 그래프 상태별 스타일 */
 .node-highlighted {
   opacity: 1.0;
+  filter: drop-shadow(0 0 8px rgba(33, 150, 243, 0.6));
+  stroke-width: 3;
 }
 
 .node-dimmed {
-  opacity: 0.6;
+  opacity: 0.08;
+  filter: grayscale(0.8);
 }
 
 .edge-highlighted {
   opacity: 1.0;
+  stroke-width: 4;
+  filter: drop-shadow(0 0 4px rgba(33, 150, 243, 0.4));
 }
 
 .edge-dimmed {
-  opacity: 0.3;
+  opacity: 0.05;
+  filter: grayscale(0.9);
+  stroke-width: 1;
+}
+
+/* 텍스트 하이라이트/dimmed 스타일 */
+.text-highlighted {
+  opacity: 1.0;
+  font-weight: bold;
+}
+
+.text-dimmed {
+  opacity: 0.1;
+  filter: grayscale(0.8);
 }

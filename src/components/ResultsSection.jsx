@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PathSummary from './PathSummary';
 import './ResultsSection.css';
 
@@ -11,9 +11,23 @@ const ResultsSection = ({
   getCurrencyType,
   onPathHighlight
 }) => {
+  const [expandedIndex, setExpandedIndex] = useState(null);
+
   if (calculationResults.length === 0) {
     return null;
   }
+
+  const handlePathToggle = (index, pathSteps) => {
+    if (expandedIndex === index) {
+      // 이미 확장된 항목을 클릭하면 접기
+      setExpandedIndex(null);
+      onPathHighlight(null);
+    } else {
+      // 다른 항목을 클릭하면 그것만 확장
+      setExpandedIndex(index);
+      onPathHighlight(pathSteps);
+    }
+  };
 
   return (
     <div className="results-section">
@@ -22,12 +36,14 @@ const ResultsSection = ({
         <PathSummary 
           key={index} 
           path={path} 
+          index={index}
+          isExpanded={expandedIndex === index}
           selectedTarget={selectedTarget}
           targetCurrency={targetCurrency}
           formatNumber={formatNumber}
           getCurrencyName={getCurrencyName}
           getCurrencyType={getCurrencyType}
-          onPathHighlight={onPathHighlight}
+          onPathToggle={handlePathToggle}
         />
       ))}
     </div>

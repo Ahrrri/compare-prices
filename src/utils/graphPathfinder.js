@@ -265,19 +265,20 @@ export function calculateConversion(fromAmount, edge, settings) {
   if (type === 'soltrade') {
     if (edge.subtype === 'cash') {
       if (edge.from === 'KRW') {
-        // KRW → 솔 에르다 (개당 가격)
-        return Math.floor(fromAmount / rate) * (1 - fee / 100);
+        // KRW → 솔 에르다 (개당 가격, 현금거래는 수수료 없음)
+        return Math.floor(fromAmount / rate);
       } else {
-        // 솔 에르다 → KRW
-        return fromAmount * rate * (1 - fee / 100);
+        // 솔 에르다 → KRW (현금거래는 수수료 없음)
+        return fromAmount * rate;
       }
     } else if (edge.subtype === 'meso') {
       if (edge.from.startsWith('MESO_')) {
-        // 메소 → 솔 에르다 (개당 메소 가격)
-        return Math.floor(fromAmount / rate) * (1 - fee / 100);
+        // 메소 → 솔 에르다 (개당 메소 가격, 구매자 수수료)
+        const solCount = Math.floor(fromAmount / rate);
+        return Math.floor(solCount * (1 - fee / 100));
       } else {
-        // 솔 에르다 → 메소
-        return fromAmount * rate * (1 - fee / 100);
+        // 솔 에르다 → 메소 (판매자 수수료 없음)
+        return fromAmount * rate;
       }
     }
   }
@@ -286,15 +287,12 @@ export function calculateConversion(fromAmount, edge, settings) {
 }
 
 // DFS로 모든 경로 탐색
-export function findAllPaths(graph, fromNodeId, toNodeId, maxDepth = 4, testAmount = null) {
+export function findAllPaths(graph, fromNodeId, toNodeId, maxDepth = 4, amount = 1) {
   const { nodes, edges } = graph;
   const paths = [];
   
-  // 솔 에르다 관련 경로인지 확인
-  const isSolPath = fromNodeId.includes('SOL') || toNodeId.includes('SOL');
-  
-  // 시작 금액 설정: 솔 에르다 경로는 실제 금액 사용, 그 외는 정규화
-  const startAmount = isSolPath && testAmount ? testAmount : 1;
+  // 시작 금액
+  const startAmount = amount;
   
   function dfs(currentNodeId, targetNodeId, currentPath, currentAmount, visited, depth) {
     if (depth > maxDepth) return;
@@ -336,28 +334,8 @@ export function findAllPaths(graph, fromNodeId, toNodeId, maxDepth = 4, testAmou
   return paths;
 }
 
-// 최적 경로들 선별 (상위 5개)
-export function getBestPaths(allPaths, actualAmount, isSolPath = false) {
-  // 최종 금액 기준으로 정렬
-  const sortedPaths = allPaths
-    .map(path => {
-      // 솔 에르다 경로는 이미 실제 금액으로 계산되어 있음
-      if (isSolPath) {
-        return path;
-      }
-      
-      // 일반 경로는 실제 금액 적용
-      return {
-        ...path,
-        finalAmount: path.finalAmount * actualAmount,
-        steps: path.steps.map(step => ({
-          ...step,
-          inputAmount: step.inputAmount * actualAmount,
-          outputAmount: step.outputAmount * actualAmount
-        }))
-      };
-    })
-    .sort((a, b) => b.finalAmount - a.finalAmount);
-  
-  return sortedPaths.slice(0, 5);
+// 최적 경로들 선별 (효율성 순으로 정렬)
+export function getBestPaths(allPaths) {
+  // 최종 금액 기준으로 정렬 (이미 실제 금액으로 계산되어 있음)
+  return allPaths.sort((a, b) => b.finalAmount - a.finalAmount);
 }

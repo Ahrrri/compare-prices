@@ -1,22 +1,19 @@
-import { useState } from 'react';
 import './PathSummary.css';
 
 const PathSummary = ({ 
   path, 
+  index,
+  isExpanded,
   selectedTarget, 
   targetCurrency, 
   formatNumber, 
   getCurrencyName, 
   getCurrencyType,
-  onPathHighlight
+  onPathToggle
 }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
-
   const toggleExpanded = () => {
-    setIsExpanded(!isExpanded);
-    // 경로 하이라이트 토글
-    if (onPathHighlight) {
-      onPathHighlight(isExpanded ? null : path.pathSteps);
+    if (onPathToggle) {
+      onPathToggle(index, path.pathSteps);
     }
   };
 

@@ -110,11 +110,10 @@ function App() {
       };
 
       const graph = createCurrencyGraph(settings);
-      const testAmount = parseInt(inputAmount);
-      const allPaths = findAllPaths(graph, selectedNode.id, selectedTarget.id, 4, testAmount);
+      const amount = parseInt(inputAmount);
+      const allPaths = findAllPaths(graph, selectedNode.id, selectedTarget.id, 4, amount);
       
-      const isSolPath = selectedNode.id.includes('SOL') || selectedTarget.id.includes('SOL');
-      const bestPaths = getBestPaths(allPaths, testAmount, isSolPath);
+      const bestPaths = getBestPaths(allPaths);
 
       const formattedResults = bestPaths.map(path => ({
         name: `${path.steps.length}단계 변환`,

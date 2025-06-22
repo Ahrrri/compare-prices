@@ -66,13 +66,13 @@ const CurrencyGraph = ({
     nodes.forEach(node => {
       const positions = {
         'KRW': { x: width / 2, y: 150 },
-        'NX': { x: width / 3, y: 300 },
-        'MP': { x: (2 * width) / 3, y: 300 },
+        'NX': { x: 0.8 * width / 3, y: 300 },
+        'MP': { x: (2.2 * width) / 3, y: 300 },
         'MESO_G1': { x: width / 6, y: 500 },
         'MESO_G2': { x: width / 2, y: 500 },
         'MESO_G3': { x: (5 * width) / 6, y: 500 },
         'SOL_G1': { x: width / 6, y: 650 },
-        'SOL_G2': { x: width / 2, y: 650 },
+        'SOL_G2': { x: width / 2.2, y: 650 },
         'SOL_G3': { x: (5 * width) / 6, y: 650 }
       };
       const pos = positions[node.id] || { x: width / 2, y: 350 };
@@ -124,6 +124,7 @@ const CurrencyGraph = ({
       .data(edges)
       .enter()
       .append("line")
+      .attr("stroke-linecap", "round") // 호버링 인식 개선
       .attr("stroke", d => {
         const isHighlighted = isEdgeHighlighted(d);
         if (isHighlighted) {
@@ -140,16 +141,25 @@ const CurrencyGraph = ({
       })
       .attr("stroke-width", d => {
         const isHighlighted = isEdgeHighlighted(d);
-        return isHighlighted ? 4 : Math.max(2, d.efficiency / 25);
+        if (highlightedPath && highlightedPath.length > 0) {
+          return isHighlighted ? 4 : 1; // 하이라이트된 것은 두껍게, 아닌 것은 얇게
+        }
+        return Math.max(2, d.efficiency / 25);
+      })
+      .attr("class", d => {
+        const isHighlighted = isEdgeHighlighted(d);
+        if (highlightedPath && highlightedPath.length > 0) {
+          return isHighlighted ? "edge-highlighted" : "edge-dimmed";
+        }
+        return "";
       })
       .attr("opacity", d => {
         const isHighlighted = isEdgeHighlighted(d);
-        if (highlightedPath) {
-          return isHighlighted ? 1.0 : 0.3; // 하이라이트된 것만 선명하게
+        if (highlightedPath && highlightedPath.length > 0) {
+          return isHighlighted ? 1.0 : 0.05; // CSS와 동일하게 설정
         }
         return 0.8;
       })
-      .attr("marker-end", d => `url(#arrow-${d.type})`)
       .attr("x1", d => {
         const sourceNode = nodes.find(n => n.id === d.source);
         return sourceNode ? sourceNode.x : 0;
@@ -167,14 +177,10 @@ const CurrencyGraph = ({
         return targetNode ? targetNode.y : 0;
       })
       .on("mouseover", function(event, d) {
-        // 엣지 하이라이트
-        d3.select(this)
-          .attr("stroke-width", d => {
-            const isHighlighted = isEdgeHighlighted(d);
-            return isHighlighted ? 5 : Math.max(3, d.efficiency / 20);
-          });
+        // 하이라이트된 경로가 있고, 현재 엣지가 하이라이트된 경우만 호버 효과
+        if (!highlightedPath || !isEdgeHighlighted(d)) return;
         
-        // 엣지 정보 툴팁
+        // 엣지 정보 툴팁만 표시 (선 두께 변경 없음)
         const sourceNode = nodes.find(n => n.id === d.source);
         const targetNode = nodes.find(n => n.id === d.target);
         let tooltipContent = `<strong>${sourceNode?.name} → ${targetNode?.name}</strong><br/>`;
@@ -189,7 +195,7 @@ const CurrencyGraph = ({
           case 'mesomarket':
             tooltipContent += `메소마켓 (${d.fee}% 수수료)<br/>`;
             if (d.rate) {
-              tooltipContent += `시세: ${d.rate.toLocaleString()} MP/1억메소`;
+              tooltipContent += `시세: ${d.rate.toLocaleString()} 메포/1억메소`;
             }
             break;
           case 'cashtrade':
@@ -214,16 +220,63 @@ const CurrencyGraph = ({
           .style("top", (event.pageY - 28) + "px");
       })
       .on("mouseout", function(event, d) {
-        // 엣지 원상복구
-        d3.select(this)
-          .attr("stroke-width", d => {
-            const isHighlighted = isEdgeHighlighted(d);
-            return isHighlighted ? 4 : Math.max(2, d.efficiency / 25);
-          });
+        // 하이라이트된 경로가 있고, 현재 엣지가 하이라이트된 경우만 툴팁 숨김
+        if (!highlightedPath || !isEdgeHighlighted(d)) return;
         
         tooltip.transition()
           .duration(500)
           .style("opacity", 0);
+      });
+
+    // 화살표 렌더링 (6:4 위치에 고정)
+    const arrows = edgeGroup
+      .selectAll(".arrow")
+      .data(edges)
+      .enter()
+      .append("polygon")
+      .attr("class", "arrow")
+      .attr("points", "0,-10 20,0 0,10") // 화살표 모양 (크기 증가)
+      .attr("fill", d => {
+        const isHighlighted = isEdgeHighlighted(d);
+        if (isHighlighted) {
+          return "#FF1744"; // 하이라이트 색상
+        }
+        switch(d.type) {
+          case 'direct': return "#2196F3";
+          case 'voucher': return "#4CAF50";
+          case 'mesomarket': return "#FF9800";
+          case 'cashtrade': return "#F44336";
+          case 'soltrade': return "#9C27B0";
+          default: return "#999";
+        }
+      })
+      .attr("opacity", d => {
+        const isHighlighted = isEdgeHighlighted(d);
+        if (highlightedPath && highlightedPath.length > 0) {
+          return isHighlighted ? 1.0 : 0.05;
+        }
+        return 0.8;
+      })
+      .attr("transform", d => {
+        const sourceNode = nodes.find(n => n.id === d.source);
+        const targetNode = nodes.find(n => n.id === d.target);
+        if (!sourceNode || !targetNode) return "translate(0,0)";
+        
+        // 6:4 위치 계산 (시작점에서 60% 지점)
+        const arrowX = sourceNode.x + (targetNode.x - sourceNode.x) * 0.6;
+        const arrowY = sourceNode.y + (targetNode.y - sourceNode.y) * 0.6;
+        
+        // 화살표 회전 각도 계산
+        const angle = Math.atan2(targetNode.y - sourceNode.y, targetNode.x - sourceNode.x) * 180 / Math.PI;
+        
+        return `translate(${arrowX},${arrowY}) rotate(${angle})`;
+      })
+      .attr("class", d => {
+        const isHighlighted = isEdgeHighlighted(d);
+        if (highlightedPath && highlightedPath.length > 0) {
+          return isHighlighted ? "arrow edge-highlighted" : "arrow edge-dimmed";
+        }
+        return "arrow";
       });
 
     // 노드 렌더링
@@ -297,7 +350,14 @@ const CurrencyGraph = ({
       .attr("dy", "0.35em")
       .attr("font-size", "16px")
       .attr("font-weight", "bold")
-      .text(d => d.name);
+      .text(d => d.name)
+      .attr("class", d => {
+        const isHighlighted = isNodeHighlighted(d);
+        if (highlightedPath && highlightedPath.length > 0) {
+          return isHighlighted ? "text-highlighted" : "text-dimmed";
+        }
+        return "";
+      });
 
     // 노드 클릭 이벤트
     nodeElements.on("click", (event, d) => {
@@ -367,19 +427,19 @@ const CurrencyGraph = ({
       <div className="currency-graph-legend">
         <div className="legend-items">
           <div className="legend-item">
-            <span className="legend-indicator legend-direct">■</span> 직접 변환
+            <span className="legend-indicator legend-direct"></span> 직접 변환
           </div>
           <div className="legend-item">
-            <span className="legend-indicator legend-voucher">■</span> 상품권 할인
+            <span className="legend-indicator legend-voucher"></span> 상품권 할인
           </div>
           <div className="legend-item">
-            <span className="legend-indicator legend-meso-market">■</span> 메소마켓
+            <span className="legend-indicator legend-meso-market"></span> 메소마켓
           </div>
           <div className="legend-item">
-            <span className="legend-indicator legend-cash-trade">■</span> 현금거래
+            <span className="legend-indicator legend-cash-trade"></span> 현금거래
           </div>
           <div className="legend-item">
-            <span className="legend-indicator legend-sol-trade">■</span> 솔 에르다 거래
+            <span className="legend-indicator legend-sol-trade"></span> 솔 에르다 거래
           </div>
         </div>
         <div className="legend-indicators">
