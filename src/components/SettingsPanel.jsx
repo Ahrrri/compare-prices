@@ -601,7 +601,7 @@ const SettingsPanel = ({
           }}
         />
         <label htmlFor="direct-exchange">
-          현금 → 넥슨캐시 → 메이플포인트 (1:1 변환)
+          넥슨캐시 → 메이플포인트 (1:1 변환)
         </label>
       </div>
       
@@ -626,7 +626,7 @@ const SettingsPanel = ({
             
             <input
               className="voucher-input"
-              type="number"
+              type="text"
               value={voucher.rate}
               onChange={(e) => {
                 setVoucherDiscounts(prev => ({
@@ -642,13 +642,16 @@ const SettingsPanel = ({
               <>
                 <input
                   className="voucher-input"
-                  type="number"
-                  value={voucher.remainingLimit}
+                  type="text"
+                  value={voucher.remainingLimit.toLocaleString()}
                   onChange={(e) => {
-                    setVoucherDiscounts(prev => ({
-                      ...prev,
-                      [key]: { ...prev[key], remainingLimit: parseInt(e.target.value) || 0 }
-                    }));
+                    const value = e.target.value.replace(/,/g, '');
+                    if (value === '' || /^\d+$/.test(value)) {
+                      setVoucherDiscounts(prev => ({
+                        ...prev,
+                        [key]: { ...prev[key], remainingLimit: parseInt(value) || 0 }
+                      }));
+                    }
                   }}
                   disabled={!voucher.enabled}
                 />

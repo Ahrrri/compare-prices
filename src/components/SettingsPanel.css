@@ -172,8 +172,11 @@
 }
 
 /* 상품권 설정 */
-.voucher-section {
+.settings .voucher-section {
   margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .voucher-item {
@@ -195,12 +198,12 @@
 }
 
 .voucher-input {
-  width: 60px;
-  padding: 0.2rem 0.5rem;
-  margin: 0 5px;
+  width: 90px;
+  padding: 0.3rem;
   border: 1px solid #ddd;
   border-radius: 4px;
-  font-size: 0.85rem;
+  margin-right: 0.5rem;
+  text-align: right;
 }
 
 .voucher-unit {

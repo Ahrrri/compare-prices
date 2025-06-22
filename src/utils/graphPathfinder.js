@@ -18,31 +18,75 @@ export function createCurrencyGraph(settings) {
 
   const edges = [];
 
-  // 직접 변환 경로들
+  // 현금→넥슨캐시 최적 경로 선택 (상시 할인 vs 상품권 할인)
+  const krwToNxOptions = [];
+  
+  // 상시 할인 (직접 변환) 옵션 추가
   if (exchangeOptions?.direct?.enabled) {
-    edges.push(
-      { from: 'KRW', to: 'NX', type: 'direct', fee: 0, description: '현금 → 넥슨캐시 (1:1)' },
-      { from: 'NX', to: 'MP', type: 'direct', fee: 0, description: '넥슨캐시 → 메이플포인트 (1:1)' }
-    );
+    krwToNxOptions.push({
+      key: 'direct',
+      name: '상시 할인',
+      rate: 0,
+      type: 'direct',
+      priority: 1
+    });
   }
 
-  // 상품권 할인 경로
+  // 상품권 할인 옵션들 추가
   if (voucherDiscounts) {
-    // 각 상품권별로 활성화된 경우만 추가
     Object.entries(voucherDiscounts).forEach(([key, voucher]) => {
-      if (voucher.enabled && voucher.rate > 0) {
-        // 한도가 있는 경우 남은 한도 확인
-        if (voucher.limit === 0 || voucher.remainingLimit > 0) {
-          edges.push({
-            from: 'KRW',
-            to: 'NX',
-            type: 'voucher',
-            fee: -voucher.rate,
-            description: `${voucher.name} 할인 (${voucher.rate}% 할인)`,
-            voucherKey: key
-          });
-        }
+      if (voucher.enabled && voucher.rate > 0 && 
+          (voucher.limit === 0 || voucher.remainingLimit > 0)) {
+        krwToNxOptions.push({
+          key,
+          name: voucher.name,
+          rate: voucher.rate,
+          type: 'voucher',
+          priority: key === 'nexon' ? 2 : key === 'book' ? 3 : key === 'culture' ? 4 : 999
+        });
       }
+    });
+  }
+
+  if (krwToNxOptions.length > 0) {
+    // 할인율 우선, 할인율이 동일하면 우선순위 순
+    const bestOption = krwToNxOptions.sort((a, b) => {
+      // 할인율이 다르면 할인율 높은 순
+      if (a.rate !== b.rate) return b.rate - a.rate;
+      
+      // 할인율이 동일하면 우선순위 순 (상시 할인 > 넥슨카드 > 도서문화 > 컬처랜드)
+      return a.priority - b.priority;
+    })[0];
+
+    // 선택된 옵션에 따라 경로 추가
+    if (bestOption.type === 'direct') {
+      edges.push({ 
+        from: 'KRW', 
+        to: 'NX', 
+        type: 'direct', 
+        fee: 0, 
+        description: '현금 → 넥슨캐시 (1:1)' 
+      });
+    } else {
+      edges.push({
+        from: 'KRW',
+        to: 'NX',
+        type: 'voucher',
+        fee: -bestOption.rate,
+        description: `${bestOption.name} 할인 (${bestOption.rate}% 할인)`,
+        voucherKey: bestOption.key
+      });
+    }
+  }
+
+  // 넥슨캐시 → 메이플포인트 (직접 변환이 활성화된 경우)
+  if (exchangeOptions?.direct?.enabled) {
+    edges.push({ 
+      from: 'NX', 
+      to: 'MP', 
+      type: 'direct', 
+      fee: 0, 
+      description: '넥슨캐시 → 메이플포인트 (1:1)' 
     });
   }
 

@@ -34,18 +34,22 @@ const PathSummary = ({
         <div className="path-details">
           <div className="conversion-steps">
             {path.steps.map((step, stepIndex) => (
-              <div key={stepIndex} className="conversion-step">
-                <span className="amount">
-                  {typeof step.amount === 'number' ? formatNumber(step.amount, getCurrencyType(step.from)) : step.amount}
-                </span>
-                <span className="currency">{getCurrencyName(step.from)}</span>
-                <span className="arrow">→</span>
-                <span className="amount">
-                  {typeof step.result === 'number' ? formatNumber(step.result, getCurrencyType(step.to)) : step.result}
-                </span>
-                <span className="currency">{getCurrencyName(step.to)}</span>
-                <span className="description">({step.description})</span>
-              </div>
+                <div key={stepIndex} className="conversion-step">
+                  <span className="amount">
+                    {typeof step.inputAmount === 'number' && step.inputAmount !== null && !isNaN(step.inputAmount) 
+                      ? formatNumber(step.inputAmount, getCurrencyType(step.from)) 
+                      : (step.inputAmount || '0')}
+                  </span>
+                  <span className="currency">{getCurrencyName(step.from) || step.from}</span>
+                  <span className="arrow">→</span>
+                  <span className="amount">
+                    {typeof step.outputAmount === 'number' && step.outputAmount !== null && !isNaN(step.outputAmount)
+                      ? formatNumber(step.outputAmount, getCurrencyType(step.to))
+                      : (step.outputAmount || '0')}
+                  </span>
+                  <span className="currency">{getCurrencyName(step.to) || step.to}</span>
+                  <span className="description">({step.description || ''})</span>
+                </div>
             ))}
           </div>
           
