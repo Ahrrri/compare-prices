@@ -4,7 +4,7 @@
 
 ## 🚀 라이브 데모
 
-**GitHub Pages**: https://bcho.github.io/compare-prices/
+**GitHub Pages**: https://ahrrri.github.io/compare-prices/
 
 ## ✨ 주요 기능
 
@@ -47,7 +47,7 @@ npm run preview
 이 프로젝트는 GitHub Actions를 통해 자동으로 GitHub Pages에 배포됩니다.
 
 1. `master` 브랜치에 푸시하면 자동 배포
-2. 빌드 상태: ![Deploy Status](https://github.com/bcho/compare-prices/actions/workflows/deploy.yml/badge.svg)
+2. 빌드 상태: ![Deploy Status](https://github.com/Ahrrri/compare-prices/actions/workflows/deploy.yml/badge.svg)
 
 ## 📄 라이선스
 
