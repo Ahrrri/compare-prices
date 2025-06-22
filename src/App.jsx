@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import './App.css'
-import { formatNumber } from './utils/currencyConverter'
-import { createCurrencyGraph, findAllPaths, getBestPaths } from './utils/graphPathfinder'
+import { createCurrencyGraph, findAllPaths, getBestPaths, formatNumber } from './utils/graphPathfinder'
 import { useCurrencySettings } from './hooks/useCurrencySettings'
 import SettingsPanel from './components/SettingsPanel'
 import AmountInput from './components/AmountInput'
@@ -22,12 +21,14 @@ function App() {
     mesoMarketRates,
     cashTradeRates,
     solTradeRates,
+    cashItemRates,
     mvpGrade,
     voucherDiscounts,
     exchangeOptions,
     setMesoMarketRates,
     setCashTradeRates,
     setSolTradeRates,
+    setCashItemRates,
     setMvpGrade,
     setVoucherDiscounts,
     setExchangeOptions
@@ -104,6 +105,7 @@ function App() {
         mesoMarketRates,
         cashTradeRates,
         solTradeRates,
+        cashItemRates,
         mvpGrade,
         voucherDiscounts,
         exchangeOptions
@@ -126,7 +128,7 @@ function App() {
     } else {
       setCalculationResults([]);
     }
-  }, [selectedNode, selectedTarget, inputAmount, mesoMarketRates, cashTradeRates, solTradeRates, mvpGrade, voucherDiscounts, exchangeOptions]);
+  }, [selectedNode, selectedTarget, inputAmount, mesoMarketRates, cashTradeRates, solTradeRates, cashItemRates, mvpGrade, voucherDiscounts, exchangeOptions]);
 
   return (
     <div className="app">
@@ -144,6 +146,8 @@ function App() {
             setCashTradeRates={setCashTradeRates}
             solTradeRates={solTradeRates}
             setSolTradeRates={setSolTradeRates}
+            cashItemRates={cashItemRates}
+            setCashItemRates={setCashItemRates}
             mvpGrade={mvpGrade}
             setMvpGrade={setMvpGrade}
             voucherDiscounts={voucherDiscounts}
@@ -166,6 +170,7 @@ function App() {
             mesoMarketRates={mesoMarketRates}
             cashTradeRates={cashTradeRates}
             solTradeRates={solTradeRates}
+            cashItemRates={cashItemRates}
             mvpGrade={mvpGrade}
             voucherDiscounts={voucherDiscounts}
             exchangeOptions={exchangeOptions}

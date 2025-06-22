@@ -120,6 +120,25 @@
   padding-left: 20px;
 }
 
+/* 캐시템 경매장 시세 설정 */
+.cash-item-section {
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 1rem;
+}
+
+.cash-item-header {
+  width: 190px;
+  font-size: 0.95rem;
+  font-weight: bold;
+  color: #d97706;
+  margin-bottom: 0.8rem;
+}
+
+.cash-item-content {
+  padding-left: 20px;
+}
+
 /* 현금거래 시세 설정 */
 .cash-trade-section {
   margin-bottom: 1.5rem;

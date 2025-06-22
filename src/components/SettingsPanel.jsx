@@ -13,7 +13,9 @@ const SettingsPanel = ({
   voucherDiscounts,
   setVoucherDiscounts,
   exchangeOptions,
-  setExchangeOptions
+  setExchangeOptions,
+  cashItemRates,
+  setCashItemRates
 }) => {
   return (
     <div className="settings">
@@ -26,6 +28,171 @@ const SettingsPanel = ({
           <option value="NONE">실버 미만 (없음/브론즈)</option>
           <option value="SILVER_PLUS">실버 이상</option>
         </select>
+      </div>
+      
+      {/* 캐시템 경매장 시세 */}
+      <h3 className="section-header">캐시템 경매장 시세</h3>
+      
+      <div className="cash-item-section">
+        <h4 className="cash-item-header">그룹1 (일반섭)</h4>
+        <div className="cash-item-content">
+          <div className="group-row">
+            <input
+              className="rate-input"
+              type="text"
+              value={cashItemRates.GROUP1.meso.toLocaleString()}
+              onChange={(e) => {
+                const value = e.target.value.replace(/,/g, '');
+                if (value === '' || /^\d+$/.test(value)) {
+                  setCashItemRates(prev => ({
+                    ...prev,
+                    GROUP1: { ...prev.GROUP1, meso: parseInt(value) || 0 }
+                  }));
+                }
+              }}
+            />
+            <span className="rate-unit"> 메소 / </span>
+            <input
+              className="rate-input"
+              type="text"
+              value={cashItemRates.GROUP1.nx.toLocaleString()}
+              onChange={(e) => {
+                const value = e.target.value.replace(/,/g, '');
+                if (value === '' || /^\d+$/.test(value)) {
+                  setCashItemRates(prev => ({
+                    ...prev,
+                    GROUP1: { ...prev.GROUP1, nx: parseInt(value) || 0 }
+                  }));
+                }
+              }}
+            />
+            <span className="rate-unit"> 캐시</span>
+            <div className="checkbox-group">
+              <div className="checkbox-item">
+                <input
+                  type="checkbox"
+                  id="cash-item-g1"
+                  checked={exchangeOptions.cashItem_G1.enabled}
+                  onChange={(e) => {
+                    setExchangeOptions(prev => ({
+                      ...prev,
+                      cashItem_G1: { enabled: e.target.checked }
+                    }));
+                  }}
+                />
+                <label htmlFor="cash-item-g1">넥슨캐시→메소</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div className="cash-item-section">
+        <h4 className="cash-item-header">그룹2 (에오스)</h4>
+        <div className="cash-item-content">
+          <div className="group-row">
+            <input
+              className="rate-input"
+              type="text"
+              value={cashItemRates.GROUP2.meso.toLocaleString()}
+              onChange={(e) => {
+                const value = e.target.value.replace(/,/g, '');
+                if (value === '' || /^\d+$/.test(value)) {
+                  setCashItemRates(prev => ({
+                    ...prev,
+                    GROUP2: { ...prev.GROUP2, meso: parseInt(value) || 0 }
+                  }));
+                }
+              }}
+            />
+            <span className="rate-unit"> 메소 / </span>
+            <input
+              className="rate-input"
+              type="text"
+              value={cashItemRates.GROUP2.nx.toLocaleString()}
+              onChange={(e) => {
+                const value = e.target.value.replace(/,/g, '');
+                if (value === '' || /^\d+$/.test(value)) {
+                  setCashItemRates(prev => ({
+                    ...prev,
+                    GROUP2: { ...prev.GROUP2, nx: parseInt(value) || 0 }
+                  }));
+                }
+              }}
+            />
+            <span className="rate-unit"> 캐시</span>
+            <div className="checkbox-group">
+              <div className="checkbox-item">
+                <input
+                  type="checkbox"
+                  id="cash-item-g2"
+                  checked={exchangeOptions.cashItem_G2.enabled}
+                  onChange={(e) => {
+                    setExchangeOptions(prev => ({
+                      ...prev,
+                      cashItem_G2: { enabled: e.target.checked }
+                    }));
+                  }}
+                />
+                <label htmlFor="cash-item-g2">넥슨캐시→메소</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div className="cash-item-section">
+        <h4 className="cash-item-header">그룹3 (챌린저스)</h4>
+        <div className="cash-item-content">
+          <div className="group-row">
+            <input
+              className="rate-input"
+              type="text"
+              value={cashItemRates.GROUP3.meso.toLocaleString()}
+              onChange={(e) => {
+                const value = e.target.value.replace(/,/g, '');
+                if (value === '' || /^\d+$/.test(value)) {
+                  setCashItemRates(prev => ({
+                    ...prev,
+                    GROUP3: { ...prev.GROUP3, meso: parseInt(value) || 0 }
+                  }));
+                }
+              }}
+            />
+            <span className="rate-unit"> 메소 / </span>
+            <input
+              className="rate-input"
+              type="text"
+              value={cashItemRates.GROUP3.nx.toLocaleString()}
+              onChange={(e) => {
+                const value = e.target.value.replace(/,/g, '');
+                if (value === '' || /^\d+$/.test(value)) {
+                  setCashItemRates(prev => ({
+                    ...prev,
+                    GROUP3: { ...prev.GROUP3, nx: parseInt(value) || 0 }
+                  }));
+                }
+              }}
+            />
+            <span className="rate-unit"> 캐시</span>
+            <div className="checkbox-group">
+              <div className="checkbox-item">
+                <input
+                  type="checkbox"
+                  id="cash-item-g3"
+                  checked={exchangeOptions.cashItem_G3.enabled}
+                  onChange={(e) => {
+                    setExchangeOptions(prev => ({
+                      ...prev,
+                      cashItem_G3: { enabled: e.target.checked }
+                    }));
+                  }}
+                />
+                <label htmlFor="cash-item-g3">넥슨캐시→메소</label>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
       
       {/* 메소마켓 시세 */}

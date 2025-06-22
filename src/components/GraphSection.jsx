@@ -7,6 +7,7 @@ const GraphSection = ({
   mesoMarketRates,
   cashTradeRates,
   solTradeRates,
+  cashItemRates,
   mvpGrade,
   voucherDiscounts,
   exchangeOptions,
@@ -45,6 +46,7 @@ const GraphSection = ({
         mesoMarketRates={mesoMarketRates}
         cashTradeRates={cashTradeRates}
         solTradeRates={solTradeRates}
+        cashItemRates={cashItemRates}
         mvpGrade={mvpGrade}
         voucherDiscounts={voucherDiscounts}
         exchangeOptions={exchangeOptions}

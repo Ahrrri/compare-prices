@@ -2,7 +2,7 @@
 
 // 그래프 구조 정의
 export function createCurrencyGraph(settings) {
-  const { mesoMarketRates, cashTradeRates, solTradeRates, mvpGrade, voucherDiscounts, exchangeOptions } = settings;
+  const { mesoMarketRates, cashTradeRates, solTradeRates, cashItemRates, mvpGrade, voucherDiscounts, exchangeOptions } = settings;
   
   const nodes = [
     { id: 'KRW', name: '현금', type: 'currency' },
@@ -115,6 +115,45 @@ export function createCurrencyGraph(settings) {
     edges.push(
       { from: 'MESO_G2', to: 'MP', type: 'mesomarket', fee: 1, rate: mesoMarketRates.GROUP2, description: '메소마켓 판매 (1% 수수료)' }
     );
+  }
+
+  // 캐시템 경매장 경로들 (넥슨캐시 → 메소, 일방향만)
+  const cashItemFeeRate = (mvpGrade === 'SILVER_PLUS') ? 3 : 5;
+  
+  if (cashItemRates && exchangeOptions?.cashItem_G1?.enabled) {
+    edges.push({
+      from: 'NX',
+      to: 'MESO_G1',
+      type: 'cashitem',
+      fee: cashItemFeeRate,
+      mesoPerNx: cashItemRates.GROUP1.meso,
+      nxAmount: cashItemRates.GROUP1.nx,
+      description: `캐시템 경매장 (구매자 ${cashItemFeeRate}% 수수료)`
+    });
+  }
+  
+  if (cashItemRates && exchangeOptions?.cashItem_G2?.enabled) {
+    edges.push({
+      from: 'NX',
+      to: 'MESO_G2',
+      type: 'cashitem',
+      fee: cashItemFeeRate,
+      mesoPerNx: cashItemRates.GROUP2.meso,
+      nxAmount: cashItemRates.GROUP2.nx,
+      description: `캐시템 경매장 (구매자 ${cashItemFeeRate}% 수수료)`
+    });
+  }
+  
+  if (cashItemRates && exchangeOptions?.cashItem_G3?.enabled) {
+    edges.push({
+      from: 'NX',
+      to: 'MESO_G3',
+      type: 'cashitem',
+      fee: cashItemFeeRate,
+      mesoPerNx: cashItemRates.GROUP3.meso,
+      nxAmount: cashItemRates.GROUP3.nx,
+      description: `캐시템 경매장 (구매자 ${cashItemFeeRate}% 수수료)`
+    });
   }
 
   // 현금거래 경로들
@@ -262,6 +301,14 @@ export function calculateConversion(fromAmount, edge, settings) {
     }
   }
   
+  if (type === 'cashitem') {
+    // 넥슨캐시 → 메소 (캐시템 경매장)
+    // 설정: X 메소 / Y 캐시, 구매자 수수료
+    const { mesoPerNx, nxAmount } = edge;
+    const mesoPerSingleNx = mesoPerNx / nxAmount;
+    return Math.floor(fromAmount * mesoPerSingleNx * (1 - fee / 100));
+  }
+  
   if (type === 'soltrade') {
     if (edge.subtype === 'cash') {
       if (edge.from === 'KRW') {
@@ -338,4 +385,51 @@ export function findAllPaths(graph, fromNodeId, toNodeId, maxDepth = 4, amount =
 export function getBestPaths(allPaths) {
   // 최종 금액 기준으로 정렬 (이미 실제 금액으로 계산되어 있음)
   return allPaths.sort((a, b) => b.finalAmount - a.finalAmount);
+}
+
+// 숫자 포맷팅 함수
+export function formatNumber(num, type = 'default') {
+  // 타입별 반올림 처리
+  let roundedNum = num;
+  
+  if (type === 'currency') {
+    // 현금/넥슨캐시/메이플포인트: 1원 단위까지
+    roundedNum = Math.round(num);
+  } else if (type === 'meso') {
+    // 메소: 만 메소 단위까지
+    roundedNum = Math.round(num / 10000) * 10000;
+  } else if (type === 'sol') {
+    // 솔 에르다 조각: 개수 단위로 표시
+    return `${Math.floor(num).toLocaleString()}개`;
+  } else {
+    // 기본: 소수점 2자리까지
+    roundedNum = Math.round(num * 100) / 100;
+  }
+  
+  if (roundedNum >= 100000000) {
+    const billions = Math.floor(roundedNum / 100000000);
+    const remainder = roundedNum % 100000000;
+    if (remainder === 0) {
+      return `${billions}억`;
+    } else if (remainder >= 10000) {
+      const tenThousands = Math.floor(remainder / 10000);
+      const lastRemainder = remainder % 10000;
+      if (lastRemainder === 0) {
+        return `${billions}억 ${tenThousands}만`;
+      } else {
+        return `${billions}억 ${tenThousands}만 ${lastRemainder}`;
+      }
+    } else {
+      return `${billions}억 ${remainder}`;
+    }
+  } else if (roundedNum >= 10000) {
+    const tenThousands = Math.floor(roundedNum / 10000);
+    const remainder = roundedNum % 10000;
+    if (remainder === 0) {
+      return `${tenThousands}만`;
+    } else {
+      return `${tenThousands}만 ${remainder}`;
+    }
+  }
+  return roundedNum.toLocaleString();
 }

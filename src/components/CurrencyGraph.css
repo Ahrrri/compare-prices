@@ -52,6 +52,10 @@
   background: #F44336;
 }
 
+.legend-cash-item {
+  background: #795548;
+}
+
 .legend-sol-trade {
   background: #9C27B0;
 }

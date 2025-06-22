@@ -8,6 +8,7 @@ const CurrencyGraph = ({
   mesoMarketRates, 
   cashTradeRates, 
   solTradeRates,
+  cashItemRates,
   mvpGrade, 
   voucherDiscounts,
   exchangeOptions,
@@ -24,6 +25,7 @@ const CurrencyGraph = ({
       mesoMarketRates,
       cashTradeRates,
       solTradeRates,
+      cashItemRates,
       mvpGrade,
       voucherDiscounts,
       exchangeOptions
@@ -88,7 +90,7 @@ const CurrencyGraph = ({
 
     // 화살표 마커 정의
     svg.append("defs").selectAll("marker")
-      .data(["direct", "voucher", "mesomarket", "cashtrade", "soltrade"])
+      .data(["direct", "voucher", "mesomarket", "cashtrade", "cashitem", "soltrade"])
       .enter().append("marker")
       .attr("id", d => `arrow-${d}`)
       .attr("viewBox", "0 -5 10 10")
@@ -105,6 +107,7 @@ const CurrencyGraph = ({
           case 'voucher': return "#4CAF50";
           case 'mesomarket': return "#FF9800";
           case 'cashtrade': return "#F44336";
+          case 'cashitem': return "#795548";
           case 'soltrade': return "#9C27B0";
           default: return "#999";
         }
@@ -135,6 +138,7 @@ const CurrencyGraph = ({
           case 'voucher': return "#4CAF50";
           case 'mesomarket': return "#FF9800";
           case 'cashtrade': return "#F44336";
+          case 'cashitem': return "#795548";
           case 'soltrade': return "#9C27B0";
           default: return "#999";
         }
@@ -204,6 +208,9 @@ const CurrencyGraph = ({
               tooltipContent += `시세: ${d.rate.toLocaleString()} 원/1억메소`;
             }
             break;
+          case 'cashitem':
+            tooltipContent += `캐시템 경매장 (${d.fee}% 수수료)`;
+            break;
           case 'soltrade':
             tooltipContent += `솔 에르다 거래 (${d.fee}% 수수료)<br/>`;
             if (d.rate) {
@@ -246,6 +253,7 @@ const CurrencyGraph = ({
           case 'voucher': return "#4CAF50";
           case 'mesomarket': return "#FF9800";
           case 'cashtrade': return "#F44336";
+          case 'cashitem': return "#795548";
           case 'soltrade': return "#9C27B0";
           default: return "#999";
         }
@@ -419,7 +427,7 @@ const CurrencyGraph = ({
       tooltip.remove();
     };
 
-  }, [mesoMarketRates, cashTradeRates, solTradeRates, mvpGrade, voucherDiscounts, exchangeOptions, inputAmount, selectedNode, selectedTarget, highlightedPath]);
+  }, [mesoMarketRates, cashTradeRates, solTradeRates, cashItemRates, mvpGrade, voucherDiscounts, exchangeOptions, inputAmount, selectedNode, selectedTarget, highlightedPath]);
 
   return (
     <div className="currency-graph-container">
@@ -437,6 +445,9 @@ const CurrencyGraph = ({
           </div>
           <div className="legend-item">
             <span className="legend-indicator legend-cash-trade"></span> 현금거래
+          </div>
+          <div className="legend-item">
+            <span className="legend-indicator legend-cash-item"></span> 캐시템 경매장
           </div>
           <div className="legend-item">
             <span className="legend-indicator legend-sol-trade"></span> 솔 에르다 거래
