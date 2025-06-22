@@ -1,0 +1,117 @@
+/* ===== CurrencyGraph 컴포넌트 스타일 ===== */
+
+.currency-graph-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.currency-graph-svg {
+  border: 1px solid #ccc;
+}
+
+.currency-graph-legend {
+  margin-top: 20px;
+  font-size: 14px;
+  color: #666;
+}
+
+.legend-items {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.legend-indicator {
+  width: 12px;
+  height: 12px;
+  display: inline-block;
+}
+
+/* 범례 색상 */
+.legend-direct {
+  background: #2196F3;
+}
+
+.legend-voucher {
+  background: #4CAF50;
+}
+
+.legend-meso-market {
+  background: #FF9800;
+}
+
+.legend-cash-trade {
+  background: #F44336;
+}
+
+.legend-sol-trade {
+  background: #9C27B0;
+}
+
+.legend-indicators {
+  margin-top: 10px;
+  font-size: 12px;
+  text-align: center;
+}
+
+.legend-start-point {
+  color: #4CAF50;
+  font-weight: bold;
+}
+
+.legend-target-point {
+  color: #F44336;
+  font-weight: bold;
+  margin-left: 10px;
+}
+
+/* D3 툴팁 스타일 */
+.tooltip {
+  position: absolute;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.tooltip.visible {
+  opacity: 0.9;
+}
+
+/* 그래프 요소 기본 스타일 */
+.nodes circle {
+  cursor: pointer;
+}
+
+.edges line {
+  cursor: pointer;
+}
+
+/* 그래프 상태별 스타일 */
+.node-highlighted {
+  opacity: 1.0;
+}
+
+.node-dimmed {
+  opacity: 0.6;
+}
+
+.edge-highlighted {
+  opacity: 1.0;
+}
+
+.edge-dimmed {
+  opacity: 0.3;
+}

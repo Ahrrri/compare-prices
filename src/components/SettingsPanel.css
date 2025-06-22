@@ -1,0 +1,278 @@
+/* ===== SettingsPanel 컴포넌트 스타일 ===== */
+
+.settings {
+  background: #e9ecef;
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.settings > div {
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* 메소마켓 시세와 MVP 선택 label에만 적용 */
+.settings .market-rate-row > label,
+.settings .mvp-selection > label {
+  margin-right: 0.5rem;
+  min-width: 200px;
+  text-align: left;
+}
+
+/* 설정 그룹 헤더 */
+.section-header {
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  color: #555;
+}
+
+/* MVP 등급 선택 */
+.mvp-selection {
+  margin-bottom: 1rem;
+}
+
+.mvp-selection label {
+  font-size: 0.95rem;
+  color: #333;
+}
+
+.mvp-select {
+  margin-left: 1rem;
+  padding: 0.3rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+/* 메소마켓 시세 설정 */
+.market-rates-section {
+  margin-bottom: 1.5rem;
+}
+
+.market-rate-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.market-rate-row label {
+  min-width: 200px;
+  font-size: 0.95rem;
+}
+
+.rate-input {
+  width: 80px;
+  padding: 0.3rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-right: 0.5rem;
+  text-align: right;
+}
+
+.rate-unit {
+  width: 100px;
+  margin-left: 5px;
+  margin-right: 15px;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.checkbox-group {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.checkbox-item {
+  display:inline;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.checkbox-item input[type="checkbox"] {
+  margin-right: 3px;
+}
+
+.checkbox-item label {
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+/* 그룹별 설정 - 통일된 스타일 */
+.group-section {
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 1rem;
+}
+
+.group-header {
+  width: 190px;
+  font-size: 0.95rem;
+  font-weight: bold;
+  color: #444;
+  margin-bottom: 0.8rem;
+}
+
+.group-content {
+  padding-left: 20px;
+}
+
+/* 현금거래 시세 설정 */
+.cash-trade-section {
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 1rem;
+}
+
+.cash-trade-header {
+  width: 190px;
+  font-size: 0.95rem;
+  font-weight: bold;
+  color: #2c5282;
+  margin-bottom: 0.8rem;
+}
+
+.cash-trade-content {
+  padding-left: 20px;
+}
+
+/* 솔 에르다 조각 거래 시세 설정 */
+.sol-trade-section {
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 1rem;
+}
+
+.sol-trade-header {
+  width: 190px;
+  font-size: 0.95rem;
+  font-weight: bold;
+  color: #553c9a;
+  margin-bottom: 0.8rem;
+}
+
+.sol-trade-content {
+  padding-left: 20px;
+}
+
+.group-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.group-row-meso {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  margin-top: 0.8rem;
+}
+
+/* 상품권 설정 */
+.voucher-section {
+  margin-bottom: 1.5rem;
+}
+
+.voucher-item {
+  margin-bottom: 0.8rem;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.voucher-checkbox {
+  margin-right: 10px;
+}
+
+.voucher-label {
+  cursor: pointer;
+  margin-right: 15px;
+  min-width: 120px;
+  font-size: 0.9rem;
+}
+
+.voucher-input {
+  width: 60px;
+  padding: 0.2rem 0.5rem;
+  margin: 0 5px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.85rem;
+}
+
+.voucher-unit {
+  margin-right: 15px;
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.voucher-limit-text {
+  color: #666;
+  font-size: 0.85rem;
+}
+
+/* 솔 에르다 조각 설정 */
+.sol-trade-label {
+  min-width: 80px;
+  font-size: 0.9rem;
+}
+
+.sol-rate-input {
+  width: 90px;
+  padding: 0.3rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-right: 0.5rem;
+  text-align: right;
+}
+
+.sol-unit {
+  width: 50px;
+  margin-left: 5px;
+  margin-right: 15px;
+  font-size: 0.85rem;
+  color: #666;
+  white-space: nowrap;
+  flex-shrink: 0;
+  display: inline-block;
+}
+
+.sol-checkbox {
+  margin-right: 5px;
+}
+
+.sol-checkbox-label {
+  cursor: pointer;
+  margin-right: 10px;
+  font-size: 0.85rem;
+}
+
+.sol-checkbox-label-last {
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.sol-meso-row {
+  display: flex;
+  align-items: center;
+  padding-left: 20px;
+}
+
+/* 직접 변환 섹션 */
+.direct-conversion {
+  margin-bottom: 0.8rem;
+  display: flex;
+  align-items: center;
+}
+
+.direct-conversion input[type="checkbox"] {
+  margin-right: 10px;
+}
+
+.direct-conversion label {
+  cursor: pointer;
+  font-size: 0.95rem;
+}

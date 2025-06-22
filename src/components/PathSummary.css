@@ -1,0 +1,118 @@
+.path-summary {
+  background: white;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.path-summary-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 3rem;
+  cursor: pointer;
+  background: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+  transition: background-color 0.2s ease;
+  min-height: 60px;
+}
+
+.path-summary-header:hover {
+  background: #e9ecef;
+}
+
+.path-name {
+  font-weight: bold;
+  color: #2e7d32;
+  font-size: 1.1rem;
+  flex: 0 0 250px;
+  min-width: 250px;
+}
+
+.path-result {
+  font-weight: bold;
+  color: #1976d2;
+  font-size: 1rem;
+  flex: 1;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.expand-icon {
+  font-size: 1rem;
+  color: #666;
+  flex: 0 0 auto;
+  transition: transform 0.2s ease;
+}
+
+.path-summary-header:hover .expand-icon {
+  color: #333;
+}
+
+.path-details {
+  padding: 1.5rem 3rem;
+  background: white;
+}
+
+.conversion-steps {
+  background: #f8f9fa;
+  padding: 1rem;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+}
+
+.conversion-step {
+  display: flex;
+  align-items: center;
+  margin: 0.5rem 0;
+  font-size: 0.95rem;
+}
+
+.conversion-step .amount {
+  font-weight: bold;
+  color: #1976d2;
+  margin: 0 0.5rem;
+}
+
+.conversion-step .currency {
+  color: #666;
+  margin: 0 0.3rem;
+}
+
+.conversion-step .arrow {
+  font-size: 1.2rem;
+  margin: 0 0.5rem;
+  color: #999;
+}
+
+.conversion-step .description {
+  color: #666;
+  font-size: 0.9rem;
+  margin-left: 0.5rem;
+}
+
+.efficiency {
+  color: #666;
+  font-size: 0.9rem;
+  margin-left: 0.5rem;
+}
+
+.note {
+  color: #1976d2;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  font-weight: bold;
+  padding: 0.5rem;
+  background: #e3f2fd;
+  border-radius: 4px;
+}
+
+.warning {
+  color: #d32f2f;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  background: #ffebee;
+  border-radius: 4px;
+}

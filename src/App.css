@@ -1,0 +1,193 @@
+.app {
+  width: 100%;
+  min-width: 1200px;
+  margin: 0;
+  padding: 2rem;
+}
+
+h1 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 2rem;
+}
+
+.app-subtitle {
+  text-align: center;
+  color: #666;
+  margin-bottom: 2rem;
+}
+
+.input-section {
+  background: #f5f5f5;
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.input-section h2,
+.results h2 {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  color: #555;
+}
+
+input[type="number"],
+select {
+  padding: 0.5rem;
+  margin: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+input[type="number"] {
+  width: 200px;
+}
+
+select {
+  width: 150px;
+}
+
+.arrow {
+  text-align: center;
+  font-size: 2rem;
+  margin: 1rem 0;
+  color: #666;
+}
+
+
+.results {
+  background: #e8f5e9;
+  padding: 1.5rem;
+  border-radius: 8px;
+  min-height: 200px;
+}
+
+.conversion-path {
+  background: white;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.conversion-path h3 {
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+  color: #2e7d32;
+}
+
+.conversion-step {
+  display: flex;
+  align-items: center;
+  margin: 0.5rem 0;
+  font-size: 0.95rem;
+}
+
+.conversion-step .amount {
+  font-weight: bold;
+  color: #1976d2;
+  margin: 0 0.5rem;
+}
+
+.conversion-step .currency {
+  color: #666;
+  margin: 0 0.3rem;
+}
+
+.conversion-step .arrow {
+  font-size: 1.2rem;
+  margin: 0 0.5rem;
+  color: #999;
+}
+
+.final-amount {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #2e7d32;
+  margin-top: 1rem;
+  padding: 0.5rem;
+  background: #e8f5e9;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.warning {
+  color: #d32f2f;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
+
+.efficiency {
+  color: #666;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
+
+.results-section {
+  background: #f8f8f8;
+  padding: 2rem;
+  border-radius: 8px;
+  margin-top: 2rem;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.results-section h2 {
+  font-size: 1.3rem;
+  margin-bottom: 1.5rem;
+  color: #333;
+  text-align: center;
+}
+
+.conversion-steps {
+  background: white;
+  padding: 1rem;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+}
+
+.conversion-step .description {
+  color: #666;
+  font-size: 0.9rem;
+  margin-left: 0.5rem;
+}
+
+.note {
+  color: #1976d2;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  font-weight: bold;
+  padding: 0.5rem;
+  background: #e3f2fd;
+  border-radius: 4px;
+}
+
+/* ===== 설정 섹션 스타일 ===== */
+
+/* 메인 컨테이너 - 리팩토링된 레이아웃 */
+.main-container {
+  display: flex;
+  gap: 2rem;
+  width: 100%;
+  min-height: 100vh;
+}
+
+.settings-panel {
+  flex: 1;
+  background: #f8f9fa;
+  padding: 1.5rem;
+  border-radius: 8px;
+  height: fit-content;
+  overflow-x: auto;
+  overflow-y: auto;
+}
+
+.graph-panel {
+  flex: 1;
+  background: white;
+  padding: 1rem;
+  border-radius: 8px;
+  height: fit-content;
+}
