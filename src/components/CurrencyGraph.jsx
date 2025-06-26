@@ -101,17 +101,7 @@ const CurrencyGraph = ({
       .attr("orient", "auto")
       .append("path")
       .attr("d", "M0,-5L10,0L0,5")
-      .attr("fill", d => {
-        switch(d) {
-          case 'direct': return "#2196F3";
-          case 'voucher': return "#4CAF50";
-          case 'mesomarket': return "#FF9800";
-          case 'cashtrade': return "#F44336";
-          case 'cashitem': return "#795548";
-          case 'soltrade': return "#9C27B0";
-          default: return "#999";
-        }
-      });
+      .attr("fill", "#999"); // 모든 화살표 마커를 회색으로
 
     // 하이라이트된 경로 확인 함수
     const isEdgeHighlighted = (edge) => {
@@ -133,15 +123,8 @@ const CurrencyGraph = ({
         if (isHighlighted) {
           return "#FF1744"; // 하이라이트 색상 (빨간색)
         }
-        switch(d.type) {
-          case 'direct': return "#2196F3";
-          case 'voucher': return "#4CAF50";
-          case 'mesomarket': return "#FF9800";
-          case 'cashtrade': return "#F44336";
-          case 'cashitem': return "#795548";
-          case 'soltrade': return "#9C27B0";
-          default: return "#999";
-        }
+        // 하이라이트되지 않은 화살표는 모두 회색
+        return "#999";
       })
       .attr("stroke-width", d => {
         const isHighlighted = isEdgeHighlighted(d);
@@ -248,15 +231,8 @@ const CurrencyGraph = ({
         if (isHighlighted) {
           return "#FF1744"; // 하이라이트 색상
         }
-        switch(d.type) {
-          case 'direct': return "#2196F3";
-          case 'voucher': return "#4CAF50";
-          case 'mesomarket': return "#FF9800";
-          case 'cashtrade': return "#F44336";
-          case 'cashitem': return "#795548";
-          case 'soltrade': return "#9C27B0";
-          default: return "#999";
-        }
+        // 하이라이트되지 않은 화살표는 모두 회색
+        return "#999";
       })
       .attr("opacity", d => {
         const isHighlighted = isEdgeHighlighted(d);
@@ -309,16 +285,16 @@ const CurrencyGraph = ({
       .append("circle")
       .attr("r", 45)
       .attr("fill", d => {
+        if (selectedNode && d.id === selectedNode.id) return "#E8F5E8"; // 시작점 배경
+        if (selectedTarget && d.id === selectedTarget.id) return "#FFEBEE"; // 목표점 배경
+        
         const isHighlighted = isNodeHighlighted(d);
         if (isHighlighted) {
           return "#FFEBEE"; // 하이라이트된 노드 배경
         }
-        switch(d.type) {
-          case 'currency': return "#E3F2FD";
-          case 'meso': return "#FFF3E0";
-          case 'sol': return "#F3E5F5";
-          default: return "#F5F5F5";
-        }
+        
+        // 선택되지 않은 노드는 무색
+        return "#F5F5F5";
       })
       .attr("stroke", d => {
         if (selectedNode && d.id === selectedNode.id) return "#4CAF50";
@@ -329,12 +305,8 @@ const CurrencyGraph = ({
           return "#FF1744"; // 하이라이트된 노드 테두리
         }
         
-        switch(d.type) {
-          case 'currency': return "#2196F3";
-          case 'meso': return "#FF9800";
-          case 'sol': return "#9C27B0";
-          default: return "#999";
-        }
+        // 선택되지 않은 노드는 회색
+        return "#999";
       })
       .attr("stroke-width", d => {
         if ((selectedNode && d.id === selectedNode.id) || (selectedTarget && d.id === selectedTarget.id)) {
