@@ -163,25 +163,16 @@ export function downloadSettingsAsFile(settings, filename = 'maple-currency-sett
       // 캐시템 경매장 (웹에서 첫 번째로 나오는 섹션)
       "캐시템 경매장": {
         "그룹1 (일반섭)": {
-          "넥슨캐시→메소": {
-            "meso": settings.cashItemRates.GROUP1.meso,
-            "nx": settings.cashItemRates.GROUP1.nx,
-            "enabled": flattenedExchangeOptions.nxtomesotrade_g1
-          }
+          "아이템 목록": settings.cashItemRates.GROUP1.items || [],
+          "enabled": flattenedExchangeOptions.nxtomesotrade_g1
         },
         "그룹2 (에오스)": {
-          "넥슨캐시→메소": {
-            "meso": settings.cashItemRates.GROUP2.meso,
-            "nx": settings.cashItemRates.GROUP2.nx,
-            "enabled": flattenedExchangeOptions.nxtomesotrade_g2
-          }
+          "아이템 목록": settings.cashItemRates.GROUP2.items || [],
+          "enabled": flattenedExchangeOptions.nxtomesotrade_g2
         },
         "그룹3 (챌린저스)": {
-          "넥슨캐시→메소": {
-            "meso": settings.cashItemRates.GROUP3.meso,
-            "nx": settings.cashItemRates.GROUP3.nx,
-            "enabled": flattenedExchangeOptions.nxtomesotrade_g3
-          }
+          "아이템 목록": settings.cashItemRates.GROUP3.items || [],
+          "enabled": flattenedExchangeOptions.nxtomesotrade_g3
         }
       },
       
@@ -442,16 +433,13 @@ export function importSettingsFromFile() {
                 },
                 cashItemRates: {
                   GROUP1: {
-                    meso: config["캐시템 경매장"]["그룹1 (일반섭)"]["넥슨캐시→메소"]["meso"],
-                    nx: config["캐시템 경매장"]["그룹1 (일반섭)"]["넥슨캐시→메소"]["nx"]
+                    items: config["캐시템 경매장"]["그룹1 (일반섭)"]["아이템 목록"] || []
                   },
                   GROUP2: {
-                    meso: config["캐시템 경매장"]["그룹2 (에오스)"]["넥슨캐시→메소"]["meso"],
-                    nx: config["캐시템 경매장"]["그룹2 (에오스)"]["넥슨캐시→메소"]["nx"]
+                    items: config["캐시템 경매장"]["그룹2 (에오스)"]["아이템 목록"] || []
                   },
                   GROUP3: {
-                    meso: config["캐시템 경매장"]["그룹3 (챌린저스)"]["넥슨캐시→메소"]["meso"],
-                    nx: config["캐시템 경매장"]["그룹3 (챌린저스)"]["넥슨캐시→메소"]["nx"]
+                    items: config["캐시템 경매장"]["그룹3 (챌린저스)"]["아이템 목록"] || []
                   }
                 },
                 mvpGrade: config["MVP 등급"],

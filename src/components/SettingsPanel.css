@@ -106,8 +106,6 @@
 
 .rate-unit {
   width: 100px;
-  margin-left: 5px;
-  margin-right: 15px;
   font-size: 0.9rem;
   color: #666;
 }
@@ -156,7 +154,6 @@
 .cash-item-section {
   margin-bottom: 1.5rem;
   border-bottom: 1px solid #e2e8f0;
-  padding-bottom: 1rem;
 }
 
 .cash-item-header {
@@ -165,6 +162,15 @@
   font-weight: bold;
   color: #d97706;
   margin-bottom: 0.8rem;
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cash-item-header:hover {
+  color: #b45309;
 }
 
 .cash-item-content {
@@ -247,6 +253,161 @@
   margin-bottom: 8px;
   color: #555;
   border-bottom: 1px solid #e2e8f0;
+}
+
+/* 캐시템 경매장 스타일 */
+.cash-item-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cash-item-header-row .checkbox-group {
+  margin: 0;
+}
+
+.cash-item-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.sort-btn {
+  padding: 4px 12px;
+  background: #f3f4f6;
+  color: #374151;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.sort-btn:hover:not(:disabled) {
+  background: #e5e7eb;
+  border-color: #9ca3af;
+}
+
+.sort-btn:disabled {
+  background: #f9fafb;
+  color: #9ca3af;
+  cursor: not-allowed;
+  border-color: #e5e7eb;
+}
+
+.cash-item-items {
+  margin-bottom: 1rem;
+}
+
+.cash-item-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  background: #fafafa;
+  flex-wrap: wrap;
+}
+
+.cash-item-row:hover {
+  background: #f0f0f0;
+}
+
+.item-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+
+.item-name-input {
+  width: 150px;
+  padding: 4px 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.item-rates {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+  min-width: 200px;
+}
+
+.rate-input.small {
+  width: 80px;
+}
+
+.cash-item-unit {
+  font-size: 0.85rem;
+  color: #666;
+  white-space: nowrap;
+}
+
+.item-limits {
+  width: 150px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.limit-input {
+  width: 50px;
+  padding: 4px 6px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.limit-unit {
+  font-size: 0.85rem;
+  color: #666;
+  margin-right: 8px;
+}
+
+.remove-item-btn {
+  padding: 4px 8px;
+  background: #ff6b6b;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.remove-item-btn:hover:not(:disabled) {
+  background: #ff5252;
+}
+
+.remove-item-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.add-item-btn {
+  padding: 8px 16px;
+  background: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  width: 100%;
+}
+
+.add-item-btn:hover:not(:disabled) {
+  background: #45a049;
+}
+
+.add-item-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
   padding-bottom: 4px;
 }
 

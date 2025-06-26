@@ -65,9 +65,60 @@ export const DEFAULT_SETTINGS = {
 
   // 캐시템 경매장 시세 (넥슨캐시로 캐시템 구매 후 메소로 판매)
   cashItemRates: {
-    GROUP1: { meso: 78000000, nx: 2200 }, // 7800만 메소 / 2200 캐시
-    GROUP2: { meso: 173333333, nx: 2200 }, // 17333만 메소 / 2200 캐시  
-    GROUP3: { meso: 78000000, nx: 2200 }  // 7800만 메소 / 2200 캐시
+    GROUP1: {
+      items: [
+        {
+          id: 'pet_equip',
+          name: '펫 장비',
+          meso: 78000000,
+          nx: 2200,
+          remainingLimit: 5
+        },
+        {
+          id: 'cube',
+          name: '큐브',
+          meso: 45000000,
+          nx: 1200,
+          remainingLimit: 10
+        }
+      ]
+    },
+    GROUP2: {
+      items: [
+        {
+          id: 'pet_equip',
+          name: '펫 장비',
+          meso: 173333333,
+          nx: 2200,
+          remainingLimit: 5
+        },
+        {
+          id: 'cube',
+          name: '큐브',
+          meso: 120000000,
+          nx: 1200,
+          remainingLimit: 10
+        }
+      ]
+    },
+    GROUP3: {
+      items: [
+        {
+          id: 'pet_equip',
+          name: '펫 장비',
+          meso: 78000000,
+          nx: 2200,
+          remainingLimit: 5
+        },
+        {
+          id: 'cube',
+          name: '큐브',
+          meso: 45000000,
+          nx: 1200,
+          remainingLimit: 10
+        }
+      ]
+    }
   },
 
   // MVP 등급 기본값

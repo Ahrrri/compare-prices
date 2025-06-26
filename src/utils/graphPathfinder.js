@@ -120,41 +120,45 @@ export function createCurrencyGraph(settings) {
   // 캐시템 경매장 경로들 (넥슨캐시 → 메소, 일방향만)
   const cashItemFeeRate = (mvpGrade === 'SILVER_PLUS') ? 3 : 5;
   
-  if (cashItemRates && exchangeOptions?.cashItem_G1?.enabled) {
-    edges.push({
-      from: 'NX',
-      to: 'MESO_G1',
-      type: 'cashitem',
-      fee: cashItemFeeRate,
-      mesoPerNx: cashItemRates.GROUP1.meso,
-      nxAmount: cashItemRates.GROUP1.nx,
-      description: `캐시템 판매 (판매자 ${cashItemFeeRate}% 수수료)`
-    });
-  }
-  
-  if (cashItemRates && exchangeOptions?.cashItem_G2?.enabled) {
-    edges.push({
-      from: 'NX',
-      to: 'MESO_G2',
-      type: 'cashitem',
-      fee: cashItemFeeRate,
-      mesoPerNx: cashItemRates.GROUP2.meso,
-      nxAmount: cashItemRates.GROUP2.nx,
-      description: `캐시템 판매 (판매자 ${cashItemFeeRate}% 수수료)`
-    });
-  }
-  
-  if (cashItemRates && exchangeOptions?.cashItem_G3?.enabled) {
-    edges.push({
-      from: 'NX',
-      to: 'MESO_G3',
-      type: 'cashitem',
-      fee: cashItemFeeRate,
-      mesoPerNx: cashItemRates.GROUP3.meso,
-      nxAmount: cashItemRates.GROUP3.nx,
-      description: `캐시템 판매 (판매자 ${cashItemFeeRate}% 수수료)`
-    });
-  }
+  // 각 그룹별로 효율 좋은 캐시템 선택 (상품권과 동일한 로직)
+  ['GROUP1', 'GROUP2', 'GROUP3'].forEach((group, groupIndex) => {
+    const groupNum = groupIndex + 1;
+    const isEnabled = exchangeOptions?.[`cashItem_G${groupNum}`]?.enabled;
+    
+    if (cashItemRates && isEnabled && cashItemRates[group]?.items) {
+      const availableItems = cashItemRates[group].items.filter(item => 
+        item.remainingLimit > 0 &&
+        item.meso > 0 && 
+        item.nx > 0
+      );
+      
+      if (availableItems.length > 0) {
+        // 효율 순으로 정렬 (메소/넥슨캐시 비율이 높은 순)
+        const sortedItems = availableItems.sort((a, b) => {
+          const efficiencyA = (a.meso / a.nx) * (1 - cashItemFeeRate / 100);
+          const efficiencyB = (b.meso / b.nx) * (1 - cashItemFeeRate / 100);
+          return efficiencyB - efficiencyA;
+        });
+        
+        // 가장 효율 좋은 아이템 선택
+        const bestItem = sortedItems[0];
+        
+        edges.push({
+          from: 'NX',
+          to: `MESO_G${groupNum}`,
+          type: 'cashitem',
+          fee: cashItemFeeRate,
+          mesoPerNx: bestItem.meso,
+          nxAmount: bestItem.nx,
+          itemName: bestItem.name,
+          itemId: bestItem.id,
+          limit: bestItem.limit,
+          remainingLimit: bestItem.remainingLimit,
+          description: `${bestItem.name} 판매 (판매자 ${cashItemFeeRate}% 수수료)`
+        });
+      }
+    }
+  });
 
   // 현금거래 경로들
   const cashTradeFeeRate = (mvpGrade === 'SILVER_PLUS') ? 3 : 5;
@@ -304,9 +308,14 @@ export function calculateConversion(fromAmount, edge) {
   if (type === 'cashitem') {
     // 넥슨캐시 → 메소 (캐시템 경매장)
     // 설정: X 메소 / Y 캐시, 구매자 수수료
-    const { mesoPerNx, nxAmount } = edge;
+    const { mesoPerNx, nxAmount, remainingLimit = Infinity } = edge;
     const mesoPerSingleNx = mesoPerNx / nxAmount;
-    return Math.floor(fromAmount * mesoPerSingleNx * (1 - fee / 100));
+    
+    // 한도 제한 적용 (변환할 수 있는 최대 캐시 양 계산)
+    const maxNxByLimit = remainingLimit * nxAmount;
+    const actualNxUsed = Math.min(fromAmount, maxNxByLimit);
+    
+    return Math.floor(actualNxUsed * mesoPerSingleNx * (1 - fee / 100));
   }
   
   if (type === 'soltrade') {
