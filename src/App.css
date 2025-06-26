@@ -226,7 +226,7 @@ select {
 }
 
 .graph-panel {
-  flex: 2;
+  flex: 1;
   background: white;
   padding: 1rem;
   border-radius: 8px;

@@ -303,7 +303,7 @@
 .cash-item-row {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 6px;
   padding: 8px;
   border: 1px solid #e0e0e0;
   border-radius: 6px;
@@ -336,7 +336,6 @@
   align-items: center;
   gap: 4px;
   flex: 1;
-  min-width: 200px;
 }
 
 .rate-input.small {
@@ -347,6 +346,23 @@
   font-size: 0.85rem;
   color: #666;
   white-space: nowrap;
+}
+
+.mileage-ratio {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+  min-width: 120px;
+}
+
+.ratio-select {
+  padding: 4px 6px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  background: white;
+  cursor: pointer;
 }
 
 .item-limits {
@@ -409,6 +425,80 @@
   background: #ccc;
   cursor: not-allowed;
   padding-bottom: 4px;
+}
+
+/* 마일리지 가치 계산 */
+.mileage-calculator {
+  margin-bottom: 1.5rem;
+}
+
+.mileage-group {
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 6px;
+  border: 1px solid #e9ecef;
+}
+
+.mileage-group-header {
+  font-size: 0.95rem;
+  font-weight: bold;
+  color: #495057;
+  margin-bottom: 0.8rem;
+}
+
+.mileage-calculation {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.calculation-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.3rem 0;
+}
+
+.calculation-row.result {
+  border-top: 1px solid #dee2e6;
+  padding-top: 0.6rem;
+  margin-top: 0.3rem;
+  font-weight: bold;
+}
+
+.calculation-row .label {
+  font-size: 0.9rem;
+  color: #6c757d;
+  min-width: 140px;
+}
+
+.calculation-row .value {
+  font-size: 0.9rem;
+  color: #495057;
+  text-align: right;
+}
+
+.calculation-row.result .value {
+  color: #28a745;
+  font-weight: bold;
+}
+
+.calculation-detail {
+  font-size: 0.85rem;
+  color: #6c757d;
+  text-align: center;
+  padding: 0.5rem;
+  background: #ffffff;
+  border-radius: 4px;
+  margin-top: 0.5rem;
+}
+
+.no-calculation {
+  text-align: center;
+  padding: 1rem;
+  color: #6c757d;
+  font-style: italic;
 }
 
 /* 상품권 설정 */

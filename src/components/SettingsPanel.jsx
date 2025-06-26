@@ -25,6 +25,7 @@ const SettingsPanel = ({
     cashItemG1: true,
     cashItemG2: true,
     cashItemG3: true,
+    mileageCalculator: true,
     mesoMarket: true,
     cashTrade: true,
     solTrade: true,
@@ -46,6 +47,7 @@ const SettingsPanel = ({
       name: '새 아이템',
       meso: 50000000,
       nx: 1000,
+      mileageRatio: 0,
       remainingLimit: 5
     };
     
@@ -250,6 +252,23 @@ const SettingsPanel = ({
                     <span className="cash-item-unit">캐시</span>
                   </div>
                   
+                  <div className="mileage-ratio">
+                    <label>마일리지:</label>
+                    <select
+                      className="ratio-select"
+                      value={item.mileageRatio}
+                      onChange={(e) => {
+                        const value = parseInt(e.target.value);
+                        updateCashItem(group, item.id, 'mileageRatio', value);
+                      }}
+                      disabled={!exchangeOptions[`cashItem_G${index + 1}`]?.enabled}
+                    >
+                      <option value={0}>사용불가</option>
+                      <option value={30}>30%</option>
+                      <option value={100}>100%</option>
+                    </select>
+                  </div>
+                  
                   <div className="item-limits">
                     <label>잔여:</label>
                     <input
@@ -290,6 +309,86 @@ const SettingsPanel = ({
         );
       })}
       </>
+      )}
+      
+      {/* 마일리지 가치 계산 */}
+      <h3 className="section-header collapsible" onClick={() => toggleSection('mileageCalculator')}>
+        <span className={`arrow ${expandedSections.mileageCalculator ? 'expanded' : ''}`}>▶</span>
+        마일리지 가치 계산
+      </h3>
+      
+      {expandedSections.mileageCalculator && (
+        <div className="mileage-calculator">
+          {['GROUP1', 'GROUP2', 'GROUP3'].map((group, index) => {
+            const items = cashItemRates[group]?.items || [];
+            
+            // 마일리지 사용 불가 아이템 중 최고 효율 찾기
+            const noMileageItems = items.filter(item => item.mileageRatio === 0 && item.meso > 0 && item.nx > 0);
+            const bestNoMileage = noMileageItems.length > 0 
+              ? noMileageItems.reduce((max, item) => (item.meso / item.nx) > (max.meso / max.nx) ? item : max)
+              : null;
+            
+            // 마일리지 사용 가능 아이템 중 최고 효율 찾기
+            const mileageItems = items.filter(item => item.mileageRatio > 0 && item.meso > 0 && item.nx > 0);
+            const bestMileage = mileageItems.length > 0
+              ? mileageItems.reduce((max, item) => (item.meso / item.nx) > (max.meso / max.nx) ? item : max)
+              : null;
+            
+            // 마일리지 가치 계산
+            let mileageValue = 0;
+            let calculation = "계산 불가";
+            
+            if (bestNoMileage && bestMileage) {
+              const mvpFeeRate = mvpGrade === 'SILVER_PLUS' ? 3 : 5;
+              const noMileageEfficiency = (bestNoMileage.meso / bestNoMileage.nx) * (1 - mvpFeeRate / 100);
+              
+              // 동일한 캐시로 비교 (마일리지 사용 가능 아이템의 캐시 부분)
+              const cashPortion = bestMileage.nx * (100 - bestMileage.mileageRatio) / 100;
+              const noMileageEquivalent = cashPortion * noMileageEfficiency;
+              const mileageResult = bestMileage.meso * (1 - mvpFeeRate / 100);
+              
+              if (mileageResult > noMileageEquivalent) {
+                const mileageAmount = bestMileage.nx * bestMileage.mileageRatio / 100;
+                mileageValue = (mileageResult - noMileageEquivalent) / mileageAmount;
+                calculation = `${mileageAmount.toLocaleString()}마일리지 = ${(mileageResult - noMileageEquivalent).toLocaleString()}메소`;
+              }
+            }
+            
+            return (
+              <div key={group} className="mileage-group">
+                <h4 className="mileage-group-header">
+                  그룹{index + 1} ({['일반섭', '에오스', '챌린저스'][index]})
+                </h4>
+                <div className="mileage-calculation">
+                  {bestNoMileage && bestMileage ? (
+                    <>
+                      <div className="calculation-row">
+                        <span className="label">마일리지 미사용 최고효율:</span>
+                        <span className="value">{bestNoMileage.name} ({(bestNoMileage.meso / bestNoMileage.nx).toFixed(0)} 메소/캐시)</span>
+                      </div>
+                      <div className="calculation-row">
+                        <span className="label">마일리지 사용 최고효율:</span>
+                        <span className="value">{bestMileage.name} ({(bestMileage.meso / bestMileage.nx).toFixed(0)} 메소/캐시, {bestMileage.mileageRatio}% 마일리지)</span>
+                      </div>
+                      <div className="calculation-row result">
+                        <span className="label">마일리지 가치:</span>
+                        <span className="value">{mileageValue > 0 ? `1 마일리지 = ${mileageValue.toFixed(2)} 메소` : '이득 없음'}</span>
+                      </div>
+                      <div className="calculation-detail">
+                        {calculation}
+                      </div>
+                    </>
+                  ) : (
+                    <div className="no-calculation">
+                      {!bestNoMileage && "마일리지 미사용 아이템이 없습니다."}
+                      {!bestMileage && "마일리지 사용 아이템이 없습니다."}
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
       )}
       
       {/* 메소마켓 시세 */}

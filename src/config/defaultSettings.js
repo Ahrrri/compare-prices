@@ -72,6 +72,7 @@ export const DEFAULT_SETTINGS = {
           name: '펫 장비',
           meso: 78000000,
           nx: 2200,
+          mileageRatio: 0,
           remainingLimit: 5
         },
         {
@@ -79,6 +80,7 @@ export const DEFAULT_SETTINGS = {
           name: '큐브',
           meso: 45000000,
           nx: 1200,
+          mileageRatio: 30,
           remainingLimit: 10
         }
       ]
@@ -90,6 +92,7 @@ export const DEFAULT_SETTINGS = {
           name: '펫 장비',
           meso: 173333333,
           nx: 2200,
+          mileageRatio: 0,
           remainingLimit: 5
         },
         {
@@ -97,6 +100,7 @@ export const DEFAULT_SETTINGS = {
           name: '큐브',
           meso: 120000000,
           nx: 1200,
+          mileageRatio: 30,
           remainingLimit: 10
         }
       ]
@@ -108,6 +112,7 @@ export const DEFAULT_SETTINGS = {
           name: '펫 장비',
           meso: 78000000,
           nx: 2200,
+          mileageRatio: 0,
           remainingLimit: 5
         },
         {
@@ -115,6 +120,7 @@ export const DEFAULT_SETTINGS = {
           name: '큐브',
           meso: 45000000,
           nx: 1200,
+          mileageRatio: 30,
           remainingLimit: 10
         }
       ]
