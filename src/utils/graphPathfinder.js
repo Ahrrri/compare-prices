@@ -11,9 +11,9 @@ export function createCurrencyGraph(settings) {
     { id: 'MESO_G1', name: '일반섭 메소', type: 'meso', group: 'GROUP1' },
     { id: 'MESO_G2', name: '에오스 메소', type: 'meso', group: 'GROUP2' },
     { id: 'MESO_G3', name: '챌린저스 메소', type: 'meso', group: 'GROUP3' },
-    { id: 'SOL_G1', name: '일반섭 조각 조각', type: 'sol', group: 'GROUP1' },
-    { id: 'SOL_G2', name: '에오스 조각 조각', type: 'sol', group: 'GROUP2' },
-    { id: 'SOL_G3', name: '챌린저스 조각 조각', type: 'sol', group: 'GROUP3' }
+    { id: 'SOL_G1', name: '일반섭 조각', type: 'sol', group: 'GROUP1' },
+    { id: 'SOL_G2', name: '에오스 조각', type: 'sol', group: 'GROUP2' },
+    { id: 'SOL_G3', name: '챌린저스 조각', type: 'sol', group: 'GROUP3' }
   ];
 
   const edges = [];
@@ -94,26 +94,26 @@ export function createCurrencyGraph(settings) {
   // MP → 메소 (구매 - 수수료 없음)
   if (exchangeOptions?.mesomarketBuy_G13?.enabled) {
     edges.push(
-      { from: 'MP', to: 'MESO_G1', type: 'mesomarket', fee: 0, rate: mesoMarketRates.GROUP1_3.sell, description: '메소마켓 구매 (수수료 없음)' },
-      { from: 'MP', to: 'MESO_G3', type: 'mesomarket', fee: 0, rate: mesoMarketRates.GROUP1_3.sell, description: '메소마켓 구매 (수수료 없음)' }
+      { from: 'MP', to: 'MESO_G1', type: 'mesomarket', fee: 0, rate: mesoMarketRates.GROUP1_3.sell, description: '메소 구매 (수수료 없음)' },
+      { from: 'MP', to: 'MESO_G3', type: 'mesomarket', fee: 0, rate: mesoMarketRates.GROUP1_3.sell, description: '메소 구매 (수수료 없음)' }
     );
   }
   if (exchangeOptions?.mesomarketBuy_G2?.enabled) {
     edges.push(
-      { from: 'MP', to: 'MESO_G2', type: 'mesomarket', fee: 0, rate: mesoMarketRates.GROUP2.sell, description: '메소마켓 구매 (수수료 없음)' }
+      { from: 'MP', to: 'MESO_G2', type: 'mesomarket', fee: 0, rate: mesoMarketRates.GROUP2.sell, description: '메소 구매 (수수료 없음)' }
     );
   }
 
   // 메소 → MP (판매 - 1% 수수료)
   if (exchangeOptions?.mesomarketSell_G13?.enabled) {
     edges.push(
-      { from: 'MESO_G1', to: 'MP', type: 'mesomarket', fee: 1, rate: mesoMarketRates.GROUP1_3.buy, description: '메소마켓 판매 (1% 수수료)' },
-      { from: 'MESO_G3', to: 'MP', type: 'mesomarket', fee: 1, rate: mesoMarketRates.GROUP1_3.buy, description: '메소마켓 판매 (1% 수수료)' }
+      { from: 'MESO_G1', to: 'MP', type: 'mesomarket', fee: 1, rate: mesoMarketRates.GROUP1_3.buy, description: '메소 판매 (1% 수수료)' },
+      { from: 'MESO_G3', to: 'MP', type: 'mesomarket', fee: 1, rate: mesoMarketRates.GROUP1_3.buy, description: '메소 판매 (1% 수수료)' }
     );
   }
   if (exchangeOptions?.mesomarketSell_G2?.enabled) {
     edges.push(
-      { from: 'MESO_G2', to: 'MP', type: 'mesomarket', fee: 1, rate: mesoMarketRates.GROUP2.buy, description: '메소마켓 판매 (1% 수수료)' }
+      { from: 'MESO_G2', to: 'MP', type: 'mesomarket', fee: 1, rate: mesoMarketRates.GROUP2.buy, description: '메소 판매 (1% 수수료)' }
     );
   }
 
@@ -128,7 +128,7 @@ export function createCurrencyGraph(settings) {
       fee: cashItemFeeRate,
       mesoPerNx: cashItemRates.GROUP1.meso,
       nxAmount: cashItemRates.GROUP1.nx,
-      description: `캐시템 경매장 (구매자 ${cashItemFeeRate}% 수수료)`
+      description: `캐시템 판매 (판매자 ${cashItemFeeRate}% 수수료)`
     });
   }
   
@@ -140,7 +140,7 @@ export function createCurrencyGraph(settings) {
       fee: cashItemFeeRate,
       mesoPerNx: cashItemRates.GROUP2.meso,
       nxAmount: cashItemRates.GROUP2.nx,
-      description: `캐시템 경매장 (구매자 ${cashItemFeeRate}% 수수료)`
+      description: `캐시템 판매 (판매자 ${cashItemFeeRate}% 수수료)`
     });
   }
   
@@ -152,7 +152,7 @@ export function createCurrencyGraph(settings) {
       fee: cashItemFeeRate,
       mesoPerNx: cashItemRates.GROUP3.meso,
       nxAmount: cashItemRates.GROUP3.nx,
-      description: `캐시템 경매장 (구매자 ${cashItemFeeRate}% 수수료)`
+      description: `캐시템 판매 (판매자 ${cashItemFeeRate}% 수수료)`
     });
   }
 
@@ -162,102 +162,102 @@ export function createCurrencyGraph(settings) {
   // KRW → 메소 (구매)
   if (exchangeOptions?.cashtradeBuy_G1?.enabled) {
     edges.push(
-      { from: 'KRW', to: 'MESO_G1', type: 'cashtrade', fee: cashTradeFeeRate, rate: cashTradeRates.GROUP1.buy, description: `현금거래 구매 (구매자 ${cashTradeFeeRate}% 수수료)` }
+      { from: 'KRW', to: 'MESO_G1', type: 'cashtrade', fee: cashTradeFeeRate, rate: cashTradeRates.GROUP1.buy, description: `메소 구매 (구매자 ${cashTradeFeeRate}% 수수료)` }
     );
   }
   if (exchangeOptions?.cashtradeBuy_G2?.enabled) {
     edges.push(
-      { from: 'KRW', to: 'MESO_G2', type: 'cashtrade', fee: cashTradeFeeRate, rate: cashTradeRates.GROUP2.buy, description: `현금거래 구매 (구매자 ${cashTradeFeeRate}% 수수료)` }
+      { from: 'KRW', to: 'MESO_G2', type: 'cashtrade', fee: cashTradeFeeRate, rate: cashTradeRates.GROUP2.buy, description: `메소 구매 (구매자 ${cashTradeFeeRate}% 수수료)` }
     );
   }
   if (exchangeOptions?.cashtradeBuy_G3?.enabled) {
     edges.push(
-      { from: 'KRW', to: 'MESO_G3', type: 'cashtrade', fee: cashTradeFeeRate, rate: cashTradeRates.GROUP3.buy, description: `현금거래 구매 (구매자 ${cashTradeFeeRate}% 수수료)` }
+      { from: 'KRW', to: 'MESO_G3', type: 'cashtrade', fee: cashTradeFeeRate, rate: cashTradeRates.GROUP3.buy, description: `메소 구매 (구매자 ${cashTradeFeeRate}% 수수료)` }
     );
   }
 
   // 메소 → KRW (판매)
   if (exchangeOptions?.cashtradeSell_G1?.enabled) {
     edges.push(
-      { from: 'MESO_G1', to: 'KRW', type: 'cashtrade', fee: 0, rate: cashTradeRates.GROUP1.sell, description: '현금거래 판매 (판매자 수수료 없음)' }
+      { from: 'MESO_G1', to: 'KRW', type: 'cashtrade', fee: 0, rate: cashTradeRates.GROUP1.sell, description: '메소 판매 (판매자 수수료 없음)' }
     );
   }
   if (exchangeOptions?.cashtradeSell_G2?.enabled) {
     edges.push(
-      { from: 'MESO_G2', to: 'KRW', type: 'cashtrade', fee: 0, rate: cashTradeRates.GROUP2.sell, description: '현금거래 판매 (판매자 수수료 없음)' }
+      { from: 'MESO_G2', to: 'KRW', type: 'cashtrade', fee: 0, rate: cashTradeRates.GROUP2.sell, description: '메소 판매 (판매자 수수료 없음)' }
     );
   }
   if (exchangeOptions?.cashtradeSell_G3?.enabled) {
     edges.push(
-      { from: 'MESO_G3', to: 'KRW', type: 'cashtrade', fee: 0, rate: cashTradeRates.GROUP3.sell, description: '현금거래 판매 (판매자 수수료 없음)' }
+      { from: 'MESO_G3', to: 'KRW', type: 'cashtrade', fee: 0, rate: cashTradeRates.GROUP3.sell, description: '메소 판매 (판매자 수수료 없음)' }
     );
   }
 
-  // 조각 조각 거래 경로들
+  // 조각 거래 경로들
   if (solTradeRates) {
     const solMesoFeeRate = (mvpGrade === 'SILVER_PLUS') ? 3 : 5;
     
     // 현금 - 조각 거래
     if (exchangeOptions?.solCashBuy_G1?.enabled) {
       edges.push(
-        { from: 'KRW', to: 'SOL_G1', type: 'soltrade', subtype: 'cash', fee: 0, rate: solTradeRates.cash.GROUP1.buy, description: '조각 현금거래 구매' }
+        { from: 'KRW', to: 'SOL_G1', type: 'soltrade', subtype: 'cash', fee: 0, rate: solTradeRates.cash.GROUP1.buy, description: '조각 구매' }
       );
     }
     if (exchangeOptions?.solCashSell_G1?.enabled) {
       edges.push(
-        { from: 'SOL_G1', to: 'KRW', type: 'soltrade', subtype: 'cash', fee: 0, rate: solTradeRates.cash.GROUP1.sell, description: '조각 현금거래 판매' }
+        { from: 'SOL_G1', to: 'KRW', type: 'soltrade', subtype: 'cash', fee: 0, rate: solTradeRates.cash.GROUP1.sell, description: '조각 판매' }
       );
     }
     if (exchangeOptions?.solCashBuy_G2?.enabled) {
       edges.push(
-        { from: 'KRW', to: 'SOL_G2', type: 'soltrade', subtype: 'cash', fee: 0, rate: solTradeRates.cash.GROUP2.buy, description: '조각 현금거래 구매' }
+        { from: 'KRW', to: 'SOL_G2', type: 'soltrade', subtype: 'cash', fee: 0, rate: solTradeRates.cash.GROUP2.buy, description: '조각 구매' }
       );
     }
     if (exchangeOptions?.solCashSell_G2?.enabled) {
       edges.push(
-        { from: 'SOL_G2', to: 'KRW', type: 'soltrade', subtype: 'cash', fee: 0, rate: solTradeRates.cash.GROUP2.sell, description: '조각 현금거래 판매' }
+        { from: 'SOL_G2', to: 'KRW', type: 'soltrade', subtype: 'cash', fee: 0, rate: solTradeRates.cash.GROUP2.sell, description: '조각 판매' }
       );
     }
     if (exchangeOptions?.solCashBuy_G3?.enabled) {
       edges.push(
-        { from: 'KRW', to: 'SOL_G3', type: 'soltrade', subtype: 'cash', fee: 0, rate: solTradeRates.cash.GROUP3.buy, description: '조각 현금거래 구매' }
+        { from: 'KRW', to: 'SOL_G3', type: 'soltrade', subtype: 'cash', fee: 0, rate: solTradeRates.cash.GROUP3.buy, description: '조각 구매' }
       );
     }
     if (exchangeOptions?.solCashSell_G3?.enabled) {
       edges.push(
-        { from: 'SOL_G3', to: 'KRW', type: 'soltrade', subtype: 'cash', fee: 0, rate: solTradeRates.cash.GROUP3.sell, description: '조각 현금거래 판매' }
+        { from: 'SOL_G3', to: 'KRW', type: 'soltrade', subtype: 'cash', fee: 0, rate: solTradeRates.cash.GROUP3.sell, description: '조각 판매' }
       );
     }
 
     // 메소 - 조각 거래 (메소를 얻는 사람에게 수수료)
     if (exchangeOptions?.solMesoBuy_G1?.enabled) {
       edges.push(
-        { from: 'MESO_G1', to: 'SOL_G1', type: 'soltrade', subtype: 'meso', fee: 0, rate: solTradeRates.meso.GROUP1.buy, description: '조각 메소거래 구매 (메소 지불자 수수료 없음)' }
+        { from: 'MESO_G1', to: 'SOL_G1', type: 'soltrade', subtype: 'meso', fee: 0, rate: solTradeRates.meso.GROUP1.buy, description: '조각 구매 (조각 구매자 수수료 없음)' }
       );
     }
     if (exchangeOptions?.solMesoSell_G1?.enabled) {
       edges.push(
-        { from: 'SOL_G1', to: 'MESO_G1', type: 'soltrade', subtype: 'meso', fee: solMesoFeeRate, rate: solTradeRates.meso.GROUP1.sell, description: `조각 메소거래 판매 (메소 획득자 ${solMesoFeeRate}% 수수료)` }
+        { from: 'SOL_G1', to: 'MESO_G1', type: 'soltrade', subtype: 'meso', fee: solMesoFeeRate, rate: solTradeRates.meso.GROUP1.sell, description: `조각 판매 (조각 판매자 ${solMesoFeeRate}% 수수료)` }
       );
     }
     if (exchangeOptions?.solMesoBuy_G2?.enabled) {
       edges.push(
-        { from: 'MESO_G2', to: 'SOL_G2', type: 'soltrade', subtype: 'meso', fee: 0, rate: solTradeRates.meso.GROUP2.buy, description: '조각 메소거래 구매 (메소 지불자 수수료 없음)' }
+        { from: 'MESO_G2', to: 'SOL_G2', type: 'soltrade', subtype: 'meso', fee: 0, rate: solTradeRates.meso.GROUP2.buy, description: '조각 구매 (조각 구매자 수수료 없음)' }
       );
     }
     if (exchangeOptions?.solMesoSell_G2?.enabled) {
       edges.push(
-        { from: 'SOL_G2', to: 'MESO_G2', type: 'soltrade', subtype: 'meso', fee: solMesoFeeRate, rate: solTradeRates.meso.GROUP2.sell, description: `조각 메소거래 판매 (메소 획득자 ${solMesoFeeRate}% 수수료)` }
+        { from: 'SOL_G2', to: 'MESO_G2', type: 'soltrade', subtype: 'meso', fee: solMesoFeeRate, rate: solTradeRates.meso.GROUP2.sell, description: `조각 판매 (조각 판매자 ${solMesoFeeRate}% 수수료)` }
       );
     }
     if (exchangeOptions?.solMesoBuy_G3?.enabled) {
       edges.push(
-        { from: 'MESO_G3', to: 'SOL_G3', type: 'soltrade', subtype: 'meso', fee: 0, rate: solTradeRates.meso.GROUP3.buy, description: '조각 메소거래 구매 (메소 지불자 수수료 없음)' }
+        { from: 'MESO_G3', to: 'SOL_G3', type: 'soltrade', subtype: 'meso', fee: 0, rate: solTradeRates.meso.GROUP3.buy, description: '조각 구매 (조각 구매자 수수료 없음)' }
       );
     }
     if (exchangeOptions?.solMesoSell_G3?.enabled) {
       edges.push(
-        { from: 'SOL_G3', to: 'MESO_G3', type: 'soltrade', subtype: 'meso', fee: solMesoFeeRate, rate: solTradeRates.meso.GROUP3.sell, description: `조각 메소거래 판매 (메소 획득자 ${solMesoFeeRate}% 수수료)` }
+        { from: 'SOL_G3', to: 'MESO_G3', type: 'soltrade', subtype: 'meso', fee: solMesoFeeRate, rate: solTradeRates.meso.GROUP3.sell, description: `조각 판매 (조각 판매자 ${solMesoFeeRate}% 수수료)` }
       );
     }
   }
@@ -320,11 +320,11 @@ export function calculateConversion(fromAmount, edge) {
       }
     } else if (edge.subtype === 'meso') {
       if (edge.from.startsWith('MESO_')) {
-        // 메소 → 조각 (개당 메소 가격, 메소 지불자는 수수료 없음)
+        // 메소 → 조각 (개당 메소 가격, 조각 구매자는 수수료 없음)
         const solCount = Math.floor(fromAmount / rate);
         return solCount;
       } else {
-        // 조각 → 메소 (메소를 얻는 사람이 수수료 부담)
+        // 조각 → 메소 (조각 판매자가 수수료 부담)
         return Math.floor(fromAmount * rate * (1 - fee / 100));
       }
     }
@@ -531,7 +531,7 @@ export function formatNumber(num, type = 'default') {
     // 메소: 만 메소 단위까지
     roundedNum = Math.round(num / 10000) * 10000;
   } else if (type === 'sol') {
-    // 조각 조각: 개수 단위로 표시
+    // 조각: 개수 단위로 표시
     return `${Math.floor(num).toLocaleString()}개`;
   } else {
     // 기본: 소수점 2자리까지

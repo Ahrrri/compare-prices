@@ -29,13 +29,13 @@ export const DEFAULT_SETTINGS = {
     }
   },
 
-  // 솔 에르다 조각 거래 시세
+  // 조각 거래 시세
   solTradeRates: {
     // 현금 거래 (개당 원)
     cash: {
       GROUP1: {
-        buy: 100,    // 현금으로 솔 에르다 구매 시
-        sell: 100    // 솔 에르다를 현금으로 판매 시
+        buy: 100,    // 현금으로 조각 구매 시
+        sell: 100    // 조각을 현금으로 판매 시
       },
       GROUP2: {
         buy: 80,
@@ -49,8 +49,8 @@ export const DEFAULT_SETTINGS = {
     // 메소 거래 (개당 메소)
     meso: {
       GROUP1: {
-        buy: 5000000,   // 메소로 솔 에르다 구매 시 (500만 메소)
-        sell: 5000000   // 솔 에르다를 메소로 판매 시
+        buy: 5000000,   // 메소로 조각 구매 시 (500만 메소)
+        sell: 5000000   // 조각을 메소로 판매 시
       },
       GROUP2: {
         buy: 7000000,   // 700만 메소
@@ -122,7 +122,7 @@ export const DEFAULT_SETTINGS = {
     cashItem_G1: { enabled: true },
     cashItem_G2: { enabled: true },
     cashItem_G3: { enabled: true },
-    // 솔 에르다 거래
+    // 조각 거래
     solCashBuy_G1: { enabled: true },
     solCashBuy_G2: { enabled: true },
     solCashBuy_G3: { enabled: true },

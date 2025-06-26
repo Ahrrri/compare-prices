@@ -195,9 +195,9 @@ const CurrencyGraph = ({
             tooltipContent += `캐시템 경매장 (${d.fee}% 수수료)`;
             break;
           case 'soltrade':
-            tooltipContent += `솔 에르다 거래 (${d.fee}% 수수료)<br/>`;
+            tooltipContent += `조각 거래 (${d.fee}% 수수료)<br/>`;
             if (d.rate) {
-              tooltipContent += `시세: ${d.rate.toLocaleString()} 원/솔 에르다`;
+              tooltipContent += `시세: ${d.rate.toLocaleString()} 원/조각`;
             }
             break;
         }
@@ -366,7 +366,7 @@ const CurrencyGraph = ({
         } else if (d.type === 'meso') {
           tooltipContent += `메소 (${d.group})`;
         } else if (d.type === 'sol') {
-          tooltipContent += `솔 에르다 조각 (${d.group})`;
+          tooltipContent += `조각 (${d.group})`;
         }
         
         tooltip.transition()
@@ -422,7 +422,7 @@ const CurrencyGraph = ({
             <span className="legend-indicator legend-cash-item"></span> 캐시템 경매장
           </div>
           <div className="legend-item">
-            <span className="legend-indicator legend-sol-trade"></span> 솔 에르다 거래
+            <span className="legend-indicator legend-sol-trade"></span> 조각 거래
           </div>
         </div>
         <div className="legend-indicators">

@@ -637,10 +637,10 @@ const SettingsPanel = ({
       </>
       )}
       
-      {/* 솔 에르다 조각 거래 시세 */}
+      {/* 조각 거래 시세 */}
       <h3 className="section-header collapsible" onClick={() => toggleSection('solTrade')}>
         <span className={`arrow ${expandedSections.solTrade ? 'expanded' : ''}`}>▶</span>
-        솔 에르다 조각 거래 시세
+        조각 거래 시세
       </h3>
       
       {expandedSections.solTrade && (
@@ -789,7 +789,7 @@ const SettingsPanel = ({
         </div>
       </div>
       
-      {/* 그룹2 솔 에르다 설정 */}
+      {/* 그룹2 조각 설정 */}
       <div className="sol-trade-section">
         <h4 className="sol-trade-header">그룹2 (에오스)</h4>
         <div className="sol-trade-content">
@@ -934,7 +934,7 @@ const SettingsPanel = ({
         </div>
       </div>
 
-      {/* 그룹3 솔 에르다 설정 */}
+      {/* 그룹3 조각 설정 */}
       <div className="sol-trade-section">
         <h4 className="sol-trade-header">그룹3 (챌린저스)</h4>
         <div className="sol-trade-content">

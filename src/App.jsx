@@ -81,9 +81,9 @@ function App() {
       MESO_G1: '일반섭 메소',
       MESO_G2: '에오스 메소',
       MESO_G3: '챌린저스 메소',
-      SOL_G1: '일반섭 솔 에르다 조각',
-      SOL_G2: '에오스 솔 에르다 조각',
-      SOL_G3: '챌린저스 솔 에르다 조각'
+      SOL_G1: '일반섭 조각',
+      SOL_G2: '에오스 조각',
+      SOL_G3: '챌린저스 조각'
     };
     return names[currency] || currency;
   };
