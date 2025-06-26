@@ -154,7 +154,7 @@ export function downloadSettingsAsFile(settings, filename = 'maple-currency-sett
     
     const configData = {
       description: "메이플스토리 화폐 변환 계산기 설정 파일",
-      version: "2.0",
+      version: "3.0",
       exportedAt: new Date().toISOString(),
       
       // MVP 등급
@@ -163,91 +163,141 @@ export function downloadSettingsAsFile(settings, filename = 'maple-currency-sett
       // 캐시템 경매장 (웹에서 첫 번째로 나오는 섹션)
       "캐시템 경매장": {
         "그룹1 (일반섭)": {
-          "메소": settings.cashItemRates.GROUP1.meso,
-          "넥슨캐시": settings.cashItemRates.GROUP1.nx,
-          "넥슨캐시→메소 거래 활성화": flattenedExchangeOptions.nxtomesotrade_g1
+          "넥슨캐시→메소": {
+            "meso": settings.cashItemRates.GROUP1.meso,
+            "nx": settings.cashItemRates.GROUP1.nx,
+            "enabled": flattenedExchangeOptions.nxtomesotrade_g1
+          }
         },
         "그룹2 (에오스)": {
-          "메소": settings.cashItemRates.GROUP2.meso,
-          "넥슨캐시": settings.cashItemRates.GROUP2.nx,
-          "넥슨캐시→메소 거래 활성화": flattenedExchangeOptions.nxtomesotrade_g2
+          "넥슨캐시→메소": {
+            "meso": settings.cashItemRates.GROUP2.meso,
+            "nx": settings.cashItemRates.GROUP2.nx,
+            "enabled": flattenedExchangeOptions.nxtomesotrade_g2
+          }
         },
         "그룹3 (챌린저스)": {
-          "메소": settings.cashItemRates.GROUP3.meso,
-          "넥슨캐시": settings.cashItemRates.GROUP3.nx,
-          "넥슨캐시→메소 거래 활성화": flattenedExchangeOptions.nxtomesotrade_g3
+          "넥슨캐시→메소": {
+            "meso": settings.cashItemRates.GROUP3.meso,
+            "nx": settings.cashItemRates.GROUP3.nx,
+            "enabled": flattenedExchangeOptions.nxtomesotrade_g3
+          }
         }
       },
       
       // 메소마켓 시세
       "메소마켓 시세": {
         "그룹1+3 (일반섭+챌린저스)": {
-          "메포→메소 시세 (메포/1억메소)": settings.mesoMarketRates.GROUP1_3.sell,
-          "메소→메포 시세 (메포/1억메소)": settings.mesoMarketRates.GROUP1_3.buy,
-          "메포→메소 거래 활성화": flattenedExchangeOptions.mptomesotrade_g1_3,
-          "메소→메포 거래 활성화": flattenedExchangeOptions.mesotomptrade_g1_3
+          "메포→메소 (메포/1억메소)": {
+            "price": settings.mesoMarketRates.GROUP1_3.sell,
+            "enabled": flattenedExchangeOptions.mptomesotrade_g1_3
+          },
+          "메소→메포 (메포/1억메소)": {
+            "price": settings.mesoMarketRates.GROUP1_3.buy,
+            "enabled": flattenedExchangeOptions.mesotomptrade_g1_3
+          }
         },
         "그룹2 (에오스)": {
-          "메포→메소 시세 (메포/1억메소)": settings.mesoMarketRates.GROUP2.sell,
-          "메소→메포 시세 (메포/1억메소)": settings.mesoMarketRates.GROUP2.buy,
-          "메포→메소 거래 활성화": flattenedExchangeOptions.mptomesotrade_g2,
-          "메소→메포 거래 활성화": flattenedExchangeOptions.mesotomptrade_g2
+          "메포→메소 (메포/1억메소)": {
+            "price": settings.mesoMarketRates.GROUP2.sell,
+            "enabled": flattenedExchangeOptions.mptomesotrade_g2
+          },
+          "메소→메포 (메포/1억메소)": {
+            "price": settings.mesoMarketRates.GROUP2.buy,
+            "enabled": flattenedExchangeOptions.mesotomptrade_g2
+          }
         }
       },
       
       // 현금거래 시세
       "현금거래 시세": {
         "그룹1 (일반섭)": {
-          "현금→메소 시세 (원/1억메소)": settings.cashTradeRates.GROUP1.buy,
-          "메소→현금 시세 (원/1억메소)": settings.cashTradeRates.GROUP1.sell,
-          "현금→메소 거래 활성화": flattenedExchangeOptions.krwtomesotrade_g1,
-          "메소→현금 거래 활성화": flattenedExchangeOptions.mesotokrwtrade_g1
+          "현금→메소 (원/1억메소)": {
+            "price": settings.cashTradeRates.GROUP1.buy,
+            "enabled": flattenedExchangeOptions.krwtomesotrade_g1
+          },
+          "메소→현금 (원/1억메소)": {
+            "price": settings.cashTradeRates.GROUP1.sell,
+            "enabled": flattenedExchangeOptions.mesotokrwtrade_g1
+          }
         },
         "그룹2 (에오스)": {
-          "현금→메소 시세 (원/1억메소)": settings.cashTradeRates.GROUP2.buy,
-          "메소→현금 시세 (원/1억메소)": settings.cashTradeRates.GROUP2.sell,
-          "현금→메소 거래 활성화": flattenedExchangeOptions.krwtomesotrade_g2,
-          "메소→현금 거래 활성화": flattenedExchangeOptions.mesotokrwtrade_g2
+          "현금→메소 (원/1억메소)": {
+            "price": settings.cashTradeRates.GROUP2.buy,
+            "enabled": flattenedExchangeOptions.krwtomesotrade_g2
+          },
+          "메소→현금 (원/1억메소)": {
+            "price": settings.cashTradeRates.GROUP2.sell,
+            "enabled": flattenedExchangeOptions.mesotokrwtrade_g2
+          }
         },
         "그룹3 (챌린저스)": {
-          "현금→메소 시세 (원/1억메소)": settings.cashTradeRates.GROUP3.buy,
-          "메소→현금 시세 (원/1억메소)": settings.cashTradeRates.GROUP3.sell,
-          "현금→메소 거래 활성화": flattenedExchangeOptions.krwtomesotrade_g3,
-          "메소→현금 거래 활성화": flattenedExchangeOptions.mesotokrwtrade_g3
+          "현금→메소 (원/1억메소)": {
+            "price": settings.cashTradeRates.GROUP3.buy,
+            "enabled": flattenedExchangeOptions.krwtomesotrade_g3
+          },
+          "메소→현금 (원/1억메소)": {
+            "price": settings.cashTradeRates.GROUP3.sell,
+            "enabled": flattenedExchangeOptions.mesotokrwtrade_g3
+          }
         }
       },
       
       // 솔 에르다 거래
       "솔 에르다 거래": {
         "그룹1 (일반섭)": {
-          "현금→솔 에르다 시세 (원/개)": settings.solTradeRates.cash.GROUP1.buy,
-          "솔 에르다→현금 시세 (원/개)": settings.solTradeRates.cash.GROUP1.sell,
-          "메소→솔 에르다 시세 (메소/개)": settings.solTradeRates.meso.GROUP1.buy,
-          "솔 에르다→메소 시세 (메소/개)": settings.solTradeRates.meso.GROUP1.sell,
-          "현금→솔 에르다 거래 활성화": flattenedExchangeOptions.krwtosoltrade_g1,
-          "솔 에르다→현금 거래 활성화": flattenedExchangeOptions.soltokrwtrade_g1,
-          "메소→솔 에르다 거래 활성화": flattenedExchangeOptions.mesotosoltrade_g1,
-          "솔 에르다→메소 거래 활성화": flattenedExchangeOptions.soltomesotrade_g1
+          "현금→솔 에르다 (원/개)": {
+            "price": settings.solTradeRates.cash.GROUP1.buy,
+            "enabled": flattenedExchangeOptions.krwtosoltrade_g1
+          },
+          "솔 에르다→현금 (원/개)": {
+            "price": settings.solTradeRates.cash.GROUP1.sell,
+            "enabled": flattenedExchangeOptions.soltokrwtrade_g1
+          },
+          "메소→솔 에르다 (메소/개)": {
+            "price": settings.solTradeRates.meso.GROUP1.buy,
+            "enabled": flattenedExchangeOptions.mesotosoltrade_g1
+          },
+          "솔 에르다→메소 (메소/개)": {
+            "price": settings.solTradeRates.meso.GROUP1.sell,
+            "enabled": flattenedExchangeOptions.soltomesotrade_g1
+          }
         },
         "그룹2 (에오스)": {
-          "현금→솔 에르다 시세 (원/개)": settings.solTradeRates.cash.GROUP2.buy,
-          "솔 에르다→현금 시세 (원/개)": settings.solTradeRates.cash.GROUP2.sell,
-          "메소→솔 에르다 시세 (메소/개)": settings.solTradeRates.meso.GROUP2.buy,
-          "솔 에르다→메소 시세 (메소/개)": settings.solTradeRates.meso.GROUP2.sell,
-          "현금→솔 에르다 거래 활성화": flattenedExchangeOptions.krwtosoltrade_g2,
-          "솔 에르다→현금 거래 활성화": flattenedExchangeOptions.soltokrwtrade_g2,
-          "메소→솔 에르다 거래 활성화": flattenedExchangeOptions.mesotosoltrade_g2,
-          "솔 에르다→메소 거래 활성화": flattenedExchangeOptions.soltomesotrade_g2
+          "현금→솔 에르다 (원/개)": {
+            "price": settings.solTradeRates.cash.GROUP2.buy,
+            "enabled": flattenedExchangeOptions.krwtosoltrade_g2
+          },
+          "솔 에르다→현금 (원/개)": {
+            "price": settings.solTradeRates.cash.GROUP2.sell,
+            "enabled": flattenedExchangeOptions.soltokrwtrade_g2
+          },
+          "메소→솔 에르다 (메소/개)": {
+            "price": settings.solTradeRates.meso.GROUP2.buy,
+            "enabled": flattenedExchangeOptions.mesotosoltrade_g2
+          },
+          "솔 에르다→메소 (메소/개)": {
+            "price": settings.solTradeRates.meso.GROUP2.sell,
+            "enabled": flattenedExchangeOptions.soltomesotrade_g2
+          }
         },
         "그룹3 (챌린저스)": {
-          "현금→솔 에르다 시세 (원/개)": settings.solTradeRates.cash.GROUP3.buy,
-          "솔 에르다→현금 시세 (원/개)": settings.solTradeRates.cash.GROUP3.sell,
-          "메소→솔 에르다 시세 (메소/개)": settings.solTradeRates.meso.GROUP3.buy,
-          "솔 에르다→메소 시세 (메소/개)": settings.solTradeRates.meso.GROUP3.sell,
-          "현금→솔 에르다 거래 활성화": flattenedExchangeOptions.krwtosoltrade_g3,
-          "솔 에르다→현금 거래 활성화": flattenedExchangeOptions.soltokrwtrade_g3,
-          "메소→솔 에르다 거래 활성화": flattenedExchangeOptions.mesotosoltrade_g3,
-          "솔 에르다→메소 거래 활성화": flattenedExchangeOptions.soltomesotrade_g3
+          "현금→솔 에르다 (원/개)": {
+            "price": settings.solTradeRates.cash.GROUP3.buy,
+            "enabled": flattenedExchangeOptions.krwtosoltrade_g3
+          },
+          "솔 에르다→현금 (원/개)": {
+            "price": settings.solTradeRates.cash.GROUP3.sell,
+            "enabled": flattenedExchangeOptions.soltokrwtrade_g3
+          },
+          "메소→솔 에르다 (메소/개)": {
+            "price": settings.solTradeRates.meso.GROUP3.buy,
+            "enabled": flattenedExchangeOptions.mesotosoltrade_g3
+          },
+          "솔 에르다→메소 (메소/개)": {
+            "price": settings.solTradeRates.meso.GROUP3.sell,
+            "enabled": flattenedExchangeOptions.soltomesotrade_g3
+          }
         }
       },
       
@@ -296,41 +346,41 @@ export function importSettingsFromFile() {
           const config = JSON.parse(e.target.result);
           console.log('설정 파일 가져오기 성공:', config.description || 'Unknown config');
           
-          // 새로운 형식 (v2.0+)인지 확인
-          if (config.version && parseFloat(config.version) >= 2.0) {
+          // 새로운 형식 (v3.0+)인지 확인
+          if (config.version && parseFloat(config.version) >= 3.0) {
               const flattenedOptions = {
                 // 캐시템 경매장
-                nxtomesotrade_g1: config["캐시템 경매장"]["그룹1 (일반섭)"]["넥슨캐시→메소 거래 활성화"],
-                nxtomesotrade_g2: config["캐시템 경매장"]["그룹2 (에오스)"]["넥슨캐시→메소 거래 활성화"],
-                nxtomesotrade_g3: config["캐시템 경매장"]["그룹3 (챌린저스)"]["넥슨캐시→메소 거래 활성화"],
+                nxtomesotrade_g1: config["캐시템 경매장"]["그룹1 (일반섭)"]["넥슨캐시→메소"]["enabled"],
+                nxtomesotrade_g2: config["캐시템 경매장"]["그룹2 (에오스)"]["넥슨캐시→메소"]["enabled"],
+                nxtomesotrade_g3: config["캐시템 경매장"]["그룹3 (챌린저스)"]["넥슨캐시→메소"]["enabled"],
                 
                 // 메소마켓
-                mesotomptrade_g1_3: config["메소마켓 시세"]["그룹1+3 (일반섭+챌린저스)"]["메소→메포 거래 활성화"],
-                mptomesotrade_g1_3: config["메소마켓 시세"]["그룹1+3 (일반섭+챌린저스)"]["메포→메소 거래 활성화"],
-                mesotomptrade_g2: config["메소마켓 시세"]["그룹2 (에오스)"]["메소→메포 거래 활성화"],
-                mptomesotrade_g2: config["메소마켓 시세"]["그룹2 (에오스)"]["메포→메소 거래 활성화"],
+                mesotomptrade_g1_3: config["메소마켓 시세"]["그룹1+3 (일반섭+챌린저스)"]["메소→메포 (메포/1억메소)"]["enabled"],
+                mptomesotrade_g1_3: config["메소마켓 시세"]["그룹1+3 (일반섭+챌린저스)"]["메포→메소 (메포/1억메소)"]["enabled"],
+                mesotomptrade_g2: config["메소마켓 시세"]["그룹2 (에오스)"]["메소→메포 (메포/1억메소)"]["enabled"],
+                mptomesotrade_g2: config["메소마켓 시세"]["그룹2 (에오스)"]["메포→메소 (메포/1억메소)"]["enabled"],
                 
                 // 현금거래
-                krwtomesotrade_g1: config["현금거래 시세"]["그룹1 (일반섭)"]["현금→메소 거래 활성화"],
-                mesotokrwtrade_g1: config["현금거래 시세"]["그룹1 (일반섭)"]["메소→현금 거래 활성화"],
-                krwtomesotrade_g2: config["현금거래 시세"]["그룹2 (에오스)"]["현금→메소 거래 활성화"],
-                mesotokrwtrade_g2: config["현금거래 시세"]["그룹2 (에오스)"]["메소→현금 거래 활성화"],
-                krwtomesotrade_g3: config["현금거래 시세"]["그룹3 (챌린저스)"]["현금→메소 거래 활성화"],
-                mesotokrwtrade_g3: config["현금거래 시세"]["그룹3 (챌린저스)"]["메소→현금 거래 활성화"],
+                krwtomesotrade_g1: config["현금거래 시세"]["그룹1 (일반섭)"]["현금→메소 (원/1억메소)"]["enabled"],
+                mesotokrwtrade_g1: config["현금거래 시세"]["그룹1 (일반섭)"]["메소→현금 (원/1억메소)"]["enabled"],
+                krwtomesotrade_g2: config["현금거래 시세"]["그룹2 (에오스)"]["현금→메소 (원/1억메소)"]["enabled"],
+                mesotokrwtrade_g2: config["현금거래 시세"]["그룹2 (에오스)"]["메소→현금 (원/1억메소)"]["enabled"],
+                krwtomesotrade_g3: config["현금거래 시세"]["그룹3 (챌린저스)"]["현금→메소 (원/1억메소)"]["enabled"],
+                mesotokrwtrade_g3: config["현금거래 시세"]["그룹3 (챌린저스)"]["메소→현금 (원/1억메소)"]["enabled"],
                 
                 // 솔 에르다 거래
-                krwtosoltrade_g1: config["솔 에르다 거래"]["그룹1 (일반섭)"]["현금→솔 에르다 거래 활성화"],
-                soltokrwtrade_g1: config["솔 에르다 거래"]["그룹1 (일반섭)"]["솔 에르다→현금 거래 활성화"],
-                mesotosoltrade_g1: config["솔 에르다 거래"]["그룹1 (일반섭)"]["메소→솔 에르다 거래 활성화"],
-                soltomesotrade_g1: config["솔 에르다 거래"]["그룹1 (일반섭)"]["솔 에르다→메소 거래 활성화"],
-                krwtosoltrade_g2: config["솔 에르다 거래"]["그룹2 (에오스)"]["현금→솔 에르다 거래 활성화"],
-                soltokrwtrade_g2: config["솔 에르다 거래"]["그룹2 (에오스)"]["솔 에르다→현금 거래 활성화"],
-                mesotosoltrade_g2: config["솔 에르다 거래"]["그룹2 (에오스)"]["메소→솔 에르다 거래 활성화"],
-                soltomesotrade_g2: config["솔 에르다 거래"]["그룹2 (에오스)"]["솔 에르다→메소 거래 활성화"],
-                krwtosoltrade_g3: config["솔 에르다 거래"]["그룹3 (챌린저스)"]["현금→솔 에르다 거래 활성화"],
-                soltokrwtrade_g3: config["솔 에르다 거래"]["그룹3 (챌린저스)"]["솔 에르다→현금 거래 활성화"],
-                mesotosoltrade_g3: config["솔 에르다 거래"]["그룹3 (챌린저스)"]["메소→솔 에르다 거래 활성화"],
-                soltomesotrade_g3: config["솔 에르다 거래"]["그룹3 (챌린저스)"]["솔 에르다→메소 거래 활성화"]
+                krwtosoltrade_g1: config["솔 에르다 거래"]["그룹1 (일반섭)"]["현금→솔 에르다 (원/개)"]["enabled"],
+                soltokrwtrade_g1: config["솔 에르다 거래"]["그룹1 (일반섭)"]["솔 에르다→현금 (원/개)"]["enabled"],
+                mesotosoltrade_g1: config["솔 에르다 거래"]["그룹1 (일반섭)"]["메소→솔 에르다 (메소/개)"]["enabled"],
+                soltomesotrade_g1: config["솔 에르다 거래"]["그룹1 (일반섭)"]["솔 에르다→메소 (메소/개)"]["enabled"],
+                krwtosoltrade_g2: config["솔 에르다 거래"]["그룹2 (에오스)"]["현금→솔 에르다 (원/개)"]["enabled"],
+                soltokrwtrade_g2: config["솔 에르다 거래"]["그룹2 (에오스)"]["솔 에르다→현금 (원/개)"]["enabled"],
+                mesotosoltrade_g2: config["솔 에르다 거래"]["그룹2 (에오스)"]["메소→솔 에르다 (메소/개)"]["enabled"],
+                soltomesotrade_g2: config["솔 에르다 거래"]["그룹2 (에오스)"]["솔 에르다→메소 (메소/개)"]["enabled"],
+                krwtosoltrade_g3: config["솔 에르다 거래"]["그룹3 (챌린저스)"]["현금→솔 에르다 (원/개)"]["enabled"],
+                soltokrwtrade_g3: config["솔 에르다 거래"]["그룹3 (챌린저스)"]["솔 에르다→현금 (원/개)"]["enabled"],
+                mesotosoltrade_g3: config["솔 에르다 거래"]["그룹3 (챌린저스)"]["메소→솔 에르다 (메소/개)"]["enabled"],
+                soltomesotrade_g3: config["솔 에르다 거래"]["그룹3 (챌린저스)"]["솔 에르다→메소 (메소/개)"]["enabled"]
               };
               
               const exchangeOptions = unflattenExchangeOptions(flattenedOptions);
@@ -338,70 +388,70 @@ export function importSettingsFromFile() {
               const settings = {
                 mesoMarketRates: {
                   GROUP1_3: {
-                    buy: config["메소마켓 시세"]["그룹1+3 (일반섭+챌린저스)"]["메소→메포 시세 (메포/1억메소)"],
-                    sell: config["메소마켓 시세"]["그룹1+3 (일반섭+챌린저스)"]["메포→메소 시세 (메포/1억메소)"]
+                    buy: config["메소마켓 시세"]["그룹1+3 (일반섭+챌린저스)"]["메소→메포 (메포/1억메소)"]["price"],
+                    sell: config["메소마켓 시세"]["그룹1+3 (일반섭+챌린저스)"]["메포→메소 (메포/1억메소)"]["price"]
                   },
                   GROUP2: {
-                    buy: config["메소마켓 시세"]["그룹2 (에오스)"]["메소→메포 시세 (메포/1억메소)"],
-                    sell: config["메소마켓 시세"]["그룹2 (에오스)"]["메포→메소 시세 (메포/1억메소)"]
+                    buy: config["메소마켓 시세"]["그룹2 (에오스)"]["메소→메포 (메포/1억메소)"]["price"],
+                    sell: config["메소마켓 시세"]["그룹2 (에오스)"]["메포→메소 (메포/1억메소)"]["price"]
                   }
                 },
                 cashTradeRates: {
                   GROUP1: {
-                    buy: config["현금거래 시세"]["그룹1 (일반섭)"]["현금→메소 시세 (원/1억메소)"],
-                    sell: config["현금거래 시세"]["그룹1 (일반섭)"]["메소→현금 시세 (원/1억메소)"]
+                    buy: config["현금거래 시세"]["그룹1 (일반섭)"]["현금→메소 (원/1억메소)"]["price"],
+                    sell: config["현금거래 시세"]["그룹1 (일반섭)"]["메소→현금 (원/1억메소)"]["price"]
                   },
                   GROUP2: {
-                    buy: config["현금거래 시세"]["그룹2 (에오스)"]["현금→메소 시세 (원/1억메소)"],
-                    sell: config["현금거래 시세"]["그룹2 (에오스)"]["메소→현금 시세 (원/1억메소)"]
+                    buy: config["현금거래 시세"]["그룹2 (에오스)"]["현금→메소 (원/1억메소)"]["price"],
+                    sell: config["현금거래 시세"]["그룹2 (에오스)"]["메소→현금 (원/1억메소)"]["price"]
                   },
                   GROUP3: {
-                    buy: config["현금거래 시세"]["그룹3 (챌린저스)"]["현금→메소 시세 (원/1억메소)"],
-                    sell: config["현금거래 시세"]["그룹3 (챌린저스)"]["메소→현금 시세 (원/1억메소)"]
+                    buy: config["현금거래 시세"]["그룹3 (챌린저스)"]["현금→메소 (원/1억메소)"]["price"],
+                    sell: config["현금거래 시세"]["그룹3 (챌린저스)"]["메소→현금 (원/1억메소)"]["price"]
                   }
                 },
                 solTradeRates: {
                   cash: {
                     GROUP1: {
-                      buy: config["솔 에르다 거래"]["그룹1 (일반섭)"]["현금→솔 에르다 시세 (원/개)"],
-                      sell: config["솔 에르다 거래"]["그룹1 (일반섭)"]["솔 에르다→현금 시세 (원/개)"]
+                      buy: config["솔 에르다 거래"]["그룹1 (일반섭)"]["현금→솔 에르다 (원/개)"]["price"],
+                      sell: config["솔 에르다 거래"]["그룹1 (일반섭)"]["솔 에르다→현금 (원/개)"]["price"]
                     },
                     GROUP2: {
-                      buy: config["솔 에르다 거래"]["그룹2 (에오스)"]["현금→솔 에르다 시세 (원/개)"],
-                      sell: config["솔 에르다 거래"]["그룹2 (에오스)"]["솔 에르다→현금 시세 (원/개)"]
+                      buy: config["솔 에르다 거래"]["그룹2 (에오스)"]["현금→솔 에르다 (원/개)"]["price"],
+                      sell: config["솔 에르다 거래"]["그룹2 (에오스)"]["솔 에르다→현금 (원/개)"]["price"]
                     },
                     GROUP3: {
-                      buy: config["솔 에르다 거래"]["그룹3 (챌린저스)"]["현금→솔 에르다 시세 (원/개)"],
-                      sell: config["솔 에르다 거래"]["그룹3 (챌린저스)"]["솔 에르다→현금 시세 (원/개)"]
+                      buy: config["솔 에르다 거래"]["그룹3 (챌린저스)"]["현금→솔 에르다 (원/개)"]["price"],
+                      sell: config["솔 에르다 거래"]["그룹3 (챌린저스)"]["솔 에르다→현금 (원/개)"]["price"]
                     }
                   },
                   meso: {
                     GROUP1: {
-                      buy: config["솔 에르다 거래"]["그룹1 (일반섭)"]["메소→솔 에르다 시세 (메소/개)"],
-                      sell: config["솔 에르다 거래"]["그룹1 (일반섭)"]["솔 에르다→메소 시세 (메소/개)"]
+                      buy: config["솔 에르다 거래"]["그룹1 (일반섭)"]["메소→솔 에르다 (메소/개)"]["price"],
+                      sell: config["솔 에르다 거래"]["그룹1 (일반섭)"]["솔 에르다→메소 (메소/개)"]["price"]
                     },
                     GROUP2: {
-                      buy: config["솔 에르다 거래"]["그룹2 (에오스)"]["메소→솔 에르다 시세 (메소/개)"],
-                      sell: config["솔 에르다 거래"]["그룹2 (에오스)"]["솔 에르다→메소 시세 (메소/개)"]
+                      buy: config["솔 에르다 거래"]["그룹2 (에오스)"]["메소→솔 에르다 (메소/개)"]["price"],
+                      sell: config["솔 에르다 거래"]["그룹2 (에오스)"]["솔 에르다→메소 (메소/개)"]["price"]
                     },
                     GROUP3: {
-                      buy: config["솔 에르다 거래"]["그룹3 (챌린저스)"]["메소→솔 에르다 시세 (메소/개)"],
-                      sell: config["솔 에르다 거래"]["그룹3 (챌린저스)"]["솔 에르다→메소 시세 (메소/개)"]
+                      buy: config["솔 에르다 거래"]["그룹3 (챌린저스)"]["메소→솔 에르다 (메소/개)"]["price"],
+                      sell: config["솔 에르다 거래"]["그룹3 (챌린저스)"]["솔 에르다→메소 (메소/개)"]["price"]
                     }
                   }
                 },
                 cashItemRates: {
                   GROUP1: {
-                    meso: config["캐시템 경매장"]["그룹1 (일반섭)"]["메소"],
-                    nx: config["캐시템 경매장"]["그룹1 (일반섭)"]["넥슨캐시"]
+                    meso: config["캐시템 경매장"]["그룹1 (일반섭)"]["넥슨캐시→메소"]["meso"],
+                    nx: config["캐시템 경매장"]["그룹1 (일반섭)"]["넥슨캐시→메소"]["nx"]
                   },
                   GROUP2: {
-                    meso: config["캐시템 경매장"]["그룹2 (에오스)"]["메소"],
-                    nx: config["캐시템 경매장"]["그룹2 (에오스)"]["넥슨캐시"]
+                    meso: config["캐시템 경매장"]["그룹2 (에오스)"]["넥슨캐시→메소"]["meso"],
+                    nx: config["캐시템 경매장"]["그룹2 (에오스)"]["넥슨캐시→메소"]["nx"]
                   },
                   GROUP3: {
-                    meso: config["캐시템 경매장"]["그룹3 (챌린저스)"]["메소"],
-                    nx: config["캐시템 경매장"]["그룹3 (챌린저스)"]["넥슨캐시"]
+                    meso: config["캐시템 경매장"]["그룹3 (챌린저스)"]["넥슨캐시→메소"]["meso"],
+                    nx: config["캐시템 경매장"]["그룹3 (챌린저스)"]["넥슨캐시→메소"]["nx"]
                   }
                 },
                 mvpGrade: config["MVP 등급"],
@@ -411,7 +461,7 @@ export function importSettingsFromFile() {
               
               resolve(settings);
           } else {
-            console.error('지원하지 않는 설정 파일 버전입니다. v2.0 이상 파일만 지원됩니다.');
+            console.error('지원하지 않는 설정 파일 버전입니다. v3.0 이상 파일만 지원됩니다.');
             resolve(null);
           }
         } catch (error) {

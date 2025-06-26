@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './SettingsPanel.css';
 import { downloadSettingsAsFile, importSettingsFromFile } from '../utils/configLoader';
 
@@ -19,6 +19,22 @@ const SettingsPanel = ({
   setCashItemRates,
   resetToDefaults
 }) => {
+  // 섹션 접기/펼치기 상태
+  const [expandedSections, setExpandedSections] = useState({
+    cashItem: true,
+    mesoMarket: true,
+    cashTrade: true,
+    solTrade: true,
+    direct: true,
+    voucher: true
+  });
+
+  const toggleSection = (section) => {
+    setExpandedSections(prev => ({
+      ...prev,
+      [section]: !prev[section]
+    }));
+  };
   // 현재 설정을 객체로 수집
   const getCurrentSettings = () => ({
     mesoMarketRates,
@@ -94,8 +110,13 @@ const SettingsPanel = ({
       </div>
       
       {/* 캐시템 경매장 시세 */}
-      <h3 className="section-header">캐시템 경매장 시세</h3>
+      <h3 className="section-header collapsible" onClick={() => toggleSection('cashItem')}>
+        <span className={`arrow ${expandedSections.cashItem ? 'expanded' : ''}`}>▶</span>
+        캐시템 경매장 시세
+      </h3>
       
+      {expandedSections.cashItem && (
+      <>
       <div className="cash-item-section">
         <h4 className="cash-item-header">그룹1 (일반섭)</h4>
         <div className="cash-item-content">
@@ -104,6 +125,7 @@ const SettingsPanel = ({
               className="rate-input"
               type="text"
               value={cashItemRates.GROUP1.meso.toLocaleString()}
+              disabled={!exchangeOptions.cashItem_G1.enabled}
               onChange={(e) => {
                 const value = e.target.value.replace(/,/g, '');
                 if (value === '' || /^\d+$/.test(value)) {
@@ -119,6 +141,7 @@ const SettingsPanel = ({
               className="rate-input"
               type="text"
               value={cashItemRates.GROUP1.nx.toLocaleString()}
+              disabled={!exchangeOptions.cashItem_G1.enabled}
               onChange={(e) => {
                 const value = e.target.value.replace(/,/g, '');
                 if (value === '' || /^\d+$/.test(value)) {
@@ -158,6 +181,7 @@ const SettingsPanel = ({
               className="rate-input"
               type="text"
               value={cashItemRates.GROUP2.meso.toLocaleString()}
+              disabled={!exchangeOptions.cashItem_G2.enabled}
               onChange={(e) => {
                 const value = e.target.value.replace(/,/g, '');
                 if (value === '' || /^\d+$/.test(value)) {
@@ -173,6 +197,7 @@ const SettingsPanel = ({
               className="rate-input"
               type="text"
               value={cashItemRates.GROUP2.nx.toLocaleString()}
+              disabled={!exchangeOptions.cashItem_G2.enabled}
               onChange={(e) => {
                 const value = e.target.value.replace(/,/g, '');
                 if (value === '' || /^\d+$/.test(value)) {
@@ -212,6 +237,7 @@ const SettingsPanel = ({
               className="rate-input"
               type="text"
               value={cashItemRates.GROUP3.meso.toLocaleString()}
+              disabled={!exchangeOptions.cashItem_G3.enabled}
               onChange={(e) => {
                 const value = e.target.value.replace(/,/g, '');
                 if (value === '' || /^\d+$/.test(value)) {
@@ -227,6 +253,7 @@ const SettingsPanel = ({
               className="rate-input"
               type="text"
               value={cashItemRates.GROUP3.nx.toLocaleString()}
+              disabled={!exchangeOptions.cashItem_G3.enabled}
               onChange={(e) => {
                 const value = e.target.value.replace(/,/g, '');
                 if (value === '' || /^\d+$/.test(value)) {
@@ -257,9 +284,17 @@ const SettingsPanel = ({
           </div>
         </div>
       </div>
+      </>
+      )}
       
       {/* 메소마켓 시세 */}
-      <h3 className="section-header">메소마켓 시세</h3>
+      <h3 className="section-header collapsible" onClick={() => toggleSection('mesoMarket')}>
+        <span className={`arrow ${expandedSections.mesoMarket ? 'expanded' : ''}`}>▶</span>
+        메소마켓 시세
+      </h3>
+      
+      {expandedSections.mesoMarket && (
+      <>
       <div className="group-section">
         <h4 className="group-header">그룹1+3 (일반/챌린저스)</h4>
         <div className="group-content">
@@ -291,7 +326,7 @@ const SettingsPanel = ({
                 }));
               }}
             />
-            <label htmlFor="meso-buy-g13">메포→메소</label>
+            <label htmlFor="meso-buy-g13">메포→메소(메소 구매)</label>
           </div>
           <div className="trade-row">
             <input
@@ -321,7 +356,7 @@ const SettingsPanel = ({
                 }));
               }}
             />
-            <label htmlFor="meso-sell-g13">메소→메포</label>
+            <label htmlFor="meso-sell-g13">메소→메포(메소 판매)</label>
           </div>
         </div>
       </div>
@@ -357,7 +392,7 @@ const SettingsPanel = ({
                 }));
               }}
             />
-            <label htmlFor="meso-buy-g2">메포→메소</label>
+            <label htmlFor="meso-buy-g2">메포→메소(메소 구매)</label>
           </div>
           <div className="trade-row">
             <input
@@ -387,14 +422,21 @@ const SettingsPanel = ({
                 }));
               }}
             />
-            <label htmlFor="meso-sell-g2">메소→메포</label>
+            <label htmlFor="meso-sell-g2">메소→메포(메소 판매)</label>
           </div>
         </div>
       </div>
+      </>
+      )}
       
       {/* 현금거래 시세 */}
-      <h3 className="section-header">현금거래 시세</h3>
+      <h3 className="section-header collapsible" onClick={() => toggleSection('cashTrade')}>
+        <span className={`arrow ${expandedSections.cashTrade ? 'expanded' : ''}`}>▶</span>
+        현금거래 시세
+      </h3>
       
+      {expandedSections.cashTrade && (
+      <>
       <div className="cash-trade-section">
         <h4 className="cash-trade-header">그룹1 (일반섭)</h4>
         <div className="cash-trade-content">
@@ -426,7 +468,7 @@ const SettingsPanel = ({
                 }));
               }}
             />
-            <label htmlFor="cash-buy-g1">현금→메소</label>
+            <label htmlFor="cash-buy-g1">현금→메소(메소 구매)</label>
           </div>
           <div className="trade-row">
             <input
@@ -456,7 +498,7 @@ const SettingsPanel = ({
                 }));
               }}
             />
-            <label htmlFor="cash-sell-g1">메소→현금</label>
+            <label htmlFor="cash-sell-g1">메소→현금(메소 판매)</label>
           </div>
         </div>
       </div>
@@ -492,7 +534,7 @@ const SettingsPanel = ({
                 }));
               }}
             />
-            <label htmlFor="cash-buy-g2">현금→메소</label>
+            <label htmlFor="cash-buy-g2">현금→메소(메소 구매)</label>
           </div>
           <div className="trade-row">
             <input
@@ -522,7 +564,7 @@ const SettingsPanel = ({
                 }));
               }}
             />
-            <label htmlFor="cash-sell-g2">메소→현금</label>
+            <label htmlFor="cash-sell-g2">메소→현금(메소 판매)</label>
           </div>
         </div>
       </div>
@@ -558,7 +600,7 @@ const SettingsPanel = ({
                 }));
               }}
             />
-            <label htmlFor="cash-buy-g3">현금→메소</label>
+            <label htmlFor="cash-buy-g3">현금→메소(메소 구매)</label>
           </div>
           <div className="trade-row">
             <input
@@ -588,14 +630,21 @@ const SettingsPanel = ({
                 }));
               }}
             />
-            <label htmlFor="cash-sell-g3">메소→현금</label>
+            <label htmlFor="cash-sell-g3">메소→현금(메소 판매)</label>
           </div>
         </div>
       </div>
+      </>
+      )}
       
       {/* 솔 에르다 조각 거래 시세 */}
-      <h3 className="section-header">솔 에르다 조각 거래 시세</h3>
+      <h3 className="section-header collapsible" onClick={() => toggleSection('solTrade')}>
+        <span className={`arrow ${expandedSections.solTrade ? 'expanded' : ''}`}>▶</span>
+        솔 에르다 조각 거래 시세
+      </h3>
       
+      {expandedSections.solTrade && (
+      <>
       <div className="sol-trade-section">
         <h4 className="sol-trade-header">그룹1 (일반섭)</h4>
         <div className="sol-trade-content">
@@ -632,7 +681,7 @@ const SettingsPanel = ({
                   }));
                 }}
               />
-              <label htmlFor="sol-cash-krw-to-sol-g1">현금→조각</label>
+              <label htmlFor="sol-cash-krw-to-sol-g1">현금→조각(조각 구매)</label>
             </div>
             <div className="trade-row">
               <input
@@ -665,7 +714,7 @@ const SettingsPanel = ({
                   }));
                 }}
               />
-              <label htmlFor="sol-cash-sol-to-krw-g1">조각→현금</label>
+              <label htmlFor="sol-cash-sol-to-krw-g1">조각→현금(조각 판매)</label>
             </div>
           </div>
           <div className="sol-subsection">
@@ -701,7 +750,7 @@ const SettingsPanel = ({
                   }));
                 }}
               />
-              <label htmlFor="sol-meso-meso-to-sol-g1">메소→조각</label>
+              <label htmlFor="sol-meso-meso-to-sol-g1">메소→조각(조각 구매)</label>
             </div>
             <div className="trade-row">
               <input
@@ -734,7 +783,7 @@ const SettingsPanel = ({
                   }));
                 }}
               />
-              <label htmlFor="sol-meso-sol-to-meso-g1">조각→메소</label>
+              <label htmlFor="sol-meso-sol-to-meso-g1">조각→메소(조각 판매)</label>
             </div>
           </div>
         </div>
@@ -777,7 +826,7 @@ const SettingsPanel = ({
                   }));
                 }}
               />
-              <label htmlFor="sol-cash-krw-to-sol-g2">현금→조각</label>
+              <label htmlFor="sol-cash-krw-to-sol-g2">현금→조각(조각 구매)</label>
             </div>
             <div className="trade-row">
               <input
@@ -810,7 +859,7 @@ const SettingsPanel = ({
                   }));
                 }}
               />
-              <label htmlFor="sol-cash-sol-to-krw-g2">조각→현금</label>
+              <label htmlFor="sol-cash-sol-to-krw-g2">조각→현금(조각 판매)</label>
             </div>
           </div>
           <div className="sol-subsection">
@@ -846,7 +895,7 @@ const SettingsPanel = ({
                   }));
                 }}
               />
-              <label htmlFor="sol-meso-meso-to-sol-g2">메소→조각</label>
+              <label htmlFor="sol-meso-meso-to-sol-g2">메소→조각(조각 구매)</label>
             </div>
             <div className="trade-row">
               <input
@@ -879,7 +928,7 @@ const SettingsPanel = ({
                   }));
                 }}
               />
-              <label htmlFor="sol-meso-sol-to-meso-g2">조각→메소</label>
+              <label htmlFor="sol-meso-sol-to-meso-g2">조각→메소(조각 판매)</label>
             </div>
           </div>
         </div>
@@ -922,7 +971,7 @@ const SettingsPanel = ({
                   }));
                 }}
               />
-              <label htmlFor="sol-cash-krw-to-sol-g3">현금→조각</label>
+              <label htmlFor="sol-cash-krw-to-sol-g3">현금→조각(조각 구매)</label>
             </div>
             <div className="trade-row">
               <input
@@ -955,7 +1004,7 @@ const SettingsPanel = ({
                   }));
                 }}
               />
-              <label htmlFor="sol-cash-sol-to-krw-g3">조각→현금</label>
+              <label htmlFor="sol-cash-sol-to-krw-g3">조각→현금(조각 판매)</label>
             </div>
           </div>
           <div className="sol-subsection">
@@ -991,7 +1040,7 @@ const SettingsPanel = ({
                   }));
                 }}
               />
-              <label htmlFor="sol-meso-meso-to-sol-g3">메소→조각</label>
+              <label htmlFor="sol-meso-meso-to-sol-g3">메소→조각(조각 구매)</label>
             </div>
             <div className="trade-row">
               <input
@@ -1024,14 +1073,21 @@ const SettingsPanel = ({
                   }));
                 }}
               />
-              <label htmlFor="sol-meso-sol-to-meso-g3">조각→메소</label>
+              <label htmlFor="sol-meso-sol-to-meso-g3">조각→메소(조각 판매)</label>
             </div>
           </div>
         </div>
       </div>
+      </>
+      )}
       
       {/* 직접 변환 */}
-      <h3 className="section-header">직접 변환</h3>
+      <h3 className="section-header collapsible" onClick={() => toggleSection('direct')}>
+        <span className={`arrow ${expandedSections.direct ? 'expanded' : ''}`}>▶</span>
+        넥슨 캐시로 메포 구매
+      </h3>
+      
+      {expandedSections.direct && (
       <div className="direct-conversion">
         <input
           type="checkbox"
@@ -1048,9 +1104,15 @@ const SettingsPanel = ({
           넥슨캐시 → 메이플포인트 (1:1 변환)
         </label>
       </div>
+      )}
       
       {/* 상품권 할인 설정 */}
-      <h3 className="section-header">상품권 할인 설정</h3>
+      <h3 className="section-header collapsible" onClick={() => toggleSection('voucher')}>
+        <span className={`arrow ${expandedSections.voucher ? 'expanded' : ''}`}>▶</span>
+        상품권 할인 설정
+      </h3>
+      
+      {expandedSections.voucher && (
       <div className="voucher-section">
         {Object.entries(voucherDiscounts).map(([key, voucher]) => (
           <div key={key} className="voucher-item">
@@ -1105,6 +1167,7 @@ const SettingsPanel = ({
           </div>
         ))}
       </div>
+      )}
     </div>
   );
 };

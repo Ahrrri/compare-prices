@@ -11,9 +11,9 @@ export function createCurrencyGraph(settings) {
     { id: 'MESO_G1', name: '일반섭 메소', type: 'meso', group: 'GROUP1' },
     { id: 'MESO_G2', name: '에오스 메소', type: 'meso', group: 'GROUP2' },
     { id: 'MESO_G3', name: '챌린저스 메소', type: 'meso', group: 'GROUP3' },
-    { id: 'SOL_G1', name: '일반섭 솔 에르다 조각', type: 'sol', group: 'GROUP1' },
-    { id: 'SOL_G2', name: '에오스 솔 에르다 조각', type: 'sol', group: 'GROUP2' },
-    { id: 'SOL_G3', name: '챌린저스 솔 에르다 조각', type: 'sol', group: 'GROUP3' }
+    { id: 'SOL_G1', name: '일반섭 조각 조각', type: 'sol', group: 'GROUP1' },
+    { id: 'SOL_G2', name: '에오스 조각 조각', type: 'sol', group: 'GROUP2' },
+    { id: 'SOL_G3', name: '챌린저스 조각 조각', type: 'sol', group: 'GROUP3' }
   ];
 
   const edges = [];
@@ -193,71 +193,71 @@ export function createCurrencyGraph(settings) {
     );
   }
 
-  // 솔 에르다 조각 거래 경로들
+  // 조각 조각 거래 경로들
   if (solTradeRates) {
     const solMesoFeeRate = (mvpGrade === 'SILVER_PLUS') ? 3 : 5;
     
-    // 현금 - 솔 에르다 거래
+    // 현금 - 조각 거래
     if (exchangeOptions?.solCashBuy_G1?.enabled) {
       edges.push(
-        { from: 'KRW', to: 'SOL_G1', type: 'soltrade', subtype: 'cash', fee: 0, rate: solTradeRates.cash.GROUP1.buy, description: '솔 에르다 현금거래 구매' }
+        { from: 'KRW', to: 'SOL_G1', type: 'soltrade', subtype: 'cash', fee: 0, rate: solTradeRates.cash.GROUP1.buy, description: '조각 현금거래 구매' }
       );
     }
     if (exchangeOptions?.solCashSell_G1?.enabled) {
       edges.push(
-        { from: 'SOL_G1', to: 'KRW', type: 'soltrade', subtype: 'cash', fee: 0, rate: solTradeRates.cash.GROUP1.sell, description: '솔 에르다 현금거래 판매' }
+        { from: 'SOL_G1', to: 'KRW', type: 'soltrade', subtype: 'cash', fee: 0, rate: solTradeRates.cash.GROUP1.sell, description: '조각 현금거래 판매' }
       );
     }
     if (exchangeOptions?.solCashBuy_G2?.enabled) {
       edges.push(
-        { from: 'KRW', to: 'SOL_G2', type: 'soltrade', subtype: 'cash', fee: 0, rate: solTradeRates.cash.GROUP2.buy, description: '솔 에르다 현금거래 구매' }
+        { from: 'KRW', to: 'SOL_G2', type: 'soltrade', subtype: 'cash', fee: 0, rate: solTradeRates.cash.GROUP2.buy, description: '조각 현금거래 구매' }
       );
     }
     if (exchangeOptions?.solCashSell_G2?.enabled) {
       edges.push(
-        { from: 'SOL_G2', to: 'KRW', type: 'soltrade', subtype: 'cash', fee: 0, rate: solTradeRates.cash.GROUP2.sell, description: '솔 에르다 현금거래 판매' }
+        { from: 'SOL_G2', to: 'KRW', type: 'soltrade', subtype: 'cash', fee: 0, rate: solTradeRates.cash.GROUP2.sell, description: '조각 현금거래 판매' }
       );
     }
     if (exchangeOptions?.solCashBuy_G3?.enabled) {
       edges.push(
-        { from: 'KRW', to: 'SOL_G3', type: 'soltrade', subtype: 'cash', fee: 0, rate: solTradeRates.cash.GROUP3.buy, description: '솔 에르다 현금거래 구매' }
+        { from: 'KRW', to: 'SOL_G3', type: 'soltrade', subtype: 'cash', fee: 0, rate: solTradeRates.cash.GROUP3.buy, description: '조각 현금거래 구매' }
       );
     }
     if (exchangeOptions?.solCashSell_G3?.enabled) {
       edges.push(
-        { from: 'SOL_G3', to: 'KRW', type: 'soltrade', subtype: 'cash', fee: 0, rate: solTradeRates.cash.GROUP3.sell, description: '솔 에르다 현금거래 판매' }
+        { from: 'SOL_G3', to: 'KRW', type: 'soltrade', subtype: 'cash', fee: 0, rate: solTradeRates.cash.GROUP3.sell, description: '조각 현금거래 판매' }
       );
     }
 
-    // 메소 - 솔 에르다 거래 (메소 구매자에게만 수수료)
+    // 메소 - 조각 거래 (메소를 얻는 사람에게 수수료)
     if (exchangeOptions?.solMesoBuy_G1?.enabled) {
       edges.push(
-        { from: 'MESO_G1', to: 'SOL_G1', type: 'soltrade', subtype: 'meso', fee: solMesoFeeRate, rate: solTradeRates.meso.GROUP1.buy, description: `솔 에르다 메소거래 구매 (구매자 ${solMesoFeeRate}% 수수료)` }
+        { from: 'MESO_G1', to: 'SOL_G1', type: 'soltrade', subtype: 'meso', fee: 0, rate: solTradeRates.meso.GROUP1.buy, description: '조각 메소거래 구매 (메소 지불자 수수료 없음)' }
       );
     }
     if (exchangeOptions?.solMesoSell_G1?.enabled) {
       edges.push(
-        { from: 'SOL_G1', to: 'MESO_G1', type: 'soltrade', subtype: 'meso', fee: 0, rate: solTradeRates.meso.GROUP1.sell, description: '솔 에르다 메소거래 판매 (판매자 수수료 없음)' }
+        { from: 'SOL_G1', to: 'MESO_G1', type: 'soltrade', subtype: 'meso', fee: solMesoFeeRate, rate: solTradeRates.meso.GROUP1.sell, description: `조각 메소거래 판매 (메소 획득자 ${solMesoFeeRate}% 수수료)` }
       );
     }
     if (exchangeOptions?.solMesoBuy_G2?.enabled) {
       edges.push(
-        { from: 'MESO_G2', to: 'SOL_G2', type: 'soltrade', subtype: 'meso', fee: solMesoFeeRate, rate: solTradeRates.meso.GROUP2.buy, description: `솔 에르다 메소거래 구매 (구매자 ${solMesoFeeRate}% 수수료)` }
+        { from: 'MESO_G2', to: 'SOL_G2', type: 'soltrade', subtype: 'meso', fee: 0, rate: solTradeRates.meso.GROUP2.buy, description: '조각 메소거래 구매 (메소 지불자 수수료 없음)' }
       );
     }
     if (exchangeOptions?.solMesoSell_G2?.enabled) {
       edges.push(
-        { from: 'SOL_G2', to: 'MESO_G2', type: 'soltrade', subtype: 'meso', fee: 0, rate: solTradeRates.meso.GROUP2.sell, description: '솔 에르다 메소거래 판매 (판매자 수수료 없음)' }
+        { from: 'SOL_G2', to: 'MESO_G2', type: 'soltrade', subtype: 'meso', fee: solMesoFeeRate, rate: solTradeRates.meso.GROUP2.sell, description: `조각 메소거래 판매 (메소 획득자 ${solMesoFeeRate}% 수수료)` }
       );
     }
     if (exchangeOptions?.solMesoBuy_G3?.enabled) {
       edges.push(
-        { from: 'MESO_G3', to: 'SOL_G3', type: 'soltrade', subtype: 'meso', fee: solMesoFeeRate, rate: solTradeRates.meso.GROUP3.buy, description: `솔 에르다 메소거래 구매 (구매자 ${solMesoFeeRate}% 수수료)` }
+        { from: 'MESO_G3', to: 'SOL_G3', type: 'soltrade', subtype: 'meso', fee: 0, rate: solTradeRates.meso.GROUP3.buy, description: '조각 메소거래 구매 (메소 지불자 수수료 없음)' }
       );
     }
     if (exchangeOptions?.solMesoSell_G3?.enabled) {
       edges.push(
-        { from: 'SOL_G3', to: 'MESO_G3', type: 'soltrade', subtype: 'meso', fee: 0, rate: solTradeRates.meso.GROUP3.sell, description: '솔 에르다 메소거래 판매 (판매자 수수료 없음)' }
+        { from: 'SOL_G3', to: 'MESO_G3', type: 'soltrade', subtype: 'meso', fee: solMesoFeeRate, rate: solTradeRates.meso.GROUP3.sell, description: `조각 메소거래 판매 (메소 획득자 ${solMesoFeeRate}% 수수료)` }
       );
     }
   }
@@ -312,20 +312,20 @@ export function calculateConversion(fromAmount, edge) {
   if (type === 'soltrade') {
     if (edge.subtype === 'cash') {
       if (edge.from === 'KRW') {
-        // KRW → 솔 에르다 (개당 가격, 현금거래는 수수료 없음)
+        // KRW → 조각 (개당 가격, 현금거래는 수수료 없음)
         return Math.floor(fromAmount / rate);
       } else {
-        // 솔 에르다 → KRW (현금거래는 수수료 없음)
+        // 조각 → KRW (현금거래는 수수료 없음)
         return fromAmount * rate;
       }
     } else if (edge.subtype === 'meso') {
       if (edge.from.startsWith('MESO_')) {
-        // 메소 → 솔 에르다 (개당 메소 가격, 구매자 수수료)
+        // 메소 → 조각 (개당 메소 가격, 메소 지불자는 수수료 없음)
         const solCount = Math.floor(fromAmount / rate);
-        return Math.floor(solCount * (1 - fee / 100));
+        return solCount;
       } else {
-        // 솔 에르다 → 메소 (판매자 수수료 없음)
-        return fromAmount * rate;
+        // 조각 → 메소 (메소를 얻는 사람이 수수료 부담)
+        return Math.floor(fromAmount * rate * (1 - fee / 100));
       }
     }
   }
@@ -333,17 +333,31 @@ export function calculateConversion(fromAmount, edge) {
   return fromAmount;
 }
 
-// DFS로 모든 경로 탐색
-export function findAllPaths(graph, fromNodeId, toNodeId, maxDepth = 4, amount = 1) {
-  const { edges } = graph;
+// DFS로 모든 경로 탐색 (일반 변환용 - visited 사용)
+export function findAllPaths(graph, fromNodeId, toNodeId, maxDepth = null, amount = 1) {
+  const { nodes, edges } = graph;
   const paths = [];
   
   // 시작 금액
   const startAmount = amount;
   
+  // 깊이 제한: 일반 변환은 노드 수 - 1로 충분
+  const actualMaxDepth = maxDepth || (nodes.length - 1);
+  
+  // 무한동력 감지를 위한 임계값 (시작 금액의 10배)
+  const arbitrageThreshold = startAmount * 10;
+  
   function dfs(currentNodeId, targetNodeId, currentPath, currentAmount, visited, depth) {
-    if (depth > maxDepth) return;
+    // 깊이 제한
+    if (depth > actualMaxDepth) return;
     
+    // 무한동력 감지: 현재 금액이 시작 금액의 10배를 넘으면 중단
+    if (currentAmount > arbitrageThreshold) {
+      console.warn(`무한동력 감지: 경로에서 금액이 ${currentAmount.toLocaleString()}로 비정상적으로 증가했습니다.`);
+      return;
+    }
+    
+    // 목표 노드에 도달한 경우
     if (currentNodeId === targetNodeId) {
       paths.push({
         steps: [...currentPath],
@@ -358,6 +372,12 @@ export function findAllPaths(graph, fromNodeId, toNodeId, maxDepth = 4, amount =
     for (const edge of outgoingEdges) {
       if (!visited.has(edge.to)) {
         const newAmount = calculateConversion(currentAmount, edge);
+        
+        // 계산 결과가 비정상적인지 확인
+        if (newAmount <= 0 || !isFinite(newAmount)) {
+          continue;
+        }
+        
         const newVisited = new Set(visited);
         newVisited.add(edge.to);
         
@@ -381,6 +401,118 @@ export function findAllPaths(graph, fromNodeId, toNodeId, maxDepth = 4, amount =
   return paths;
 }
 
+// 순환 경로 전용 탐색 함수 (무한동력 감지용)
+function findCyclePaths(graph, startNodeId, startAmount, maxDepth = 6) {
+  const { edges } = graph;
+  const paths = [];
+  
+  // 무한동력 감지를 위한 임계값
+  const arbitrageThreshold = startAmount * 10;
+  
+  function dfs(currentNodeId, targetNodeId, currentPath, currentAmount, depth) {
+    if (depth > maxDepth) return;
+    
+    if (currentAmount > arbitrageThreshold) {
+      console.warn(`무한동력 감지: 경로에서 금액이 ${currentAmount.toLocaleString()}로 비정상적으로 증가했습니다.`);
+      return;
+    }
+    
+    // 목표 노드에 도달했고, 최소 1단계 이상인 경우
+    if (currentNodeId === targetNodeId && currentPath.length > 0) {
+      paths.push({
+        steps: [...currentPath],
+        finalAmount: currentAmount
+      });
+      return;
+    }
+    
+    const outgoingEdges = edges.filter(edge => edge.from === currentNodeId);
+    
+    for (const edge of outgoingEdges) {
+      const newAmount = calculateConversion(currentAmount, edge);
+      
+      if (newAmount <= 0 || !isFinite(newAmount)) {
+        continue;
+      }
+      
+      const step = {
+        from: edge.from,
+        to: edge.to,
+        inputAmount: currentAmount,
+        outputAmount: newAmount,
+        edge: edge,
+        description: edge.description
+      };
+      
+      dfs(edge.to, targetNodeId, [...currentPath, step], newAmount, depth + 1);
+    }
+  }
+  
+  dfs(startNodeId, startNodeId, [], startAmount, 0);
+  return paths;
+}
+
+// 노드 ID를 사용자 친화적 이름으로 변환
+function getNodeDisplayName(nodeId) {
+  const nodeNames = {
+    'KRW': '현금',
+    'NX': '넥슨캐시',
+    'MP': '메이플포인트',
+    'MESO_G1': '일반섭 메소',
+    'MESO_G2': '에오스 메소', 
+    'MESO_G3': '챌린저스 메소',
+    'SOL_G1': '일반섭 조각',
+    'SOL_G2': '에오스 조각',
+    'SOL_G3': '챌린저스 조각'
+  };
+  return nodeNames[nodeId] || nodeId;
+}
+
+// 경로에서 연속된 중복 노드 제거 함수
+function simplifyPath(steps) {
+  if (steps.length === 0) return '';
+  
+  const simplifiedNodes = [getNodeDisplayName(steps[0].from)];
+  
+  for (const step of steps) {
+    const toNode = getNodeDisplayName(step.to);
+    // 이전 노드와 다른 경우에만 추가
+    if (simplifiedNodes[simplifiedNodes.length - 1] !== toNode) {
+      simplifiedNodes.push(toNode);
+    }
+  }
+  
+  return simplifiedNodes.join(' → ');
+}
+
+// 무한동력(arbitrage) 경로 감지 함수
+export function detectArbitrage(graph, startAmount = 1000000) {
+  const { nodes } = graph;
+  const arbitrageOpportunities = [];
+  
+  // 각 노드에서 시작해서 같은 노드로 돌아오는 경로 찾기
+  for (const node of nodes) {
+    const cyclePaths = findCyclePaths(graph, node.id, startAmount);
+    
+    for (const path of cyclePaths) {
+      if (path.finalAmount > startAmount * 1.01) { // 1% 이상 이익
+        arbitrageOpportunities.push({
+          startNode: node.id,
+          startNodeDisplay: getNodeDisplayName(node.id),
+          startAmount: startAmount,
+          finalAmount: path.finalAmount,
+          profit: path.finalAmount - startAmount,
+          profitRate: ((path.finalAmount - startAmount) / startAmount * 100).toFixed(2),
+          steps: path.steps,
+          pathDescription: simplifyPath(path.steps)
+        });
+      }
+    }
+  }
+  
+  return arbitrageOpportunities;
+}
+
 // 최적 경로들 선별 (효율성 순으로 정렬)
 export function getBestPaths(allPaths) {
   // 최종 금액 기준으로 정렬 (이미 실제 금액으로 계산되어 있음)
@@ -399,7 +531,7 @@ export function formatNumber(num, type = 'default') {
     // 메소: 만 메소 단위까지
     roundedNum = Math.round(num / 10000) * 10000;
   } else if (type === 'sol') {
-    // 솔 에르다 조각: 개수 단위로 표시
+    // 조각 조각: 개수 단위로 표시
     return `${Math.floor(num).toLocaleString()}개`;
   } else {
     // 기본: 소수점 2자리까지

@@ -24,10 +24,42 @@
 
 /* 설정 그룹 헤더 */
 .section-header {
-  margin-top: 1.5rem;
+  margin-top: 2rem;
   margin-bottom: 1rem;
   font-size: 1rem;
   color: #555;
+  padding-top: 1.5rem;
+  border-top: 2px solid #ddd;
+}
+
+.section-header:first-of-type {
+  margin-top: 1.5rem;
+  padding-top: 0;
+  border-top: none;
+}
+
+/* 접기/펼치기 스타일 */
+.section-header.collapsible {
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.section-header.collapsible:hover {
+  color: #333;
+}
+
+.arrow {
+  display: inline-block;
+  transition: transform 0.2s ease;
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.arrow.expanded {
+  transform: rotate(90deg);
 }
 
 /* MVP 등급 선택 */
