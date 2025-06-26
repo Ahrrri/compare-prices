@@ -190,6 +190,34 @@
   margin-top: 0.8rem;
 }
 
+.trade-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.trade-row input:disabled {
+  background-color: #f5f5f5;
+  color: #999;
+  cursor: not-allowed;
+  border-color: #ddd;
+}
+
+.sol-subsection {
+  margin-bottom: 16px;
+}
+
+.sol-subsection-title {
+  font-size: 0.95em;
+  font-weight: bold;
+  margin-bottom: 8px;
+  color: #555;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 4px;
+}
+
 /* 상품권 설정 */
 .settings .voucher-section {
   margin-bottom: 1.5rem;

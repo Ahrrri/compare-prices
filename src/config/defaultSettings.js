@@ -9,24 +9,51 @@ export const DEFAULT_SETTINGS = {
 
   // 현금거래 시세 (그룹별, 1억 메소당 원)
   cashTradeRates: {
-    GROUP1: 1800,
-    GROUP2: 1100,
-    GROUP3: 2200
+    GROUP1: {
+      buy: 1800,   // 현금으로 메소 구매 시
+      sell: 1800   // 메소를 현금으로 판매 시
+    },
+    GROUP2: {
+      buy: 1100,
+      sell: 1100
+    },
+    GROUP3: {
+      buy: 2200,
+      sell: 2200
+    }
   },
 
   // 솔 에르다 조각 거래 시세
   solTradeRates: {
     // 현금 거래 (개당 원)
     cash: {
-      GROUP1: 100,
-      GROUP2: 80,
-      GROUP3: 120
+      GROUP1: {
+        buy: 100,    // 현금으로 솔 에르다 구매 시
+        sell: 100    // 솔 에르다를 현금으로 판매 시
+      },
+      GROUP2: {
+        buy: 80,
+        sell: 80
+      },
+      GROUP3: {
+        buy: 120,
+        sell: 120
+      }
     },
     // 메소 거래 (개당 메소)
     meso: {
-      GROUP1: 5000000, // 500만 메소
-      GROUP2: 7000000, // 700만 메소
-      GROUP3: 5500000  // 550만 메소
+      GROUP1: {
+        buy: 5000000,   // 메소로 솔 에르다 구매 시 (500만 메소)
+        sell: 5000000   // 솔 에르다를 메소로 판매 시
+      },
+      GROUP2: {
+        buy: 7000000,   // 700만 메소
+        sell: 7000000
+      },
+      GROUP3: {
+        buy: 5500000,   // 550만 메소
+        sell: 5500000
+      }
     }
   },
 
@@ -118,9 +145,9 @@ export function validateSettings(settings) {
 
   // 현금거래 시세 검증
   if (!settings.cashTradeRates ||
-      typeof settings.cashTradeRates.GROUP1 !== 'number' ||
-      typeof settings.cashTradeRates.GROUP2 !== 'number' ||
-      typeof settings.cashTradeRates.GROUP3 !== 'number') {
+      !settings.cashTradeRates.GROUP1 || typeof settings.cashTradeRates.GROUP1.buy !== 'number' || typeof settings.cashTradeRates.GROUP1.sell !== 'number' ||
+      !settings.cashTradeRates.GROUP2 || typeof settings.cashTradeRates.GROUP2.buy !== 'number' || typeof settings.cashTradeRates.GROUP2.sell !== 'number' ||
+      !settings.cashTradeRates.GROUP3 || typeof settings.cashTradeRates.GROUP3.buy !== 'number' || typeof settings.cashTradeRates.GROUP3.sell !== 'number') {
     errors.push('현금거래 시세 설정이 올바르지 않습니다.');
   }
 
@@ -141,19 +168,28 @@ export function mergeSettings(userSettings = {}) {
       ...DEFAULT_SETTINGS.mesoMarketRates,
       ...userSettings.mesoMarketRates
     },
-    cashTradeRates: {
-      ...DEFAULT_SETTINGS.cashTradeRates,
-      ...userSettings.cashTradeRates
-    },
+    cashTradeRates: Object.keys(DEFAULT_SETTINGS.cashTradeRates).reduce((acc, group) => {
+      acc[group] = {
+        buy: userSettings.cashTradeRates?.[group]?.buy ?? DEFAULT_SETTINGS.cashTradeRates[group].buy,
+        sell: userSettings.cashTradeRates?.[group]?.sell ?? DEFAULT_SETTINGS.cashTradeRates[group].sell
+      };
+      return acc;
+    }, {}),
     solTradeRates: {
-      cash: {
-        ...DEFAULT_SETTINGS.solTradeRates.cash,
-        ...userSettings.solTradeRates?.cash
-      },
-      meso: {
-        ...DEFAULT_SETTINGS.solTradeRates.meso,
-        ...userSettings.solTradeRates?.meso
-      }
+      cash: Object.keys(DEFAULT_SETTINGS.solTradeRates.cash).reduce((acc, group) => {
+        acc[group] = {
+          buy: userSettings.solTradeRates?.cash?.[group]?.buy ?? DEFAULT_SETTINGS.solTradeRates.cash[group].buy,
+          sell: userSettings.solTradeRates?.cash?.[group]?.sell ?? DEFAULT_SETTINGS.solTradeRates.cash[group].sell
+        };
+        return acc;
+      }, {}),
+      meso: Object.keys(DEFAULT_SETTINGS.solTradeRates.meso).reduce((acc, group) => {
+        acc[group] = {
+          buy: userSettings.solTradeRates?.meso?.[group]?.buy ?? DEFAULT_SETTINGS.solTradeRates.meso[group].buy,
+          sell: userSettings.solTradeRates?.meso?.[group]?.sell ?? DEFAULT_SETTINGS.solTradeRates.meso[group].sell
+        };
+        return acc;
+      }, {})
     },
     cashItemRates: {
       ...DEFAULT_SETTINGS.cashItemRates,

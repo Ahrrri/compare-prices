@@ -196,17 +196,20 @@ export function downloadSettingsAsFile(settings, filename = 'maple-currency-sett
       // 현금거래 시세
       "현금거래 시세": {
         "그룹1 (일반섭)": {
-          "시세 (원/1억메소)": settings.cashTradeRates.GROUP1,
+          "구매 시세 (원/1억메소)": settings.cashTradeRates.GROUP1.buy,
+          "판매 시세 (원/1억메소)": settings.cashTradeRates.GROUP1.sell,
           "현금→메소 거래 활성화": flattenedExchangeOptions.krwtomesotrade_g1,
           "메소→현금 거래 활성화": flattenedExchangeOptions.mesotokrwtrade_g1
         },
         "그룹2 (에오스)": {
-          "시세 (원/1억메소)": settings.cashTradeRates.GROUP2,
+          "구매 시세 (원/1억메소)": settings.cashTradeRates.GROUP2.buy,
+          "판매 시세 (원/1억메소)": settings.cashTradeRates.GROUP2.sell,
           "현금→메소 거래 활성화": flattenedExchangeOptions.krwtomesotrade_g2,
           "메소→현금 거래 활성화": flattenedExchangeOptions.mesotokrwtrade_g2
         },
         "그룹3 (챌린저스)": {
-          "시세 (원/1억메소)": settings.cashTradeRates.GROUP3,
+          "구매 시세 (원/1억메소)": settings.cashTradeRates.GROUP3.buy,
+          "판매 시세 (원/1억메소)": settings.cashTradeRates.GROUP3.sell,
           "현금→메소 거래 활성화": flattenedExchangeOptions.krwtomesotrade_g3,
           "메소→현금 거래 활성화": flattenedExchangeOptions.mesotokrwtrade_g3
         }
@@ -215,24 +218,30 @@ export function downloadSettingsAsFile(settings, filename = 'maple-currency-sett
       // 솔 에르다 조각 거래
       "솔 에르다 조각 거래": {
         "그룹1 (일반섭)": {
-          "현금거래 시세 (원/솔 에르다)": settings.solTradeRates.cash.GROUP1,
-          "메소거래 시세 (메소/솔 에르다)": settings.solTradeRates.meso.GROUP1,
+          "현금거래 구매 시세 (원/솔 에르다)": settings.solTradeRates.cash.GROUP1.buy,
+          "현금거래 판매 시세 (원/솔 에르다)": settings.solTradeRates.cash.GROUP1.sell,
+          "메소거래 구매 시세 (메소/솔 에르다)": settings.solTradeRates.meso.GROUP1.buy,
+          "메소거래 판매 시세 (메소/솔 에르다)": settings.solTradeRates.meso.GROUP1.sell,
           "현금→솔 에르다 거래 활성화": flattenedExchangeOptions.krwtosoltrade_g1,
           "솔 에르다→현금 거래 활성화": flattenedExchangeOptions.soltokrwtrade_g1,
           "메소→솔 에르다 거래 활성화": flattenedExchangeOptions.mesotosoltrade_g1,
           "솔 에르다→메소 거래 활성화": flattenedExchangeOptions.soltomesotrade_g1
         },
         "그룹2 (에오스)": {
-          "현금거래 시세 (원/솔 에르다)": settings.solTradeRates.cash.GROUP2,
-          "메소거래 시세 (메소/솔 에르다)": settings.solTradeRates.meso.GROUP2,
+          "현금거래 구매 시세 (원/솔 에르다)": settings.solTradeRates.cash.GROUP2.buy,
+          "현금거래 판매 시세 (원/솔 에르다)": settings.solTradeRates.cash.GROUP2.sell,
+          "메소거래 구매 시세 (메소/솔 에르다)": settings.solTradeRates.meso.GROUP2.buy,
+          "메소거래 판매 시세 (메소/솔 에르다)": settings.solTradeRates.meso.GROUP2.sell,
           "현금→솔 에르다 거래 활성화": flattenedExchangeOptions.krwtosoltrade_g2,
           "솔 에르다→현금 거래 활성화": flattenedExchangeOptions.soltokrwtrade_g2,
           "메소→솔 에르다 거래 활성화": flattenedExchangeOptions.mesotosoltrade_g2,
           "솔 에르다→메소 거래 활성화": flattenedExchangeOptions.soltomesotrade_g2
         },
         "그룹3 (챌린저스)": {
-          "현금거래 시세 (원/솔 에르다)": settings.solTradeRates.cash.GROUP3,
-          "메소거래 시세 (메소/솔 에르다)": settings.solTradeRates.meso.GROUP3,
+          "현금거래 구매 시세 (원/솔 에르다)": settings.solTradeRates.cash.GROUP3.buy,
+          "현금거래 판매 시세 (원/솔 에르다)": settings.solTradeRates.cash.GROUP3.sell,
+          "메소거래 구매 시세 (메소/솔 에르다)": settings.solTradeRates.meso.GROUP3.buy,
+          "메소거래 판매 시세 (메소/솔 에르다)": settings.solTradeRates.meso.GROUP3.sell,
           "현금→솔 에르다 거래 활성화": flattenedExchangeOptions.krwtosoltrade_g3,
           "솔 에르다→현금 거래 활성화": flattenedExchangeOptions.soltokrwtrade_g3,
           "메소→솔 에르다 거래 활성화": flattenedExchangeOptions.mesotosoltrade_g3,
@@ -333,20 +342,47 @@ export function importSettingsFromFile() {
                   GROUP2: config["메소마켓 시세"]["그룹2 (에오스)"]["시세 (메포/1억메소)"]
                 },
                 cashTradeRates: {
-                  GROUP1: config["현금거래 시세"]["그룹1 (일반섭)"]["시세 (원/1억메소)"],
-                  GROUP2: config["현금거래 시세"]["그룹2 (에오스)"]["시세 (원/1억메소)"],
-                  GROUP3: config["현금거래 시세"]["그룹3 (챌린저스)"]["시세 (원/1억메소)"]
+                  GROUP1: {
+                    buy: config["현금거래 시세"]["그룹1 (일반섭)"]["구매 시세 (원/1억메소)"],
+                    sell: config["현금거래 시세"]["그룹1 (일반섭)"]["판매 시세 (원/1억메소)"]
+                  },
+                  GROUP2: {
+                    buy: config["현금거래 시세"]["그룹2 (에오스)"]["구매 시세 (원/1억메소)"],
+                    sell: config["현금거래 시세"]["그룹2 (에오스)"]["판매 시세 (원/1억메소)"]
+                  },
+                  GROUP3: {
+                    buy: config["현금거래 시세"]["그룹3 (챌린저스)"]["구매 시세 (원/1억메소)"],
+                    sell: config["현금거래 시세"]["그룹3 (챌린저스)"]["판매 시세 (원/1억메소)"]
+                  }
                 },
                 solTradeRates: {
                   cash: {
-                    GROUP1: config["솔 에르다 조각 거래"]["그룹1 (일반섭)"]["현금거래 시세 (원/솔 에르다)"],
-                    GROUP2: config["솔 에르다 조각 거래"]["그룹2 (에오스)"]["현금거래 시세 (원/솔 에르다)"],
-                    GROUP3: config["솔 에르다 조각 거래"]["그룹3 (챌린저스)"]["현금거래 시세 (원/솔 에르다)"]
+                    GROUP1: {
+                      buy: config["솔 에르다 조각 거래"]["그룹1 (일반섭)"]["현금거래 구매 시세 (원/솔 에르다)"],
+                      sell: config["솔 에르다 조각 거래"]["그룹1 (일반섭)"]["현금거래 판매 시세 (원/솔 에르다)"]
+                    },
+                    GROUP2: {
+                      buy: config["솔 에르다 조각 거래"]["그룹2 (에오스)"]["현금거래 구매 시세 (원/솔 에르다)"],
+                      sell: config["솔 에르다 조각 거래"]["그룹2 (에오스)"]["현금거래 판매 시세 (원/솔 에르다)"]
+                    },
+                    GROUP3: {
+                      buy: config["솔 에르다 조각 거래"]["그룹3 (챌린저스)"]["현금거래 구매 시세 (원/솔 에르다)"],
+                      sell: config["솔 에르다 조각 거래"]["그룹3 (챌린저스)"]["현금거래 판매 시세 (원/솔 에르다)"]
+                    }
                   },
                   meso: {
-                    GROUP1: config["솔 에르다 조각 거래"]["그룹1 (일반섭)"]["메소거래 시세 (메소/솔 에르다)"],
-                    GROUP2: config["솔 에르다 조각 거래"]["그룹2 (에오스)"]["메소거래 시세 (메소/솔 에르다)"],
-                    GROUP3: config["솔 에르다 조각 거래"]["그룹3 (챌린저스)"]["메소거래 시세 (메소/솔 에르다)"]
+                    GROUP1: {
+                      buy: config["솔 에르다 조각 거래"]["그룹1 (일반섭)"]["메소거래 구매 시세 (메소/솔 에르다)"],
+                      sell: config["솔 에르다 조각 거래"]["그룹1 (일반섭)"]["메소거래 판매 시세 (메소/솔 에르다)"]
+                    },
+                    GROUP2: {
+                      buy: config["솔 에르다 조각 거래"]["그룹2 (에오스)"]["메소거래 구매 시세 (메소/솔 에르다)"],
+                      sell: config["솔 에르다 조각 거래"]["그룹2 (에오스)"]["메소거래 판매 시세 (메소/솔 에르다)"]
+                    },
+                    GROUP3: {
+                      buy: config["솔 에르다 조각 거래"]["그룹3 (챌린저스)"]["메소거래 구매 시세 (메소/솔 에르다)"],
+                      sell: config["솔 에르다 조각 거래"]["그룹3 (챌린저스)"]["메소거래 판매 시세 (메소/솔 에르다)"]
+                    }
                   }
                 },
                 cashItemRates: {

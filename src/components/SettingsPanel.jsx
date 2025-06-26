@@ -143,7 +143,7 @@ const SettingsPanel = ({
                     }));
                   }}
                 />
-                <label htmlFor="cash-item-g1">넥슨캐시→메소</label>
+                <label htmlFor="cash-item-g1">캐시→메소</label>
               </div>
             </div>
           </div>
@@ -197,7 +197,7 @@ const SettingsPanel = ({
                     }));
                   }}
                 />
-                <label htmlFor="cash-item-g2">넥슨캐시→메소</label>
+                <label htmlFor="cash-item-g2">캐시→메소</label>
               </div>
             </div>
           </div>
@@ -251,7 +251,7 @@ const SettingsPanel = ({
                     }));
                   }}
                 />
-                <label htmlFor="cash-item-g3">넥슨캐시→메소</label>
+                <label htmlFor="cash-item-g3">캐시→메소</label>
               </div>
             </div>
           </div>
@@ -358,49 +358,65 @@ const SettingsPanel = ({
       <div className="cash-trade-section">
         <h4 className="cash-trade-header">그룹1 (일반섭)</h4>
         <div className="cash-trade-content">
-          <div className="group-row">
+          <div className="trade-row">
             <input
               className="rate-input"
               type="text"
-              value={cashTradeRates.GROUP1.toLocaleString()}
+              value={cashTradeRates.GROUP1.buy.toLocaleString()}
               onChange={(e) => {
                 const value = e.target.value.replace(/,/g, '');
                 if (value === '' || /^\d+$/.test(value)) {
-                  setCashTradeRates(prev => ({...prev, GROUP1: parseInt(value) || 0}));
+                  setCashTradeRates(prev => ({
+                    ...prev, 
+                    GROUP1: {...prev.GROUP1, buy: parseInt(value) || 0}
+                  }));
                 }
               }}
+              disabled={!exchangeOptions.cashtradeBuy_G1.enabled}
             />
             <span className="rate-unit"> 원/1억메소</span>
-            <div className="checkbox-group">
-              <div className="checkbox-item">
-                <input
-                  type="checkbox"
-                  id="cash-buy-g1"
-                  checked={exchangeOptions.cashtradeBuy_G1.enabled}
-                  onChange={(e) => {
-                    setExchangeOptions(prev => ({
-                      ...prev,
-                      cashtradeBuy_G1: { enabled: e.target.checked }
-                    }));
-                  }}
-                />
-                <label htmlFor="cash-buy-g1">현금→메소</label>
-              </div>
-              <div className="checkbox-item">
-                <input
-                  type="checkbox"
-                  id="cash-sell-g1"
-                  checked={exchangeOptions.cashtradeSell_G1.enabled}
-                  onChange={(e) => {
-                    setExchangeOptions(prev => ({
-                      ...prev,
-                      cashtradeSell_G1: { enabled: e.target.checked }
-                    }));
-                  }}
-                />
-                <label htmlFor="cash-sell-g1">메소→현금</label>
-              </div>
-            </div>
+            <input
+              type="checkbox"
+              id="cash-buy-g1"
+              checked={exchangeOptions.cashtradeBuy_G1.enabled}
+              onChange={(e) => {
+                setExchangeOptions(prev => ({
+                  ...prev,
+                  cashtradeBuy_G1: { enabled: e.target.checked }
+                }));
+              }}
+            />
+            <label htmlFor="cash-buy-g1">현금→메소</label>
+          </div>
+          <div className="trade-row">
+            <input
+              className="rate-input"
+              type="text"
+              value={cashTradeRates.GROUP1.sell.toLocaleString()}
+              onChange={(e) => {
+                const value = e.target.value.replace(/,/g, '');
+                if (value === '' || /^\d+$/.test(value)) {
+                  setCashTradeRates(prev => ({
+                    ...prev, 
+                    GROUP1: {...prev.GROUP1, sell: parseInt(value) || 0}
+                  }));
+                }
+              }}
+              disabled={!exchangeOptions.cashtradeSell_G1.enabled}
+            />
+            <span className="rate-unit"> 원/1억메소</span>
+            <input
+              type="checkbox"
+              id="cash-sell-g1"
+              checked={exchangeOptions.cashtradeSell_G1.enabled}
+              onChange={(e) => {
+                setExchangeOptions(prev => ({
+                  ...prev,
+                  cashtradeSell_G1: { enabled: e.target.checked }
+                }));
+              }}
+            />
+            <label htmlFor="cash-sell-g1">메소→현금</label>
           </div>
         </div>
       </div>
@@ -408,49 +424,65 @@ const SettingsPanel = ({
       <div className="cash-trade-section">
         <h4 className="cash-trade-header">그룹2 (에오스)</h4>
         <div className="cash-trade-content">
-          <div className="group-row">
+          <div className="trade-row">
             <input
               className="rate-input"
               type="text"
-              value={cashTradeRates.GROUP2.toLocaleString()}
+              value={cashTradeRates.GROUP2.buy.toLocaleString()}
               onChange={(e) => {
                 const value = e.target.value.replace(/,/g, '');
                 if (value === '' || /^\d+$/.test(value)) {
-                  setCashTradeRates(prev => ({...prev, GROUP2: parseInt(value) || 0}));
+                  setCashTradeRates(prev => ({
+                    ...prev, 
+                    GROUP2: {...prev.GROUP2, buy: parseInt(value) || 0}
+                  }));
                 }
               }}
+              disabled={!exchangeOptions.cashtradeBuy_G2.enabled}
             />
             <span className="rate-unit"> 원/1억메소</span>
-            <div className="checkbox-group">
-              <div className="checkbox-item">
-                <input
-                  type="checkbox"
-                  id="cash-buy-g2"
-                  checked={exchangeOptions.cashtradeBuy_G2.enabled}
-                  onChange={(e) => {
-                    setExchangeOptions(prev => ({
-                      ...prev,
-                      cashtradeBuy_G2: { enabled: e.target.checked }
-                    }));
-                  }}
-                />
-                <label htmlFor="cash-buy-g2">현금→메소</label>
-              </div>
-              <div className="checkbox-item">
-                <input
-                  type="checkbox"
-                  id="cash-sell-g2"
-                  checked={exchangeOptions.cashtradeSell_G2.enabled}
-                  onChange={(e) => {
-                    setExchangeOptions(prev => ({
-                      ...prev,
-                      cashtradeSell_G2: { enabled: e.target.checked }
-                    }));
-                  }}
-                />
-                <label htmlFor="cash-sell-g2">메소→현금</label>
-              </div>
-            </div>
+            <input
+              type="checkbox"
+              id="cash-buy-g2"
+              checked={exchangeOptions.cashtradeBuy_G2.enabled}
+              onChange={(e) => {
+                setExchangeOptions(prev => ({
+                  ...prev,
+                  cashtradeBuy_G2: { enabled: e.target.checked }
+                }));
+              }}
+            />
+            <label htmlFor="cash-buy-g2">현금→메소</label>
+          </div>
+          <div className="trade-row">
+            <input
+              className="rate-input"
+              type="text"
+              value={cashTradeRates.GROUP2.sell.toLocaleString()}
+              onChange={(e) => {
+                const value = e.target.value.replace(/,/g, '');
+                if (value === '' || /^\d+$/.test(value)) {
+                  setCashTradeRates(prev => ({
+                    ...prev, 
+                    GROUP2: {...prev.GROUP2, sell: parseInt(value) || 0}
+                  }));
+                }
+              }}
+              disabled={!exchangeOptions.cashtradeSell_G2.enabled}
+            />
+            <span className="rate-unit"> 원/1억메소</span>
+            <input
+              type="checkbox"
+              id="cash-sell-g2"
+              checked={exchangeOptions.cashtradeSell_G2.enabled}
+              onChange={(e) => {
+                setExchangeOptions(prev => ({
+                  ...prev,
+                  cashtradeSell_G2: { enabled: e.target.checked }
+                }));
+              }}
+            />
+            <label htmlFor="cash-sell-g2">메소→현금</label>
           </div>
         </div>
       </div>
@@ -458,49 +490,65 @@ const SettingsPanel = ({
       <div className="cash-trade-section">
         <h4 className="cash-trade-header">그룹3 (챌린저스)</h4>
         <div className="cash-trade-content">
-          <div className="group-row">
+          <div className="trade-row">
             <input
               className="rate-input"
               type="text"
-              value={cashTradeRates.GROUP3.toLocaleString()}
+              value={cashTradeRates.GROUP3.buy.toLocaleString()}
               onChange={(e) => {
                 const value = e.target.value.replace(/,/g, '');
                 if (value === '' || /^\d+$/.test(value)) {
-                  setCashTradeRates(prev => ({...prev, GROUP3: parseInt(value) || 0}));
+                  setCashTradeRates(prev => ({
+                    ...prev, 
+                    GROUP3: {...prev.GROUP3, buy: parseInt(value) || 0}
+                  }));
                 }
               }}
+              disabled={!exchangeOptions.cashtradeBuy_G3.enabled}
             />
             <span className="rate-unit"> 원/1억메소</span>
-            <div className="checkbox-group">
-              <div className="checkbox-item">
-                <input
-                  type="checkbox"
-                  id="cash-buy-g3"
-                  checked={exchangeOptions.cashtradeBuy_G3.enabled}
-                  onChange={(e) => {
-                    setExchangeOptions(prev => ({
-                      ...prev,
-                      cashtradeBuy_G3: { enabled: e.target.checked }
-                    }));
-                  }}
-                />
-                <label htmlFor="cash-buy-g3">현금→메소</label>
-              </div>
-              <div className="checkbox-item">
-                <input
-                  type="checkbox"
-                  id="cash-sell-g3"
-                  checked={exchangeOptions.cashtradeSell_G3.enabled}
-                  onChange={(e) => {
-                    setExchangeOptions(prev => ({
-                      ...prev,
-                      cashtradeSell_G3: { enabled: e.target.checked }
-                    }));
-                  }}
-                />
-                <label htmlFor="cash-sell-g3">메소→현금</label>
-              </div>
-            </div>
+            <input
+              type="checkbox"
+              id="cash-buy-g3"
+              checked={exchangeOptions.cashtradeBuy_G3.enabled}
+              onChange={(e) => {
+                setExchangeOptions(prev => ({
+                  ...prev,
+                  cashtradeBuy_G3: { enabled: e.target.checked }
+                }));
+              }}
+            />
+            <label htmlFor="cash-buy-g3">현금→메소</label>
+          </div>
+          <div className="trade-row">
+            <input
+              className="rate-input"
+              type="text"
+              value={cashTradeRates.GROUP3.sell.toLocaleString()}
+              onChange={(e) => {
+                const value = e.target.value.replace(/,/g, '');
+                if (value === '' || /^\d+$/.test(value)) {
+                  setCashTradeRates(prev => ({
+                    ...prev, 
+                    GROUP3: {...prev.GROUP3, sell: parseInt(value) || 0}
+                  }));
+                }
+              }}
+              disabled={!exchangeOptions.cashtradeSell_G3.enabled}
+            />
+            <span className="rate-unit"> 원/1억메소</span>
+            <input
+              type="checkbox"
+              id="cash-sell-g3"
+              checked={exchangeOptions.cashtradeSell_G3.enabled}
+              onChange={(e) => {
+                setExchangeOptions(prev => ({
+                  ...prev,
+                  cashtradeSell_G3: { enabled: e.target.checked }
+                }));
+              }}
+            />
+            <label htmlFor="cash-sell-g3">메소→현금</label>
           </div>
         </div>
       </div>
@@ -511,100 +559,142 @@ const SettingsPanel = ({
       <div className="sol-trade-section">
         <h4 className="sol-trade-header">그룹1 (일반섭)</h4>
         <div className="sol-trade-content">
-          <div className="group-row">
-            <label className="sol-trade-label">현금거래: </label>
-            <input
-              className="sol-rate-input"
-              type="text"
-              value={solTradeRates.cash.GROUP1.toLocaleString()}
-              onChange={(e) => {
-                const value = e.target.value.replace(/,/g, '');
-                if (value === '' || /^\d+$/.test(value)) {
-                  setSolTradeRates(prev => ({
+          <div className="sol-subsection">
+            <h5 className="sol-subsection-title">현금거래</h5>
+            <div className="trade-row">
+              <input
+                className="sol-rate-input"
+                type="text"
+                value={solTradeRates.cash.GROUP1.buy.toLocaleString()}
+                onChange={(e) => {
+                  const value = e.target.value.replace(/,/g, '');
+                  if (value === '' || /^\d+$/.test(value)) {
+                    setSolTradeRates(prev => ({
+                      ...prev,
+                      cash: { 
+                        ...prev.cash, 
+                        GROUP1: {...prev.cash.GROUP1, buy: parseInt(value) || 0}
+                      }
+                    }));
+                  }
+                }}
+                disabled={!exchangeOptions.solCashBuy_G1.enabled}
+              />
+              <span className="sol-unit"> 원/개</span>
+              <input
+                type="checkbox"
+                id="sol-cash-krw-to-sol-g1"
+                checked={exchangeOptions.solCashBuy_G1.enabled}
+                onChange={(e) => {
+                  setExchangeOptions(prev => ({
                     ...prev,
-                    cash: { ...prev.cash, GROUP1: parseInt(value) || 0 }
+                    solCashBuy_G1: { enabled: e.target.checked }
                   }));
-                }
-              }}
-            />
-            <span className="sol-unit"> 원/개</span>
-            <div className="checkbox-group">
-              <div className="checkbox-item">
-                <input
-                  type="checkbox"
-                  id="sol-cash-krw-to-sol-g1"
-                  checked={exchangeOptions.solCashBuy_G1.enabled}
-                  onChange={(e) => {
-                    setExchangeOptions(prev => ({
+                }}
+              />
+              <label htmlFor="sol-cash-krw-to-sol-g1">현금→조각</label>
+            </div>
+            <div className="trade-row">
+              <input
+                className="sol-rate-input"
+                type="text"
+                value={solTradeRates.cash.GROUP1.sell.toLocaleString()}
+                onChange={(e) => {
+                  const value = e.target.value.replace(/,/g, '');
+                  if (value === '' || /^\d+$/.test(value)) {
+                    setSolTradeRates(prev => ({
                       ...prev,
-                      solCashBuy_G1: { enabled: e.target.checked }
+                      cash: { 
+                        ...prev.cash, 
+                        GROUP1: {...prev.cash.GROUP1, sell: parseInt(value) || 0}
+                      }
                     }));
-                  }}
-                />
-                <label htmlFor="sol-cash-krw-to-sol-g1">현금→솔 에르다 조각</label>
-              </div>
-              <div className="checkbox-item">
-                <input
-                  type="checkbox"
-                  id="sol-cash-sol-to-krw-g1"
-                  checked={exchangeOptions.solCashSell_G1.enabled}
-                  onChange={(e) => {
-                    setExchangeOptions(prev => ({
-                      ...prev,
-                      solCashSell_G1: { enabled: e.target.checked }
-                    }));
-                  }}
-                />
-                <label htmlFor="sol-cash-sol-to-krw-g1">솔 에르다 조각→현금</label>
-              </div>
+                  }
+                }}
+                disabled={!exchangeOptions.solCashSell_G1.enabled}
+              />
+              <span className="sol-unit"> 원/개</span>
+              <input
+                type="checkbox"
+                id="sol-cash-sol-to-krw-g1"
+                checked={exchangeOptions.solCashSell_G1.enabled}
+                onChange={(e) => {
+                  setExchangeOptions(prev => ({
+                    ...prev,
+                    solCashSell_G1: { enabled: e.target.checked }
+                  }));
+                }}
+              />
+              <label htmlFor="sol-cash-sol-to-krw-g1">조각→현금</label>
             </div>
           </div>
-          <div className="group-row">
-            <label className="sol-trade-label">메소거래: </label>
-            <input
-              className="sol-rate-input"
-              type="text"
-              value={solTradeRates.meso.GROUP1.toLocaleString()}
-              onChange={(e) => {
-                const value = e.target.value.replace(/,/g, '');
-                if (value === '' || /^\d+$/.test(value)) {
-                  setSolTradeRates(prev => ({
+          <div className="sol-subsection">
+            <h5 className="sol-subsection-title">메소거래</h5>
+            <div className="trade-row">
+              <input
+                className="sol-rate-input"
+                type="text"
+                value={solTradeRates.meso.GROUP1.buy.toLocaleString()}
+                onChange={(e) => {
+                  const value = e.target.value.replace(/,/g, '');
+                  if (value === '' || /^\d+$/.test(value)) {
+                    setSolTradeRates(prev => ({
+                      ...prev,
+                      meso: { 
+                        ...prev.meso, 
+                        GROUP1: {...prev.meso.GROUP1, buy: parseInt(value) || 0}
+                      }
+                    }));
+                  }
+                }}
+                disabled={!exchangeOptions.solMesoBuy_G1.enabled}
+              />
+              <span className="sol-unit"> 메소/개</span>
+              <input
+                type="checkbox"
+                id="sol-meso-meso-to-sol-g1"
+                checked={exchangeOptions.solMesoBuy_G1.enabled}
+                onChange={(e) => {
+                  setExchangeOptions(prev => ({
                     ...prev,
-                    meso: { ...prev.meso, GROUP1: parseInt(value) || 0 }
+                    solMesoBuy_G1: { enabled: e.target.checked }
                   }));
-                }
-              }}
-            />
-            <span className="sol-unit"> 메소/개</span>
-            <div className="checkbox-group">
-              <div className="checkbox-item">
-                <input
-                  type="checkbox"
-                  id="sol-meso-meso-to-sol-g1"
-                  checked={exchangeOptions.solMesoBuy_G1.enabled}
-                  onChange={(e) => {
-                    setExchangeOptions(prev => ({
+                }}
+              />
+              <label htmlFor="sol-meso-meso-to-sol-g1">메소→조각</label>
+            </div>
+            <div className="trade-row">
+              <input
+                className="sol-rate-input"
+                type="text"
+                value={solTradeRates.meso.GROUP1.sell.toLocaleString()}
+                onChange={(e) => {
+                  const value = e.target.value.replace(/,/g, '');
+                  if (value === '' || /^\d+$/.test(value)) {
+                    setSolTradeRates(prev => ({
                       ...prev,
-                      solMesoBuy_G1: { enabled: e.target.checked }
+                      meso: { 
+                        ...prev.meso, 
+                        GROUP1: {...prev.meso.GROUP1, sell: parseInt(value) || 0}
+                      }
                     }));
-                  }}
-                />
-                <label htmlFor="sol-meso-meso-to-sol-g1">메소→솔 에르다 조각</label>
-              </div>
-              <div className="checkbox-item">
-                <input
-                  type="checkbox"
-                  id="sol-meso-sol-to-meso-g1"
-                  checked={exchangeOptions.solMesoSell_G1.enabled}
-                  onChange={(e) => {
-                    setExchangeOptions(prev => ({
-                      ...prev,
-                      solMesoSell_G1: { enabled: e.target.checked }
-                    }));
-                  }}
-                />
-                <label htmlFor="sol-meso-sol-to-meso-g1">솔 에르다 조각→메소</label>
-              </div>
+                  }
+                }}
+                disabled={!exchangeOptions.solMesoSell_G1.enabled}
+              />
+              <span className="sol-unit"> 메소/개</span>
+              <input
+                type="checkbox"
+                id="sol-meso-sol-to-meso-g1"
+                checked={exchangeOptions.solMesoSell_G1.enabled}
+                onChange={(e) => {
+                  setExchangeOptions(prev => ({
+                    ...prev,
+                    solMesoSell_G1: { enabled: e.target.checked }
+                  }));
+                }}
+              />
+              <label htmlFor="sol-meso-sol-to-meso-g1">조각→메소</label>
             </div>
           </div>
         </div>
@@ -614,100 +704,142 @@ const SettingsPanel = ({
       <div className="sol-trade-section">
         <h4 className="sol-trade-header">그룹2 (에오스)</h4>
         <div className="sol-trade-content">
-          <div className="group-row">
-            <label className="sol-trade-label">현금거래: </label>
-            <input
-              className="sol-rate-input"
-              type="text"
-              value={solTradeRates.cash.GROUP2.toLocaleString()}
-              onChange={(e) => {
-                const value = e.target.value.replace(/,/g, '');
-                if (value === '' || /^\d+$/.test(value)) {
-                  setSolTradeRates(prev => ({
+          <div className="sol-subsection">
+            <h5 className="sol-subsection-title">현금거래</h5>
+            <div className="trade-row">
+              <input
+                className="sol-rate-input"
+                type="text"
+                value={solTradeRates.cash.GROUP2.buy.toLocaleString()}
+                onChange={(e) => {
+                  const value = e.target.value.replace(/,/g, '');
+                  if (value === '' || /^\d+$/.test(value)) {
+                    setSolTradeRates(prev => ({
+                      ...prev,
+                      cash: { 
+                        ...prev.cash, 
+                        GROUP2: {...prev.cash.GROUP2, buy: parseInt(value) || 0}
+                      }
+                    }));
+                  }
+                }}
+                disabled={!exchangeOptions.solCashBuy_G2.enabled}
+              />
+              <span className="sol-unit"> 원/개</span>
+              <input
+                type="checkbox"
+                id="sol-cash-krw-to-sol-g2"
+                checked={exchangeOptions.solCashBuy_G2.enabled}
+                onChange={(e) => {
+                  setExchangeOptions(prev => ({
                     ...prev,
-                    cash: { ...prev.cash, GROUP2: parseInt(value) || 0 }
+                    solCashBuy_G2: { enabled: e.target.checked }
                   }));
-                }
-              }}
-            />
-            <span className="sol-unit"> 원/개</span>
-            <div className="checkbox-group">
-              <div className="checkbox-item">
-                <input
-                  type="checkbox"
-                  id="sol-cash-krw-to-sol-g2"
-                  checked={exchangeOptions.solCashBuy_G2.enabled}
-                  onChange={(e) => {
-                    setExchangeOptions(prev => ({
+                }}
+              />
+              <label htmlFor="sol-cash-krw-to-sol-g2">현금→조각</label>
+            </div>
+            <div className="trade-row">
+              <input
+                className="sol-rate-input"
+                type="text"
+                value={solTradeRates.cash.GROUP2.sell.toLocaleString()}
+                onChange={(e) => {
+                  const value = e.target.value.replace(/,/g, '');
+                  if (value === '' || /^\d+$/.test(value)) {
+                    setSolTradeRates(prev => ({
                       ...prev,
-                      solCashBuy_G2: { enabled: e.target.checked }
+                      cash: { 
+                        ...prev.cash, 
+                        GROUP2: {...prev.cash.GROUP2, sell: parseInt(value) || 0}
+                      }
                     }));
-                  }}
-                />
-                <label htmlFor="sol-cash-krw-to-sol-g2">현금→솔 에르다 조각</label>
-              </div>
-              <div className="checkbox-item">
-                <input
-                  type="checkbox"
-                  id="sol-cash-sol-to-krw-g2"
-                  checked={exchangeOptions.solCashSell_G2.enabled}
-                  onChange={(e) => {
-                    setExchangeOptions(prev => ({
-                      ...prev,
-                      solCashSell_G2: { enabled: e.target.checked }
-                    }));
-                  }}
-                />
-                <label htmlFor="sol-cash-sol-to-krw-g2">솔 에르다 조각→현금</label>
-              </div>
+                  }
+                }}
+                disabled={!exchangeOptions.solCashSell_G2.enabled}
+              />
+              <span className="sol-unit"> 원/개</span>
+              <input
+                type="checkbox"
+                id="sol-cash-sol-to-krw-g2"
+                checked={exchangeOptions.solCashSell_G2.enabled}
+                onChange={(e) => {
+                  setExchangeOptions(prev => ({
+                    ...prev,
+                    solCashSell_G2: { enabled: e.target.checked }
+                  }));
+                }}
+              />
+              <label htmlFor="sol-cash-sol-to-krw-g2">조각→현금</label>
             </div>
           </div>
-          <div className="group-row">
-            <label className="sol-trade-label">메소거래: </label>
-            <input
-              className="sol-rate-input"
-              type="text"
-              value={solTradeRates.meso.GROUP2.toLocaleString()}
-              onChange={(e) => {
-                const value = e.target.value.replace(/,/g, '');
-                if (value === '' || /^\d+$/.test(value)) {
-                  setSolTradeRates(prev => ({
+          <div className="sol-subsection">
+            <h5 className="sol-subsection-title">메소거래</h5>
+            <div className="trade-row">
+              <input
+                className="sol-rate-input"
+                type="text"
+                value={solTradeRates.meso.GROUP2.buy.toLocaleString()}
+                onChange={(e) => {
+                  const value = e.target.value.replace(/,/g, '');
+                  if (value === '' || /^\d+$/.test(value)) {
+                    setSolTradeRates(prev => ({
+                      ...prev,
+                      meso: { 
+                        ...prev.meso, 
+                        GROUP2: {...prev.meso.GROUP2, buy: parseInt(value) || 0}
+                      }
+                    }));
+                  }
+                }}
+                disabled={!exchangeOptions.solMesoBuy_G2.enabled}
+              />
+              <span className="sol-unit"> 메소/개</span>
+              <input
+                type="checkbox"
+                id="sol-meso-meso-to-sol-g2"
+                checked={exchangeOptions.solMesoBuy_G2.enabled}
+                onChange={(e) => {
+                  setExchangeOptions(prev => ({
                     ...prev,
-                    meso: { ...prev.meso, GROUP2: parseInt(value) || 0 }
+                    solMesoBuy_G2: { enabled: e.target.checked }
                   }));
-                }
-              }}
-            />
-            <span className="sol-unit"> 메소/개</span>
-            <div className="checkbox-group">
-              <div className="checkbox-item">
-                <input
-                  type="checkbox"
-                  id="sol-meso-meso-to-sol-g2"
-                  checked={exchangeOptions.solMesoBuy_G2.enabled}
-                  onChange={(e) => {
-                    setExchangeOptions(prev => ({
+                }}
+              />
+              <label htmlFor="sol-meso-meso-to-sol-g2">메소→조각</label>
+            </div>
+            <div className="trade-row">
+              <input
+                className="sol-rate-input"
+                type="text"
+                value={solTradeRates.meso.GROUP2.sell.toLocaleString()}
+                onChange={(e) => {
+                  const value = e.target.value.replace(/,/g, '');
+                  if (value === '' || /^\d+$/.test(value)) {
+                    setSolTradeRates(prev => ({
                       ...prev,
-                      solMesoBuy_G2: { enabled: e.target.checked }
+                      meso: { 
+                        ...prev.meso, 
+                        GROUP2: {...prev.meso.GROUP2, sell: parseInt(value) || 0}
+                      }
                     }));
-                  }}
-                />
-                <label htmlFor="sol-meso-meso-to-sol-g2">메소→솔 에르다 조각</label>
-              </div>
-              <div className="checkbox-item">
-                <input
-                  type="checkbox"
-                  id="sol-meso-sol-to-meso-g2"
-                  checked={exchangeOptions.solMesoSell_G2.enabled}
-                  onChange={(e) => {
-                    setExchangeOptions(prev => ({
-                      ...prev,
-                      solMesoSell_G2: { enabled: e.target.checked }
-                    }));
-                  }}
-                />
-                <label htmlFor="sol-meso-sol-to-meso-g2">솔 에르다 조각→메소</label>
-              </div>
+                  }
+                }}
+                disabled={!exchangeOptions.solMesoSell_G2.enabled}
+              />
+              <span className="sol-unit"> 메소/개</span>
+              <input
+                type="checkbox"
+                id="sol-meso-sol-to-meso-g2"
+                checked={exchangeOptions.solMesoSell_G2.enabled}
+                onChange={(e) => {
+                  setExchangeOptions(prev => ({
+                    ...prev,
+                    solMesoSell_G2: { enabled: e.target.checked }
+                  }));
+                }}
+              />
+              <label htmlFor="sol-meso-sol-to-meso-g2">조각→메소</label>
             </div>
           </div>
         </div>
@@ -717,100 +849,142 @@ const SettingsPanel = ({
       <div className="sol-trade-section">
         <h4 className="sol-trade-header">그룹3 (챌린저스)</h4>
         <div className="sol-trade-content">
-          <div className="group-row">
-            <label className="sol-trade-label">현금거래: </label>
-            <input
-              className="sol-rate-input"
-              type="text"
-              value={solTradeRates.cash.GROUP3.toLocaleString()}
-              onChange={(e) => {
-                const value = e.target.value.replace(/,/g, '');
-                if (value === '' || /^\d+$/.test(value)) {
-                  setSolTradeRates(prev => ({
+          <div className="sol-subsection">
+            <h5 className="sol-subsection-title">현금거래</h5>
+            <div className="trade-row">
+              <input
+                className="sol-rate-input"
+                type="text"
+                value={solTradeRates.cash.GROUP3.buy.toLocaleString()}
+                onChange={(e) => {
+                  const value = e.target.value.replace(/,/g, '');
+                  if (value === '' || /^\d+$/.test(value)) {
+                    setSolTradeRates(prev => ({
+                      ...prev,
+                      cash: { 
+                        ...prev.cash, 
+                        GROUP3: {...prev.cash.GROUP3, buy: parseInt(value) || 0}
+                      }
+                    }));
+                  }
+                }}
+                disabled={!exchangeOptions.solCashBuy_G3.enabled}
+              />
+              <span className="sol-unit"> 원/개</span>
+              <input
+                type="checkbox"
+                id="sol-cash-krw-to-sol-g3"
+                checked={exchangeOptions.solCashBuy_G3.enabled}
+                onChange={(e) => {
+                  setExchangeOptions(prev => ({
                     ...prev,
-                    cash: { ...prev.cash, GROUP3: parseInt(value) || 0 }
+                    solCashBuy_G3: { enabled: e.target.checked }
                   }));
-                }
-              }}
-            />
-            <span className="sol-unit"> 원/개</span>
-            <div className="checkbox-group">
-              <div className="checkbox-item">
-                <input
-                  type="checkbox"
-                  id="sol-cash-krw-to-sol-g3"
-                  checked={exchangeOptions.solCashBuy_G3.enabled}
-                  onChange={(e) => {
-                    setExchangeOptions(prev => ({
+                }}
+              />
+              <label htmlFor="sol-cash-krw-to-sol-g3">현금→조각</label>
+            </div>
+            <div className="trade-row">
+              <input
+                className="sol-rate-input"
+                type="text"
+                value={solTradeRates.cash.GROUP3.sell.toLocaleString()}
+                onChange={(e) => {
+                  const value = e.target.value.replace(/,/g, '');
+                  if (value === '' || /^\d+$/.test(value)) {
+                    setSolTradeRates(prev => ({
                       ...prev,
-                      solCashBuy_G3: { enabled: e.target.checked }
+                      cash: { 
+                        ...prev.cash, 
+                        GROUP3: {...prev.cash.GROUP3, sell: parseInt(value) || 0}
+                      }
                     }));
-                  }}
-                />
-                <label htmlFor="sol-cash-krw-to-sol-g3">현금→솔 에르다 조각</label>
-              </div>
-              <div className="checkbox-item">
-                <input
-                  type="checkbox"
-                  id="sol-cash-sol-to-krw-g3"
-                  checked={exchangeOptions.solCashSell_G3.enabled}
-                  onChange={(e) => {
-                    setExchangeOptions(prev => ({
-                      ...prev,
-                      solCashSell_G3: { enabled: e.target.checked }
-                    }));
-                  }}
-                />
-                <label htmlFor="sol-cash-sol-to-krw-g3">솔 에르다 조각→현금</label>
-              </div>
+                  }
+                }}
+                disabled={!exchangeOptions.solCashSell_G3.enabled}
+              />
+              <span className="sol-unit"> 원/개</span>
+              <input
+                type="checkbox"
+                id="sol-cash-sol-to-krw-g3"
+                checked={exchangeOptions.solCashSell_G3.enabled}
+                onChange={(e) => {
+                  setExchangeOptions(prev => ({
+                    ...prev,
+                    solCashSell_G3: { enabled: e.target.checked }
+                  }));
+                }}
+              />
+              <label htmlFor="sol-cash-sol-to-krw-g3">조각→현금</label>
             </div>
           </div>
-          <div className="group-row">
-            <label className="sol-trade-label">메소거래: </label>
-            <input
-              className="sol-rate-input"
-              type="text"
-              value={solTradeRates.meso.GROUP3.toLocaleString()}
-              onChange={(e) => {
-                const value = e.target.value.replace(/,/g, '');
-                if (value === '' || /^\d+$/.test(value)) {
-                  setSolTradeRates(prev => ({
+          <div className="sol-subsection">
+            <h5 className="sol-subsection-title">메소거래</h5>
+            <div className="trade-row">
+              <input
+                className="sol-rate-input"
+                type="text"
+                value={solTradeRates.meso.GROUP3.buy.toLocaleString()}
+                onChange={(e) => {
+                  const value = e.target.value.replace(/,/g, '');
+                  if (value === '' || /^\d+$/.test(value)) {
+                    setSolTradeRates(prev => ({
+                      ...prev,
+                      meso: { 
+                        ...prev.meso, 
+                        GROUP3: {...prev.meso.GROUP3, buy: parseInt(value) || 0}
+                      }
+                    }));
+                  }
+                }}
+                disabled={!exchangeOptions.solMesoBuy_G3.enabled}
+              />
+              <span className="sol-unit"> 메소/개</span>
+              <input
+                type="checkbox"
+                id="sol-meso-meso-to-sol-g3"
+                checked={exchangeOptions.solMesoBuy_G3.enabled}
+                onChange={(e) => {
+                  setExchangeOptions(prev => ({
                     ...prev,
-                    meso: { ...prev.meso, GROUP3: parseInt(value) || 0 }
+                    solMesoBuy_G3: { enabled: e.target.checked }
                   }));
-                }
-              }}
-            />
-            <span className="sol-unit"> 메소/개</span>
-            <div className="checkbox-group">
-              <div className="checkbox-item">
-                <input
-                  type="checkbox"
-                  id="sol-meso-meso-to-sol-g3"
-                  checked={exchangeOptions.solMesoBuy_G3.enabled}
-                  onChange={(e) => {
-                    setExchangeOptions(prev => ({
+                }}
+              />
+              <label htmlFor="sol-meso-meso-to-sol-g3">메소→조각</label>
+            </div>
+            <div className="trade-row">
+              <input
+                className="sol-rate-input"
+                type="text"
+                value={solTradeRates.meso.GROUP3.sell.toLocaleString()}
+                onChange={(e) => {
+                  const value = e.target.value.replace(/,/g, '');
+                  if (value === '' || /^\d+$/.test(value)) {
+                    setSolTradeRates(prev => ({
                       ...prev,
-                      solMesoBuy_G3: { enabled: e.target.checked }
+                      meso: { 
+                        ...prev.meso, 
+                        GROUP3: {...prev.meso.GROUP3, sell: parseInt(value) || 0}
+                      }
                     }));
-                  }}
-                />
-                <label htmlFor="sol-meso-meso-to-sol-g3">메소→솔 에르다 조각</label>
-              </div>
-              <div className="checkbox-item">
-                <input
-                  type="checkbox"
-                  id="sol-meso-sol-to-meso-g3"
-                  checked={exchangeOptions.solMesoSell_G3.enabled}
-                  onChange={(e) => {
-                    setExchangeOptions(prev => ({
-                      ...prev,
-                      solMesoSell_G3: { enabled: e.target.checked }
-                    }));
-                  }}
-                />
-                <label htmlFor="sol-meso-sol-to-meso-g3">솔 에르다 조각→메소</label>
-              </div>
+                  }
+                }}
+                disabled={!exchangeOptions.solMesoSell_G3.enabled}
+              />
+              <span className="sol-unit"> 메소/개</span>
+              <input
+                type="checkbox"
+                id="sol-meso-sol-to-meso-g3"
+                checked={exchangeOptions.solMesoSell_G3.enabled}
+                onChange={(e) => {
+                  setExchangeOptions(prev => ({
+                    ...prev,
+                    solMesoSell_G3: { enabled: e.target.checked }
+                  }));
+                }}
+              />
+              <label htmlFor="sol-meso-sol-to-meso-g3">조각→메소</label>
             </div>
           </div>
         </div>
