@@ -182,16 +182,16 @@ export function downloadSettingsAsFile(settings, filename = 'maple-currency-sett
       // 메소마켓 시세
       "메소마켓 시세": {
         "그룹1+3 (일반섭+챌린저스)": {
-          "메소→메포 시세 (메포/1억메소)": settings.mesoMarketRates.GROUP1_3.buy,
           "메포→메소 시세 (메포/1억메소)": settings.mesoMarketRates.GROUP1_3.sell,
-          "메소→메포 거래 활성화": flattenedExchangeOptions.mesotomptrade_g1_3,
-          "메포→메소 거래 활성화": flattenedExchangeOptions.mptomesotrade_g1_3
+          "메소→메포 시세 (메포/1억메소)": settings.mesoMarketRates.GROUP1_3.buy,
+          "메포→메소 거래 활성화": flattenedExchangeOptions.mptomesotrade_g1_3,
+          "메소→메포 거래 활성화": flattenedExchangeOptions.mesotomptrade_g1_3
         },
         "그룹2 (에오스)": {
-          "메소→메포 시세 (메포/1억메소)": settings.mesoMarketRates.GROUP2.buy,
           "메포→메소 시세 (메포/1억메소)": settings.mesoMarketRates.GROUP2.sell,
-          "메소→메포 거래 활성화": flattenedExchangeOptions.mesotomptrade_g2,
-          "메포→메소 거래 활성화": flattenedExchangeOptions.mptomesotrade_g2
+          "메소→메포 시세 (메포/1억메소)": settings.mesoMarketRates.GROUP2.buy,
+          "메포→메소 거래 활성화": flattenedExchangeOptions.mptomesotrade_g2,
+          "메소→메포 거래 활성화": flattenedExchangeOptions.mesotomptrade_g2
         }
       },
       
