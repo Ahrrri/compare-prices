@@ -260,36 +260,26 @@ const SettingsPanel = ({
       
       {/* 메소마켓 시세 */}
       <h3 className="section-header">메소마켓 시세</h3>
-      <div className="market-rate-row">
-        <label>그룹1+3 (일반/챌린저스): </label>
-        <input
-          className="rate-input"
-          type="text"
-          value={mesoMarketRates.GROUP1_3.toLocaleString()}
-          onChange={(e) => {
-            const value = e.target.value.replace(/,/g, '');
-            if (value === '' || /^\d+$/.test(value)) {
-              setMesoMarketRates(prev => ({...prev, GROUP1_3: parseInt(value) || 0}));
-            }
-          }}
-        />
-        <span className="rate-unit"> 메포/1억메소</span>
-        <div className="checkbox-group">
-          <div className="checkbox-item">
+      <div className="group-section">
+        <h4 className="group-header">그룹1+3 (일반/챌린저스)</h4>
+        <div className="group-content">
+          <div className="trade-row">
             <input
-              type="checkbox"
-              id="meso-buy-g13"
-              checked={exchangeOptions.mesomarketBuy_G13.enabled}
+              className="rate-input"
+              type="text"
+              value={mesoMarketRates.GROUP1_3.buy.toLocaleString()}
               onChange={(e) => {
-                setExchangeOptions(prev => ({
-                  ...prev,
-                  mesomarketBuy_G13: { enabled: e.target.checked }
-                }));
+                const value = e.target.value.replace(/,/g, '');
+                if (value === '' || /^\d+$/.test(value)) {
+                  setMesoMarketRates(prev => ({
+                    ...prev, 
+                    GROUP1_3: {...prev.GROUP1_3, buy: parseInt(value) || 0}
+                  }));
+                }
               }}
+              disabled={!exchangeOptions.mesomarketSell_G13.enabled}
             />
-            <label htmlFor="meso-buy-g13">메포→메소</label>
-          </div>
-          <div className="checkbox-item">
+            <span className="rate-unit">메포/1억메소</span>
             <input
               type="checkbox"
               id="meso-sell-g13"
@@ -303,39 +293,59 @@ const SettingsPanel = ({
             />
             <label htmlFor="meso-sell-g13">메소→메포</label>
           </div>
-        </div>
-      </div>
-      
-      <div className="market-rate-row">
-        <label>그룹2 (에오스): </label>
-        <input
-          className="rate-input"
-          type="text"
-          value={mesoMarketRates.GROUP2.toLocaleString()}
-          onChange={(e) => {
-            const value = e.target.value.replace(/,/g, '');
-            if (value === '' || /^\d+$/.test(value)) {
-              setMesoMarketRates(prev => ({...prev, GROUP2: parseInt(value) || 0}));
-            }
-          }}
-        />
-        <span className="rate-unit"> 메포/1억메소</span>
-        <div className="checkbox-group">
-          <div className="checkbox-item">
+          <div className="trade-row">
+            <input
+              className="rate-input"
+              type="text"
+              value={mesoMarketRates.GROUP1_3.sell.toLocaleString()}
+              onChange={(e) => {
+                const value = e.target.value.replace(/,/g, '');
+                if (value === '' || /^\d+$/.test(value)) {
+                  setMesoMarketRates(prev => ({
+                    ...prev, 
+                    GROUP1_3: {...prev.GROUP1_3, sell: parseInt(value) || 0}
+                  }));
+                }
+              }}
+              disabled={!exchangeOptions.mesomarketBuy_G13.enabled}
+            />
+            <span className="rate-unit">메포/1억메소</span>
             <input
               type="checkbox"
-              id="meso-buy-g2"
-              checked={exchangeOptions.mesomarketBuy_G2.enabled}
+              id="meso-buy-g13"
+              checked={exchangeOptions.mesomarketBuy_G13.enabled}
               onChange={(e) => {
                 setExchangeOptions(prev => ({
                   ...prev,
-                  mesomarketBuy_G2: { enabled: e.target.checked }
+                  mesomarketBuy_G13: { enabled: e.target.checked }
                 }));
               }}
             />
-            <label htmlFor="meso-buy-g2">메포→메소</label>
+            <label htmlFor="meso-buy-g13">메포→메소</label>
           </div>
-          <div className="checkbox-item">
+        </div>
+      </div>
+      
+      <div className="group-section">
+        <h4 className="group-header">그룹2 (에오스)</h4>
+        <div className="group-content">
+          <div className="trade-row">
+            <input
+              className="rate-input"
+              type="text"
+              value={mesoMarketRates.GROUP2.buy.toLocaleString()}
+              onChange={(e) => {
+                const value = e.target.value.replace(/,/g, '');
+                if (value === '' || /^\d+$/.test(value)) {
+                  setMesoMarketRates(prev => ({
+                    ...prev, 
+                    GROUP2: {...prev.GROUP2, buy: parseInt(value) || 0}
+                  }));
+                }
+              }}
+              disabled={!exchangeOptions.mesomarketSell_G2.enabled}
+            />
+            <span className="rate-unit">메포/1억메소</span>
             <input
               type="checkbox"
               id="meso-sell-g2"
@@ -348,6 +358,36 @@ const SettingsPanel = ({
               }}
             />
             <label htmlFor="meso-sell-g2">메소→메포</label>
+          </div>
+          <div className="trade-row">
+            <input
+              className="rate-input"
+              type="text"
+              value={mesoMarketRates.GROUP2.sell.toLocaleString()}
+              onChange={(e) => {
+                const value = e.target.value.replace(/,/g, '');
+                if (value === '' || /^\d+$/.test(value)) {
+                  setMesoMarketRates(prev => ({
+                    ...prev, 
+                    GROUP2: {...prev.GROUP2, sell: parseInt(value) || 0}
+                  }));
+                }
+              }}
+              disabled={!exchangeOptions.mesomarketBuy_G2.enabled}
+            />
+            <span className="rate-unit">메포/1억메소</span>
+            <input
+              type="checkbox"
+              id="meso-buy-g2"
+              checked={exchangeOptions.mesomarketBuy_G2.enabled}
+              onChange={(e) => {
+                setExchangeOptions(prev => ({
+                  ...prev,
+                  mesomarketBuy_G2: { enabled: e.target.checked }
+                }));
+              }}
+            />
+            <label htmlFor="meso-buy-g2">메포→메소</label>
           </div>
         </div>
       </div>

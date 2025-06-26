@@ -154,7 +154,7 @@ export function downloadSettingsAsFile(settings, filename = 'maple-currency-sett
     
     const configData = {
       description: "메이플스토리 화폐 변환 계산기 설정 파일",
-      version: "1.1",
+      version: "2.0",
       exportedAt: new Date().toISOString(),
       
       // MVP 등급
@@ -182,12 +182,14 @@ export function downloadSettingsAsFile(settings, filename = 'maple-currency-sett
       // 메소마켓 시세
       "메소마켓 시세": {
         "그룹1+3 (일반섭+챌린저스)": {
-          "시세 (메포/1억메소)": settings.mesoMarketRates.GROUP1_3,
+          "구매 시세 (메포/1억메소)": settings.mesoMarketRates.GROUP1_3.buy,
+          "판매 시세 (메포/1억메소)": settings.mesoMarketRates.GROUP1_3.sell,
           "메소→메포 거래 활성화": flattenedExchangeOptions.mesotomptrade_g1_3,
           "메포→메소 거래 활성화": flattenedExchangeOptions.mptomesotrade_g1_3
         },
         "그룹2 (에오스)": {
-          "시세 (메포/1억메소)": settings.mesoMarketRates.GROUP2,
+          "구매 시세 (메포/1억메소)": settings.mesoMarketRates.GROUP2.buy,
+          "판매 시세 (메포/1억메소)": settings.mesoMarketRates.GROUP2.sell,
           "메소→메포 거래 활성화": flattenedExchangeOptions.mesotomptrade_g2,
           "메포→메소 거래 활성화": flattenedExchangeOptions.mptomesotrade_g2
         }
@@ -294,11 +296,8 @@ export function importSettingsFromFile() {
           const config = JSON.parse(e.target.result);
           console.log('설정 파일 가져오기 성공:', config.description || 'Unknown config');
           
-          // 새로운 형식 (v1.1+)인지 확인
-          if (config.version && parseFloat(config.version) >= 1.1) {
-            // 한글 키 형식인지 확인
-            if (config["캐시템 경매장"]) {
-              // 새로운 한글 키 형식
+          // 새로운 형식 (v2.0+)인지 확인
+          if (config.version && parseFloat(config.version) >= 2.0) {
               const flattenedOptions = {
                 // 캐시템 경매장
                 nxtomesotrade_g1: config["캐시템 경매장"]["그룹1 (일반섭)"]["넥슨캐시→메소 거래 활성화"],
@@ -338,8 +337,14 @@ export function importSettingsFromFile() {
               
               const settings = {
                 mesoMarketRates: {
-                  GROUP1_3: config["메소마켓 시세"]["그룹1+3 (일반섭+챌린저스)"]["시세 (메포/1억메소)"],
-                  GROUP2: config["메소마켓 시세"]["그룹2 (에오스)"]["시세 (메포/1억메소)"]
+                  GROUP1_3: {
+                    buy: config["메소마켓 시세"]["그룹1+3 (일반섭+챌린저스)"]["구매 시세 (메포/1억메소)"],
+                    sell: config["메소마켓 시세"]["그룹1+3 (일반섭+챌린저스)"]["판매 시세 (메포/1억메소)"]
+                  },
+                  GROUP2: {
+                    buy: config["메소마켓 시세"]["그룹2 (에오스)"]["구매 시세 (메포/1억메소)"],
+                    sell: config["메소마켓 시세"]["그룹2 (에오스)"]["판매 시세 (메포/1억메소)"]
+                  }
                 },
                 cashTradeRates: {
                   GROUP1: {
@@ -405,53 +410,9 @@ export function importSettingsFromFile() {
               };
               
               resolve(settings);
-            } else {
-              // 기존 영문 키 형식
-              const flattenedOptions = {
-                mesotomptrade_g1_3: config.mesotomptrade_g1_3,
-                mptomesotrade_g1_3: config.mptomesotrade_g1_3,
-                mesotomptrade_g2: config.mesotomptrade_g2,
-                mptomesotrade_g2: config.mptomesotrade_g2,
-                krwtomesotrade_g1: config.krwtomesotrade_g1,
-                mesotokrwtrade_g1: config.mesotokrwtrade_g1,
-                krwtomesotrade_g2: config.krwtomesotrade_g2,
-                mesotokrwtrade_g2: config.mesotokrwtrade_g2,
-                krwtomesotrade_g3: config.krwtomesotrade_g3,
-                mesotokrwtrade_g3: config.mesotokrwtrade_g3,
-                krwtosoltrade_g1: config.krwtosoltrade_g1,
-                soltokrwtrade_g1: config.soltokrwtrade_g1,
-                mesotosoltrade_g1: config.mesotosoltrade_g1,
-                soltomesotrade_g1: config.soltomesotrade_g1,
-                krwtosoltrade_g2: config.krwtosoltrade_g2,
-                soltokrwtrade_g2: config.soltokrwtrade_g2,
-                mesotosoltrade_g2: config.mesotosoltrade_g2,
-                soltomesotrade_g2: config.soltomesotrade_g2,
-                krwtosoltrade_g3: config.krwtosoltrade_g3,
-                soltokrwtrade_g3: config.soltokrwtrade_g3,
-                mesotosoltrade_g3: config.mesotosoltrade_g3,
-                soltomesotrade_g3: config.soltomesotrade_g3,
-                nxtomesotrade_g1: config.nxtomesotrade_g1,
-                nxtomesotrade_g2: config.nxtomesotrade_g2,
-                nxtomesotrade_g3: config.nxtomesotrade_g3
-              };
-              
-              const exchangeOptions = unflattenExchangeOptions(flattenedOptions);
-              
-              const settings = {
-                mesoMarketRates: config.mesoMarketRates,
-                cashTradeRates: config.cashTradeRates,
-                solTradeRates: config.solTradeRates,
-                cashItemRates: config.cashItemRates,
-                mvpGrade: config.mvpGrade,
-                voucherDiscounts: config.voucherDiscounts,
-                exchangeOptions: exchangeOptions
-              };
-              
-              resolve(settings);
-            }
           } else {
-            // 기존 형식 (v1.0)
-            resolve(config.settings || config);
+            console.error('지원하지 않는 설정 파일 버전입니다. v2.0 이상 파일만 지원됩니다.');
+            resolve(null);
           }
         } catch (error) {
           console.error('설정 파일 파싱 실패:', error.message);

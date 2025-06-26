@@ -1,10 +1,16 @@
 // 메이플스토리 화폐 변환 계산기 기본 설정값
 
 export const DEFAULT_SETTINGS = {
-  // 메소마켓 시세 (그룹별)
+  // 메소마켓 시세 (그룹별, 1억 메소당 메이플포인트)
   mesoMarketRates: {
-    GROUP1_3: 2600, // 그룹1+3 통합 (1억 메소당 메이플포인트)
-    GROUP2: 1400    // 그룹2 (1억 메소당 메이플포인트)
+    GROUP1_3: {
+      buy: 2600,  // 메소로 메이플포인트 구매 시
+      sell: 2600  // 메이플포인트로 메소 구매 시
+    },
+    GROUP2: {
+      buy: 1400,
+      sell: 1400
+    }
   },
 
   // 현금거래 시세 (그룹별, 1억 메소당 원)
@@ -137,9 +143,9 @@ export function validateSettings(settings) {
   const errors = [];
 
   // 메소마켓 시세 검증
-  if (!settings.mesoMarketRates || 
-      typeof settings.mesoMarketRates.GROUP1_3 !== 'number' ||
-      typeof settings.mesoMarketRates.GROUP2 !== 'number') {
+  if (!settings.mesoMarketRates ||
+      !settings.mesoMarketRates.GROUP1_3 || typeof settings.mesoMarketRates.GROUP1_3.buy !== 'number' || typeof settings.mesoMarketRates.GROUP1_3.sell !== 'number' ||
+      !settings.mesoMarketRates.GROUP2 || typeof settings.mesoMarketRates.GROUP2.buy !== 'number' || typeof settings.mesoMarketRates.GROUP2.sell !== 'number') {
     errors.push('메소마켓 시세 설정이 올바르지 않습니다.');
   }
 
@@ -164,10 +170,13 @@ export function mergeSettings(userSettings = {}) {
   return {
     ...DEFAULT_SETTINGS,
     ...userSettings,
-    mesoMarketRates: {
-      ...DEFAULT_SETTINGS.mesoMarketRates,
-      ...userSettings.mesoMarketRates
-    },
+    mesoMarketRates: Object.keys(DEFAULT_SETTINGS.mesoMarketRates).reduce((acc, group) => {
+      acc[group] = {
+        buy: userSettings.mesoMarketRates?.[group]?.buy ?? DEFAULT_SETTINGS.mesoMarketRates[group].buy,
+        sell: userSettings.mesoMarketRates?.[group]?.sell ?? DEFAULT_SETTINGS.mesoMarketRates[group].sell
+      };
+      return acc;
+    }, {}),
     cashTradeRates: Object.keys(DEFAULT_SETTINGS.cashTradeRates).reduce((acc, group) => {
       acc[group] = {
         buy: userSettings.cashTradeRates?.[group]?.buy ?? DEFAULT_SETTINGS.cashTradeRates[group].buy,

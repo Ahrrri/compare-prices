@@ -94,26 +94,26 @@ export function createCurrencyGraph(settings) {
   // MP → 메소 (구매 - 수수료 없음)
   if (exchangeOptions?.mesomarketBuy_G13?.enabled) {
     edges.push(
-      { from: 'MP', to: 'MESO_G1', type: 'mesomarket', fee: 0, rate: mesoMarketRates.GROUP1_3, description: '메소마켓 구매 (수수료 없음)' },
-      { from: 'MP', to: 'MESO_G3', type: 'mesomarket', fee: 0, rate: mesoMarketRates.GROUP1_3, description: '메소마켓 구매 (수수료 없음)' }
+      { from: 'MP', to: 'MESO_G1', type: 'mesomarket', fee: 0, rate: mesoMarketRates.GROUP1_3.sell, description: '메소마켓 구매 (수수료 없음)' },
+      { from: 'MP', to: 'MESO_G3', type: 'mesomarket', fee: 0, rate: mesoMarketRates.GROUP1_3.sell, description: '메소마켓 구매 (수수료 없음)' }
     );
   }
   if (exchangeOptions?.mesomarketBuy_G2?.enabled) {
     edges.push(
-      { from: 'MP', to: 'MESO_G2', type: 'mesomarket', fee: 0, rate: mesoMarketRates.GROUP2, description: '메소마켓 구매 (수수료 없음)' }
+      { from: 'MP', to: 'MESO_G2', type: 'mesomarket', fee: 0, rate: mesoMarketRates.GROUP2.sell, description: '메소마켓 구매 (수수료 없음)' }
     );
   }
 
   // 메소 → MP (판매 - 1% 수수료)
   if (exchangeOptions?.mesomarketSell_G13?.enabled) {
     edges.push(
-      { from: 'MESO_G1', to: 'MP', type: 'mesomarket', fee: 1, rate: mesoMarketRates.GROUP1_3, description: '메소마켓 판매 (1% 수수료)' },
-      { from: 'MESO_G3', to: 'MP', type: 'mesomarket', fee: 1, rate: mesoMarketRates.GROUP1_3, description: '메소마켓 판매 (1% 수수료)' }
+      { from: 'MESO_G1', to: 'MP', type: 'mesomarket', fee: 1, rate: mesoMarketRates.GROUP1_3.buy, description: '메소마켓 판매 (1% 수수료)' },
+      { from: 'MESO_G3', to: 'MP', type: 'mesomarket', fee: 1, rate: mesoMarketRates.GROUP1_3.buy, description: '메소마켓 판매 (1% 수수료)' }
     );
   }
   if (exchangeOptions?.mesomarketSell_G2?.enabled) {
     edges.push(
-      { from: 'MESO_G2', to: 'MP', type: 'mesomarket', fee: 1, rate: mesoMarketRates.GROUP2, description: '메소마켓 판매 (1% 수수료)' }
+      { from: 'MESO_G2', to: 'MP', type: 'mesomarket', fee: 1, rate: mesoMarketRates.GROUP2.buy, description: '메소마켓 판매 (1% 수수료)' }
     );
   }
 
