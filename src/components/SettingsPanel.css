@@ -309,6 +309,7 @@
   display: flex;
   align-items: center;
   margin-bottom: 0.5rem;
+  gap: 8px;
 }
 
 .group-row-meso {

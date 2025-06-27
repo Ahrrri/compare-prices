@@ -231,7 +231,7 @@ const SettingsPanel = ({
           
           {/* 마일리지 변환 비율 설정 */}
           <div className="mileage-rates-section">
-            <div className="mileage-rates-label">마일리지 변환 비율:</div>
+            <div className="mileage-rates-label">마일리지의 캐시 대비 변환 비율:</div>
             <div className="mileage-rates-inputs">
               {['GROUP1', 'GROUP2', 'GROUP3'].map((group, index) => (
                 <div key={group} className="mileage-rate-item">
@@ -360,7 +360,7 @@ const SettingsPanel = ({
                   {/* 효율 표시 */}
                   {item.meso > 0 && item.nx > 0 && (
                     <div className="efficiency-display">
-                      = {(item.nx * 100000000 / item.meso).toFixed(1)} 캐시/억메소
+                      = {(item.nx * 100000000 / item.meso).toFixed(1)} 캐시/1억 메소
                     </div>
                   )}
                   
@@ -522,7 +522,7 @@ const SettingsPanel = ({
                             <div>{bestEfficiencyItem.meso.toLocaleString()} 메소</div>
                             <div>{bestEfficiencyItem.nx.toLocaleString()} 캐시</div>
                             <div className="efficiency-display">
-                              효율: {(100000000 / bestEfficiencyItem.efficiency).toFixed(1)} 캐시/억메소
+                              효율: {(100000000 / bestEfficiencyItem.efficiency).toFixed(1)} 캐시/1억 메소
                             </div>
                           </div>
                         </div>
@@ -622,7 +622,7 @@ const SettingsPanel = ({
               }}
               disabled={!exchangeOptions.mesomarketBuy_G13?.enabled}
             />
-            <span className="rate-unit">메포/억메소</span>
+            <span className="rate-unit">메포/1억 메소</span>
             <div className="checkbox-group">
               <input
                 type="checkbox"
@@ -654,7 +654,7 @@ const SettingsPanel = ({
               }}
               disabled={!exchangeOptions.mesomarketSell_G13?.enabled}
             />
-            <span className="rate-unit">메포/억메소</span>
+            <span className="rate-unit">메포/1억 메소</span>
             <div className="checkbox-group">
               <input
                 type="checkbox"
@@ -692,7 +692,7 @@ const SettingsPanel = ({
               }}
               disabled={!exchangeOptions.mesomarketBuy_G2?.enabled}
             />
-            <span className="rate-unit">메포/억메소</span>
+            <span className="rate-unit">메포/1억 메소</span>
             <div className="checkbox-group">
               <input
                 type="checkbox"
@@ -724,7 +724,7 @@ const SettingsPanel = ({
               }}
               disabled={!exchangeOptions.mesomarketSell_G2?.enabled}
             />
-            <span className="rate-unit">메포/억메소</span>
+            <span className="rate-unit">메포/1억 메소</span>
             <div className="checkbox-group">
               <input
                 type="checkbox"
@@ -773,7 +773,7 @@ const SettingsPanel = ({
                 }}
                 disabled={!exchangeOptions[`cashtradeBuy_G${index + 1}`]?.enabled}
               />
-              <span className="rate-unit">원/억메소</span>
+              <span className="rate-unit">원/1억 메소</span>
               <div className="checkbox-group">
                 <input
                   type="checkbox"
@@ -805,7 +805,7 @@ const SettingsPanel = ({
                 }}
                 disabled={!exchangeOptions[`cashtradeSell_G${index + 1}`]?.enabled}
               />
-              <span className="rate-unit">원/억메소</span>
+              <span className="rate-unit">원/1억 메소</span>
               <div className="checkbox-group">
                 <input
                   type="checkbox"

@@ -1,9 +1,12 @@
 import './PathSummary.css';
+import { calculateEfficiencyRatio } from '../utils/graphPathfinder';
 
 const PathSummary = ({ 
   path, 
   index,
   isExpanded,
+  selectedSource,
+  sourceCurrency,
   selectedTarget, 
   targetCurrency, 
   formatNumber, 
@@ -22,7 +25,29 @@ const PathSummary = ({
       <div className="path-summary-header" onClick={toggleExpanded}>
         <span className="path-name">{path.name}</span>
         <span className="path-result">
-          최종: {formatNumber(path.finalAmount, getCurrencyType(selectedTarget?.id || targetCurrency))} {getCurrencyName(selectedTarget?.id || targetCurrency)}
+          {/* 실제 투입량이 명목 투입량과 다른 경우 표시 */}
+          {path.actualInput && path.actualInput !== path.nominalInput ? (
+            <>
+              <div style={{marginBottom: '0.2rem'}}>
+                <strong>실제: {formatNumber(path.actualInput, getCurrencyType(selectedSource?.id || sourceCurrency))} {getCurrencyName(selectedSource?.id || sourceCurrency)} → {formatNumber(path.finalAmount, getCurrencyType(selectedTarget?.id || targetCurrency))} {getCurrencyName(selectedTarget?.id || targetCurrency)}</strong>
+              </div>
+              <div style={{fontSize: '0.8rem', color: '#666'}}>
+                명목: {formatNumber(path.nominalInput || (path.steps.length > 0 ? path.steps[0].inputAmount : 0), getCurrencyType(selectedSource?.id || sourceCurrency))} → 효율: {calculateEfficiencyRatio(selectedSource?.id || sourceCurrency, path.actualInput, selectedTarget?.id || targetCurrency, path.finalAmount).text}
+              </div>
+              <div style={{fontSize: '0.75rem', color: '#e65100'}}>
+                ⚠️ 잔여 한도로 인해 {formatNumber((path.nominalInput || path.steps[0]?.inputAmount || 0) - path.actualInput, getCurrencyType(selectedSource?.id || sourceCurrency))} 미사용
+              </div>
+            </>
+          ) : (
+            <>
+              <div style={{marginBottom: '0.2rem'}}>
+                <strong>{formatNumber(path.finalAmount, getCurrencyType(selectedTarget?.id || targetCurrency))} {getCurrencyName(selectedTarget?.id || targetCurrency)}</strong>
+              </div>
+              <div style={{fontSize: '0.8rem', color: '#666'}}>
+                효율: {calculateEfficiencyRatio(selectedSource?.id || sourceCurrency, path.actualInput || path.steps[0]?.inputAmount || 1, selectedTarget?.id || targetCurrency, path.finalAmount).text}
+              </div>
+            </>
+          )}
         </span>
         <span className="expand-icon">{isExpanded ? '▲' : '▼'}</span>
       </div>
@@ -57,7 +82,20 @@ const PathSummary = ({
                         {step.cashItemDetails.usedMileage > 0 && (
                           <span>, 마일리지 사용: {formatNumber(step.cashItemDetails.usedMileage, 'currency')}</span>
                         )}
+                        {step.cashItemDetails.earnedMileage > 0 && (
+                          <span>, 마일리지 적립: {formatNumber(step.cashItemDetails.earnedMileage, 'currency')}</span>
+                        )}
                       </div>
+                      
+                      {/* 순 비용 정보 */}
+                      {step.cashItemDetails.netCashCost !== undefined && (
+                        <div className="net-cost-info">
+                          순 비용: {formatNumber(step.cashItemDetails.netCashCost, 'currency')} 캐시 상당
+                          {step.cashItemDetails.netMileageUsed !== 0 && (
+                            <span> (마일리지 순소모: {formatNumber(step.cashItemDetails.netMileageUsed, 'currency')})</span>
+                          )}
+                        </div>
+                      )}
                       
                       {/* 사용된 아이템 조합 표시 */}
                       {step.cashItemDetails.itemCombination && step.cashItemDetails.itemCombination.length > 0 && (

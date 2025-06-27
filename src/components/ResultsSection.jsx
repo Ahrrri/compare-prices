@@ -4,6 +4,8 @@ import './ResultsSection.css';
 
 const ResultsSection = ({
   calculationResults,
+  selectedSource,
+  sourceCurrency,
   selectedTarget,
   targetCurrency,
   formatNumber,
@@ -38,6 +40,8 @@ const ResultsSection = ({
           path={path} 
           index={index}
           isExpanded={expandedIndex === index}
+          selectedSource={selectedSource}
+          sourceCurrency={sourceCurrency}
           selectedTarget={selectedTarget}
           targetCurrency={targetCurrency}
           formatNumber={formatNumber}

@@ -13,6 +13,7 @@ function App() {
   const [selectedNode, setSelectedNode] = useState(null)
   const [selectedTarget, setSelectedTarget] = useState(null)
   const [calculationResults, setCalculationResults] = useState([])
+  const [sourceCurrency, setSourceCurrency] = useState(null)
   const [targetCurrency, setTargetCurrency] = useState(null)
   const [highlightedPath, setHighlightedPath] = useState(null)
   const [arbitrageWarnings, setArbitrageWarnings] = useState([])
@@ -40,6 +41,13 @@ function App() {
     setMileageRates,
     resetToDefaults
   } = useCurrencySettings();
+
+  // selectedNode 변경 시 sourceCurrency 업데이트
+  useEffect(() => {
+    if (selectedNode) {
+      setSourceCurrency(selectedNode.id);
+    }
+  }, [selectedNode]);
 
   // 숫자 입력 처리 함수
   const handleAmountChange = (value) => {
@@ -130,6 +138,8 @@ function App() {
         name: `${path.steps.length}단계 변환`,
         steps: path.steps,
         finalAmount: path.finalAmount,
+        actualInput: path.actualInput,
+        nominalInput: path.nominalInput,
         pathSteps: path.steps
       }));
 
@@ -280,6 +290,8 @@ function App() {
           
           <ResultsSection
             calculationResults={calculationResults}
+            selectedSource={selectedNode}
+            sourceCurrency={sourceCurrency}
             selectedTarget={selectedTarget}
             targetCurrency={targetCurrency}
             formatNumber={formatNumber}

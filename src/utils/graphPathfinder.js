@@ -349,12 +349,17 @@ function calculateOptimalCashItemConversion(nxAmount, edge) {
         usesMileageForPurchase = true;
         availableMileageLeft -= requiredMileage;
         usedMileage += requiredMileage;
-        console.log(`  ✨ ${item.name} ${itemsToBuy}개 마일리지 구매 (${requiredMileage.toLocaleString()} 마일리지 사용)`);
       }
     }
     
-    const cashUsedForItem = itemsToBuy * nxPerItem;
-    if (!usesMileageForPurchase) {
+    // 실제 캐시 소모량 계산 (마일리지 사용 시 해당 부분만큼 캐시 절약)
+    let cashUsedForItem = itemsToBuy * nxPerItem;
+    if (usesMileageForPurchase) {
+      // 마일리지로 대체한 만큼 캐시 소모 줄임
+      const mileageCashEquivalent = requiredMileage; // 마일리지 1 = 캐시 1로 대체
+      cashUsedForItem = itemsToBuy * nxPerItem - mileageCashEquivalent;
+      console.log(`  ✨ ${item.name} ${itemsToBuy}개 마일리지 구매 (마일리지 ${requiredMileage.toLocaleString()}, 캐시 ${cashUsedForItem.toLocaleString()})`);
+    } else {
       console.log(`  💸 ${item.name} ${itemsToBuy}개 캐시 구매 (${cashUsedForItem.toLocaleString()} 캐시 사용)`);
     }
     
@@ -383,18 +388,52 @@ function calculateOptimalCashItemConversion(nxAmount, edge) {
   console.log(`💰 캐시템 변환 완료: ${totalMeso.toLocaleString()} 메소 획득`);
   
   const usedCash = nxAmount - remainingNx;
+  
+  // 마일리지 적립 계산 (캐시 사용량의 5%)
+  const earnedMileage = Math.floor(usedCash * 0.05);
+  
+  // 순 마일리지 소모량 (사용량 - 적립량)
+  const netMileageUsed = usedMileage - earnedMileage;
+  
+  // 순 캐시 비용 계산 (마일리지를 캐시로 환산)
+  const mileageCashEquivalent = netMileageUsed * (mileageRate / 100);
+  const netCashCost = usedCash + mileageCashEquivalent;
+  
   const result = {
     meso: Math.floor(totalMeso),
     usedCash,
     usedMileage,
+    earnedMileage,
+    netMileageUsed,
+    netCashCost,
     remainingCash: remainingNx,
-    remainingMileage: availableMileageLeft,
+    remainingMileage: availableMileageLeft + earnedMileage, // 적립된 마일리지 반영
     itemCombination: usedItems // 사용된 아이템 조합 정보 추가
   };
   
-  console.log(`📊 사용 현황: 캐시 ${usedCash.toLocaleString()}/${nxAmount.toLocaleString()}, 마일리지 ${usedMileage.toLocaleString()}/${availableMileage.toLocaleString()}`);
+  console.log(`📊 사용 현황: 캐시 ${usedCash.toLocaleString()}/${nxAmount.toLocaleString()}, 마일리지 사용 ${usedMileage.toLocaleString()} - 적립 ${earnedMileage.toLocaleString()} = 순소모 ${netMileageUsed.toLocaleString()}`);
+  console.log(`💰 순 비용: ${netCashCost.toLocaleString()} 캐시 (마일리지 ${mileageRate}% 환산 포함)`);
   
   return result;
+}
+
+// 실제 총 투입량 계산 함수
+function calculateActualTotalInput(steps, initialAmount) {
+  if (steps.length === 0) return initialAmount;
+  
+  // 첫 번째 단계의 실제 투입량으로 시작
+  const firstStep = steps[0];
+  let actualTotal = firstStep.actualInputAmount || firstStep.inputAmount;
+  
+  // 나머지 단계들에서 추가 투입이 있는지 확인
+  // (현재는 캐시템만 해당하지만, 향후 확장 가능)
+  for (let i = 1; i < steps.length; i++) {
+    const step = steps[i];
+    // 만약 중간 단계에서 외부 자원(마일리지 등)이 추가로 필요한 경우
+    // 여기서 처리할 수 있음 (현재는 첫 단계에서만 처리)
+  }
+  
+  return actualTotal;
 }
 
 // 경로 계산 함수
@@ -491,9 +530,14 @@ export function findAllPaths(graph, fromNodeId, toNodeId, maxDepth = null, amoun
       
     // 목표 노드에 도달한 경우
     if (currentNodeId === targetNodeId) {
+      // 실제 투입량 계산
+      const actualTotalInput = calculateActualTotalInput(currentPath, startAmount);
+      
       paths.push({
         steps: [...currentPath],
-        finalAmount: currentAmount
+        finalAmount: currentAmount,
+        nominalInput: startAmount, // 명목 투입량
+        actualInput: actualTotalInput // 실제 투입량
       });
       return;
     }
@@ -524,10 +568,18 @@ export function findAllPaths(graph, fromNodeId, toNodeId, maxDepth = null, amoun
         const newVisited = new Set(visited);
         newVisited.add(edge.to);
         
+        // 실제 투입량 계산 (캐시템의 경우 실제 사용한 양을 추적)
+        let actualInputAmount = currentAmount;
+        if (cashItemDetails) {
+          // 캐시템 변환의 경우 실제 사용한 캐시 + 마일리지 순소모를 캐시로 환산
+          actualInputAmount = cashItemDetails.netCashCost || cashItemDetails.usedCash;
+        }
+
         const step = {
           from: edge.from,
           to: edge.to,
-          inputAmount: currentAmount,
+          inputAmount: currentAmount, // 명목 투입량
+          actualInputAmount, // 실제 투입량
           outputAmount: newAmount,
           edge: edge,
           description: edge.description,
@@ -759,21 +811,90 @@ export function detectArbitrage(graph, startAmount = 1000000) {
   return uniqueOpportunities.sort((a, b) => b.profit - a.profit);
 }
 
-// 최적 경로들 선별 (효율성 순으로 정렬)
+// 최적 경로들 선별 (실제 효율성 순으로 정렬)
 export function getBestPaths(allPaths) {
-  // 효율 기준으로 정렬 (최종 금액 / 시작 금액)
+  // 실제 효율 기준으로 정렬 (최종 금액 / 실제 투입 금액)
   return allPaths.sort((a, b) => {
-    // 각 경로의 시작 금액 계산 (첫 번째 step의 inputAmount)
-    const startAmountA = a.steps.length > 0 ? a.steps[0].inputAmount : 1;
-    const startAmountB = b.steps.length > 0 ? b.steps[0].inputAmount : 1;
+    // 실제 투입량 사용 (actualInput이 있으면 사용, 없으면 첫 단계의 inputAmount)
+    const actualInputA = a.actualInput || (a.steps.length > 0 ? a.steps[0].inputAmount : 1);
+    const actualInputB = b.actualInput || (b.steps.length > 0 ? b.steps[0].inputAmount : 1);
     
-    // 효율 계산 (최종 금액 / 시작 금액)
-    const efficiencyA = a.finalAmount / startAmountA;
-    const efficiencyB = b.finalAmount / startAmountB;
+    // 실제 효율 계산 (최종 금액 / 실제 투입 금액)
+    const actualEfficiencyA = a.finalAmount / actualInputA;
+    const actualEfficiencyB = b.finalAmount / actualInputB;
     
     // 높은 효율 순으로 정렬
-    return efficiencyB - efficiencyA;
+    return actualEfficiencyB - actualEfficiencyA;
   });
+}
+
+// 재화 우선순위 정의 (낮은 숫자 = 높은 우선순위)
+const CURRENCY_PRIORITY = {
+  'KRW': 1,      // 1만원
+  'NX': 2,       // 1만 넥슨캐시
+  'MP': 3,       // 1만 메이플포인트
+  'MESO_G1': 4,  // 1억 메소 (일반섭)
+  'MESO_G2': 4,  // 1억 메소 (에오스)
+  'MESO_G3': 4,  // 1억 메소 (챌린저스)
+  'SOL_G1': 5,   // 1개 (일반섭 조각)
+  'SOL_G2': 5,   // 1개 (에오스 조각)
+  'SOL_G3': 5    // 1개 (챌린저스 조각)
+};
+
+// 재화별 단위 정의
+const CURRENCY_UNITS = {
+  'KRW': { base: 1, unit: '원' },
+  'NX': { base: 1, unit: '캐시' },
+  'MP': { base: 1, unit: '메포' },
+  'MESO_G1': { base: 100000000, unit: '1억 일반섭 메소' },
+  'MESO_G2': { base: 100000000, unit: '1억 에오스 메소' },
+  'MESO_G3': { base: 100000000, unit: '1억 챌린저스 메소' },
+  'SOL_G1': { base: 1, unit: '1개 일반섭 조각' },
+  'SOL_G2': { base: 1, unit: '1개 에오스 조각' },
+  'SOL_G3': { base: 1, unit: '1개 챌린저스 조각' }
+};
+
+// 효율 계산 함수 (낮은 우선순위 재화 / 높은 우선순위 재화)
+export function calculateEfficiencyRatio(inputCurrency, inputAmount, outputCurrency, outputAmount) {
+  const inputPriority = CURRENCY_PRIORITY[inputCurrency] || 999;
+  const outputPriority = CURRENCY_PRIORITY[outputCurrency] || 999;
+  
+  const inputUnit = CURRENCY_UNITS[inputCurrency];
+  const outputUnit = CURRENCY_UNITS[outputCurrency];
+  
+  if (!inputUnit || !outputUnit) {
+    return { ratio: outputAmount / inputAmount, text: `${(outputAmount / inputAmount).toFixed(1)}배` };
+  }
+  
+  // 높은 우선순위를 분자에, 낮은 우선순위를 분모에
+  if (inputPriority < outputPriority) {
+    // input이 높은 우선순위 → input/output (예: 원/메소)
+    const normalizedInput = inputAmount / inputUnit.base;
+    const normalizedOutput = outputAmount / outputUnit.base;
+    const ratio = normalizedInput / normalizedOutput;
+    return {
+      ratio,
+      text: `${ratio.toFixed(1)} ${inputUnit.unit}/${outputUnit.unit}`
+    };
+  } else if (outputPriority < inputPriority) {
+    // output이 높은 우선순위 → output/input (예: 원/메소)
+    const normalizedInput = inputAmount / inputUnit.base;
+    const normalizedOutput = outputAmount / outputUnit.base;
+    const ratio = normalizedOutput / normalizedInput;
+    return {
+      ratio,
+      text: `${ratio.toFixed(1)} ${outputUnit.unit}/${inputUnit.unit}`
+    };
+  } else {
+    // 같은 우선순위 → input/output (output이 분모)
+    const normalizedInput = inputAmount / inputUnit.base;
+    const normalizedOutput = outputAmount / outputUnit.base;
+    const ratio = normalizedInput / normalizedOutput;
+    return {
+      ratio,
+      text: `${ratio.toFixed(1)} ${inputUnit.unit}/${outputUnit.unit}`
+    };
+  }
 }
 
 // 숫자 포맷팅 함수
