@@ -16,17 +16,28 @@
   border-radius: 6px;
 }
 
+.mileage-section-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 2rem;
+}
+
 .mileage-amount-row {
   display: flex;
-  align-items: center;
+  flex-direction: column;
   gap: 0.5rem;
-  margin-bottom: 1rem;
 }
 
 .mileage-amount-row label {
   font-weight: bold;
   color: #495057;
-  min-width: 120px;
+  display: block;
+}
+
+.mileage-input-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .mileage-input {
@@ -45,14 +56,16 @@
 
 /* 마일리지 변환 비율 스타일 */
 .mileage-rates-section {
-  border-top: 1px solid #dee2e6;
-  padding-top: 1rem;
+  border-left: 1px solid #dee2e6;
+  padding-left: 1rem;
+  flex: 1;
 }
 
 .mileage-rates-label {
   font-weight: bold;
   color: #495057;
   margin-bottom: 0.5rem;
+  display: block;
 }
 
 .mileage-rates-inputs {
@@ -98,7 +111,6 @@
 .settings .market-rate-row > label,
 .settings .mvp-selection > label {
   margin-right: 0.5rem;
-  min-width: 200px;
   text-align: left;
 }
 
@@ -153,7 +165,6 @@
 }
 
 .mvp-select {
-  margin-left: 1rem;
   padding: 0.3rem;
   border: 1px solid #ddd;
   border-radius: 4px;
@@ -176,11 +187,10 @@
 }
 
 .rate-input {
-  width: 100px;
+  width: 110px;
   padding: 0.3rem;
   border: 1px solid #ddd;
   border-radius: 4px;
-  margin-right: 0.5rem;
   text-align: right;
 }
 
@@ -390,6 +400,7 @@
   margin-bottom: 8px;
   background: #fafafa;
   flex-wrap: wrap;
+  min-width: 600px;
 }
 
 .cash-item-row:hover {
@@ -414,7 +425,7 @@
 .item-rates {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 3px;
   flex: 1;
 }
 
@@ -434,9 +445,11 @@
   gap: 4px;
   flex: 1;
   min-width: 120px;
+  margin-left: 1.5rem;
 }
 
 .ratio-select {
+  width: 90px;
   padding: 4px 6px;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -446,10 +459,10 @@
 }
 
 .item-limits {
-  width: 150px;
   display: flex;
   align-items: center;
   gap: 4px;
+  margin-left: 1.5rem;
 }
 
 .limit-input {
@@ -513,6 +526,7 @@
 }
 
 .mileage-group {
+  width: 600px;
   margin-bottom: 1rem;
   padding: 1rem;
   background: #f8f9fa;
@@ -880,4 +894,34 @@
   width: 100%;
   margin-top: 0.5rem;
   cursor: pointer;
+}
+
+/* 기준 품목 고정 표시 스타일 */
+.fixed-item-display {
+  padding: 0.5rem;
+  background: #e8f5e9;
+  border: 1px solid #4caf50;
+  border-radius: 4px;
+  min-height: 60px;
+}
+
+.fixed-item-display .item-name {
+  font-weight: 600;
+  color: #1b5e20;
+  margin-bottom: 0.3rem;
+}
+
+.efficiency-display {
+  color: #2e7d32;
+  font-size: 0.7rem;
+  font-weight: 500;
+  margin-top: 0.2rem;
+}
+
+/* 캐시아이템 행에서의 효율 표시 */
+.cash-item-row .efficiency-display {
+  margin-top: 0;
+  white-space: nowrap;
+  margin-left: 0.5rem;
+  min-width: 120px;
 }

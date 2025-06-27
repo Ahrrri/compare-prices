@@ -58,6 +58,26 @@ const PathSummary = ({
                           <span>, 마일리지 사용: {formatNumber(step.cashItemDetails.usedMileage, 'currency')}</span>
                         )}
                       </div>
+                      
+                      {/* 사용된 아이템 조합 표시 */}
+                      {step.cashItemDetails.itemCombination && step.cashItemDetails.itemCombination.length > 0 && (
+                        <div className="item-combination">
+                          <div className="combination-header">사용된 아이템 조합:</div>
+                          <div className="combination-list">
+                            {step.cashItemDetails.itemCombination.map((item, index) => (
+                              <div key={index} className="combination-item">
+                                <span className="item-name">{item.name}</span>
+                                <span className="item-quantity">{item.quantity}개</span>
+                                {item.usedMileage && (
+                                  <span className="item-mileage">(마일리지 {formatNumber(item.mileageUsed, 'currency')})</span>
+                                )}
+                                <span className="item-result">→ {formatNumber(item.mesoGained, 'meso')}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      
                       {(step.cashItemDetails.remainingCash > 0 || step.cashItemDetails.remainingMileage > 0) && (
                         <div className="remaining-info">
                           {step.cashItemDetails.remainingCash > 0 && (

@@ -320,6 +320,7 @@ function calculateOptimalCashItemConversion(nxAmount, edge) {
   let totalMeso = 0;
   let usedMileage = 0; // 실제 사용한 마일리지
   let availableMileageLeft = availableMileage; // 남은 마일리지
+  let usedItems = []; // 사용된 아이템 조합 추적
   
   // 효율 순으로 아이템 사용
   for (const item of sortedItems) {
@@ -339,9 +340,10 @@ function calculateOptimalCashItemConversion(nxAmount, edge) {
     
     // 마일리지 사용 여부 결정
     let usesMileageForPurchase = false;
+    let requiredMileage = 0;
     if (item.shouldUseMileage) {
       const mileagePerItem = Math.ceil(nxPerItem * (item.mileageRatio / 100));
-      const requiredMileage = itemsToBuy * mileagePerItem;
+      requiredMileage = itemsToBuy * mileagePerItem;
       
       if (availableMileageLeft >= requiredMileage) {
         usesMileageForPurchase = true;
@@ -351,14 +353,25 @@ function calculateOptimalCashItemConversion(nxAmount, edge) {
       }
     }
     
+    const cashUsedForItem = itemsToBuy * nxPerItem;
     if (!usesMileageForPurchase) {
-      console.log(`  💸 ${item.name} ${itemsToBuy}개 캐시 구매 (${(itemsToBuy * nxPerItem).toLocaleString()} 캐시 사용)`);
+      console.log(`  💸 ${item.name} ${itemsToBuy}개 캐시 구매 (${cashUsedForItem.toLocaleString()} 캐시 사용)`);
     }
     
     // 획득 메소 계산
     const mesoFromThisItem = itemsToBuy * item.meso * (1 - fee / 100);
     totalMeso += mesoFromThisItem;
-    remainingNx -= itemsToBuy * nxPerItem;
+    remainingNx -= cashUsedForItem;
+    
+    // 사용된 아이템 정보 저장
+    usedItems.push({
+      name: item.name,
+      quantity: itemsToBuy,
+      usedMileage: usesMileageForPurchase,
+      mileageUsed: usesMileageForPurchase ? requiredMileage : 0,
+      cashUsed: cashUsedForItem,
+      mesoGained: Math.floor(mesoFromThisItem)
+    });
     
     console.log(`    → ${mesoFromThisItem.toLocaleString()} 메소 획득`);
   }
@@ -375,7 +388,8 @@ function calculateOptimalCashItemConversion(nxAmount, edge) {
     usedCash,
     usedMileage,
     remainingCash: remainingNx,
-    remainingMileage: availableMileageLeft
+    remainingMileage: availableMileageLeft,
+    itemCombination: usedItems // 사용된 아이템 조합 정보 추가
   };
   
   console.log(`📊 사용 현황: 캐시 ${usedCash.toLocaleString()}/${nxAmount.toLocaleString()}, 마일리지 ${usedMileage.toLocaleString()}/${availableMileage.toLocaleString()}`);

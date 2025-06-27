@@ -147,3 +147,52 @@
   color: #ff6f00;
   font-weight: 500;
 }
+
+/* 아이템 조합 표시 스타일 */
+.item-combination {
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid #c8e6c9;
+}
+
+.combination-header {
+  font-weight: 600;
+  color: #1b5e20;
+  margin-bottom: 0.3rem;
+  font-size: 0.85rem;
+}
+
+.combination-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.combination-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  color: #2e7d32;
+}
+
+.item-name {
+  font-weight: 500;
+  color: #1b5e20;
+}
+
+.item-quantity {
+  color: #388e3c;
+  font-weight: 500;
+}
+
+.item-mileage {
+  color: #7b1fa2;
+  font-size: 0.75rem;
+}
+
+.item-result {
+  color: #2e7d32;
+  font-weight: 500;
+  margin-left: auto;
+}
