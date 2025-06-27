@@ -14,6 +14,7 @@ const GraphSection = ({
   selectedNode,
   selectedTarget,
   highlightedPath,
+  arbitrageWarnings,
   onNodeSelect,
   onReset
 }) => {
@@ -54,6 +55,7 @@ const GraphSection = ({
         selectedNode={selectedNode}
         selectedTarget={selectedTarget}
         highlightedPath={highlightedPath}
+        arbitrageWarnings={arbitrageWarnings}
       />
     </div>
   );

@@ -45,6 +45,19 @@ h1 {
   margin: 0.5rem 0;
   border-radius: 6px;
   border-left: 4px solid #ffc107;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.arbitrage-item:hover {
+  background: rgba(255, 193, 7, 0.2);
+  transform: translateX(2px);
+}
+
+.arbitrage-item.highlighted {
+  background: rgba(255, 23, 68, 0.15);
+  border-left-color: #FF1744;
+  box-shadow: 0 2px 8px rgba(255, 23, 68, 0.3);
 }
 
 .arbitrage-header {

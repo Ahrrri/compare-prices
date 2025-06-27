@@ -410,24 +410,21 @@ export function findAllPaths(graph, fromNodeId, toNodeId, maxDepth = null, amoun
   return paths;
 }
 
-// 순환 경로 전용 탐색 함수 (무한동력 감지용)
-function findCyclePaths(graph, startNodeId, startAmount, maxDepth = 6) {
+// 순환 경로 전용 탐색 함수 (무한동력 감지용) - visited 사용
+function findCyclePaths(graph, startNodeId, startAmount, maxDepth = 5) {
   const { edges } = graph;
   const paths = [];
   
-  // 무한동력 감지를 위한 임계값
-  const arbitrageThreshold = startAmount * 10;
+  console.log(`🔍 ${getNodeDisplayName(startNodeId)}에서 사이클 탐색 시작`);
   
-  function dfs(currentNodeId, targetNodeId, currentPath, currentAmount, depth) {
+  function dfs(currentNodeId, targetNodeId, currentPath, currentAmount, visited, depth) {
     if (depth > maxDepth) return;
     
-    if (currentAmount > arbitrageThreshold) {
-      console.warn(`무한동력 감지: 경로에서 금액이 ${currentAmount.toLocaleString()}로 비정상적으로 증가했습니다.`);
-      return;
-    }
-    
-    // 목표 노드에 도달했고, 최소 1단계 이상인 경우
+    // 목표 노드(시작점)에 도달했고, 최소 1단계 이상인 경우
     if (currentNodeId === targetNodeId && currentPath.length > 0) {
+      const pathDesc = simplifyPath(currentPath);
+      console.log(`🔄 사이클 발견: ${pathDesc}, 최종 금액: ${currentAmount.toLocaleString()}`);
+      
       paths.push({
         steps: [...currentPath],
         finalAmount: currentAmount
@@ -438,6 +435,11 @@ function findCyclePaths(graph, startNodeId, startAmount, maxDepth = 6) {
     const outgoingEdges = edges.filter(edge => edge.from === currentNodeId);
     
     for (const edge of outgoingEdges) {
+      // visited 체크: 시작점이 아닌 노드는 재방문 금지
+      if (edge.to !== targetNodeId && visited.has(edge.to)) {
+        continue;
+      }
+      
       const newAmount = calculateConversion(currentAmount, edge);
       
       if (newAmount <= 0 || !isFinite(newAmount)) {
@@ -453,11 +455,19 @@ function findCyclePaths(graph, startNodeId, startAmount, maxDepth = 6) {
         description: edge.description
       };
       
-      dfs(edge.to, targetNodeId, [...currentPath, step], newAmount, depth + 1);
+      const newVisited = new Set(visited);
+      if (edge.to !== targetNodeId) {
+        newVisited.add(edge.to);
+      }
+      
+      dfs(edge.to, targetNodeId, [...currentPath, step], newAmount, newVisited, depth + 1);
     }
   }
   
-  dfs(startNodeId, startNodeId, [], startAmount, 0);
+  const visited = new Set([startNodeId]);
+  dfs(startNodeId, startNodeId, [], startAmount, visited, 0);
+  
+  console.log(`✅ ${getNodeDisplayName(startNodeId)} 사이클 탐색 완료: ${paths.length}개 발견`);
   return paths;
 }
 
@@ -477,6 +487,62 @@ function getNodeDisplayName(nodeId) {
   return nodeNames[nodeId] || nodeId;
 }
 
+// 간단한 사이클 유효성 검증
+function isValidCycle(steps, startAmount, minProfitRate = 0.01) {
+  if (steps.length === 0) return false;
+  
+  // 시작과 끝이 같은 노드인지 확인
+  const startNode = steps[0].from;
+  const endNode = steps[steps.length - 1].to;
+  
+  if (startNode !== endNode) {
+    console.log(`❌ 사이클이 아님: ${getNodeDisplayName(startNode)} → ${getNodeDisplayName(endNode)}`);
+    return false;
+  }
+  
+  // 최종 금액 계산
+  let currentAmount = startAmount;
+  for (const step of steps) {
+    currentAmount = calculateConversion(currentAmount, step.edge);
+  }
+  
+  const profitRate = (currentAmount - startAmount) / startAmount;
+  const isValid = profitRate > minProfitRate;
+  
+  console.log(`📊 사이클 검증: ${simplifyPath(steps)}, 수익률: ${(profitRate * 100).toFixed(2)}%, 유효: ${isValid ? '✅' : '❌'}`);
+  
+  return isValid;
+}
+
+// 사이클 경로 정규화 함수
+function normalizeCyclePath(steps) {
+  if (steps.length === 0) return '';
+  
+  // 1. 노드 시퀀스 추출 (마지막 노드는 첫 번째와 동일하므로 제외)
+  const nodes = steps.map(step => step.from);
+  
+  console.log('원본 노드 시퀀스:', nodes.map(n => getNodeDisplayName(n)));
+  
+  // 2. 알파벳 순으로 가장 앞서는 노드의 인덱스 찾기
+  let minIndex = 0;
+  for (let i = 1; i < nodes.length; i++) {
+    if (nodes[i] < nodes[minIndex]) {
+      minIndex = i;
+    }
+  }
+  
+  // 3. 정규화된 순환 패턴 생성
+  const normalizedNodes = [
+    ...nodes.slice(minIndex),
+    ...nodes.slice(0, minIndex)
+  ];
+  
+  const normalizedKey = normalizedNodes.join('→');
+  console.log('정규화된 키:', normalizedKey);
+  console.log('정규화된 경로:', normalizedNodes.map(n => getNodeDisplayName(n)).join(' → '));
+  
+  return normalizedKey;
+}
 
 // 경로에서 연속된 중복 노드 제거 함수
 function simplifyPath(steps) {
@@ -495,18 +561,21 @@ function simplifyPath(steps) {
   return simplifiedNodes.join(' → ');
 }
 
-// 무한동력(arbitrage) 경로 감지 함수
+// 무한동력(arbitrage) 경로 감지 함수 (정규화 적용)
 export function detectArbitrage(graph, startAmount = 1000000) {
   const { nodes } = graph;
-  const arbitrageOpportunities = [];
+  const validOpportunities = [];
+  
+  console.log('🔍 무한동력 감지 시작');
   
   // 각 노드에서 시작해서 같은 노드로 돌아오는 경로 찾기
   for (const node of nodes) {
     const cyclePaths = findCyclePaths(graph, node.id, startAmount);
     
     for (const path of cyclePaths) {
-      if (path.finalAmount > startAmount * 1.01) { // 1% 이상 이익
-        arbitrageOpportunities.push({
+      // 사이클 유효성 검증 (1% 이상 이익)
+      if (isValidCycle(path.steps, startAmount, 0.01)) {
+        validOpportunities.push({
           startNode: node.id,
           startNodeDisplay: getNodeDisplayName(node.id),
           startAmount: startAmount,
@@ -514,69 +583,33 @@ export function detectArbitrage(graph, startAmount = 1000000) {
           profit: path.finalAmount - startAmount,
           profitRate: ((path.finalAmount - startAmount) / startAmount * 100).toFixed(2),
           steps: path.steps,
-          pathDescription: simplifyPath(path.steps)
+          pathDescription: simplifyPath(path.steps),
+          normalizedKey: normalizeCyclePath(path.steps)
         });
       }
     }
   }
   
-  // 순환 경로 정규화 및 중복 제거
-  const normalizedOpportunities = [];
+  // 정규화된 키를 기준으로 중복 제거 (가장 높은 수익률을 가진 것만 유지)
+  const normalizedMap = new Map();
   
-  for (const opportunity of arbitrageOpportunities) {
-    // 순환 경로를 정규화 (알파벳 순으로 가장 작은 노드를 시작점으로)
-    const pathNodes = opportunity.steps.map(step => step.from);
-    pathNodes.push(opportunity.steps[opportunity.steps.length - 1].to); // 마지막 to 노드도 추가
+  for (const opportunity of validOpportunities) {
+    const key = opportunity.normalizedKey;
     
-    // 시작점을 제외한 순환 부분만 추출
-    const cycleNodes = pathNodes.slice(0, -1); // 마지막은 시작점과 같으므로 제거
-    
-    // 정규화된 순환 패턴 생성 (알파벳 순으로 가장 작은 노드부터 시작)
-    let minIndex = 0;
-    for (let i = 1; i < cycleNodes.length; i++) {
-      if (cycleNodes[i] < cycleNodes[minIndex]) {
-        minIndex = i;
-      }
-    }
-    
-    // 정규화된 순환 패턴
-    const normalizedCycle = [
-      ...cycleNodes.slice(minIndex),
-      ...cycleNodes.slice(0, minIndex)
-    ];
-    const normalizedKey = normalizedCycle.join('→');
-    
-    // 동일한 정규화된 패턴이 이미 있는지 확인
-    const existingBetter = normalizedOpportunities.find(existing => 
-      existing.normalizedKey === normalizedKey &&
-      existing.profit >= opportunity.profit
-    );
-    
-    if (!existingBetter) {
-      // 기존에 있는 더 나쁜 같은 패턴들 제거
-      const indexesToRemove = [];
-      for (let i = 0; i < normalizedOpportunities.length; i++) {
-        const existing = normalizedOpportunities[i];
-        if (existing.normalizedKey === normalizedKey &&
-            existing.profit < opportunity.profit) {
-          indexesToRemove.push(i);
-        }
-      }
-      
-      // 뒤에서부터 제거 (인덱스 변경 방지)
-      for (let i = indexesToRemove.length - 1; i >= 0; i--) {
-        normalizedOpportunities.splice(indexesToRemove[i], 1);
-      }
-      
-      normalizedOpportunities.push({
-        ...opportunity,
-        normalizedKey: normalizedKey
-      });
+    if (!normalizedMap.has(key) || normalizedMap.get(key).profit < opportunity.profit) {
+      console.log(`🔄 정규화 그룹 업데이트: ${key}, 수익: ${opportunity.profit.toLocaleString()}원`);
+      normalizedMap.set(key, opportunity);
+    } else {
+      console.log(`❌ 중복 제거: ${opportunity.pathDescription} (더 낮은 수익)`);
     }
   }
   
+  const uniqueOpportunities = Array.from(normalizedMap.values());
+  
+  console.log(`✅ 무한동력 감지 완료: ${uniqueOpportunities.length}개 고유 패턴 발견`);
+  
   // 이익이 큰 순서대로 정렬
-  return normalizedOpportunities.sort((a, b) => b.profit - a.profit);
+  return uniqueOpportunities.sort((a, b) => b.profit - a.profit);
 }
 
 // 최적 경로들 선별 (효율성 순으로 정렬)

@@ -162,30 +162,6 @@ function App() {
         금액을 입력하고 노드를 클릭하여 변환 경로를 탐색하세요
       </p>
       
-      {/* 무한동력 경고 */}
-      {arbitrageWarnings.length > 0 && (
-        <div className="arbitrage-warning">
-          <h3>⚠️ 무한동력 감지</h3>
-          <p>현재 설정에서 순환 거래로 이익을 낼 수 있는 경로가 감지되었습니다:</p>
-          {arbitrageWarnings.slice(0, 3).map((warning, index) => (
-            <div key={index} className="arbitrage-item">
-              <div className="arbitrage-header">
-                <strong>{warning.startNodeDisplay}</strong>에서 시작하여 <strong>{warning.profitRate}%</strong> 이익 
-                ({formatNumber(warning.profit, 'currency')}원 수익)
-              </div>
-              <div className="arbitrage-path">
-                경로: {warning.pathDescription}
-              </div>
-              <div className="arbitrage-details">
-                {formatNumber(warning.startAmount, 'currency')}원 → {formatNumber(warning.finalAmount, 'currency')}원
-              </div>
-            </div>
-          ))}
-          {arbitrageWarnings.length > 3 && (
-            <p>...외 {arbitrageWarnings.length - 3}개 더</p>
-          )}
-        </div>
-      )}
       
       <div className="main-container">
         <div className="settings-panel">
@@ -228,9 +204,43 @@ function App() {
             selectedNode={selectedNode}
             selectedTarget={selectedTarget}
             highlightedPath={highlightedPath}
+            arbitrageWarnings={arbitrageWarnings}
             onNodeSelect={handleNodeSelect}
             onReset={handleReset}
           />
+          
+          {/* 무한동력 경고 */}
+          {arbitrageWarnings.length > 0 && (
+            <div className="arbitrage-warning">
+              <h3>⚠️ 무한동력 감지</h3>
+              <p>현재 설정에서 순환 거래로 이익을 낼 수 있는 경로가 감지되었습니다:</p>
+              {arbitrageWarnings.slice(0, 3).map((warning, index) => (
+                <div 
+                  key={index} 
+                  className={`arbitrage-item ${highlightedPath === `arbitrage-${index}` ? 'highlighted' : ''}`}
+                  onClick={() => {
+                    const pathId = `arbitrage-${index}`;
+                    setHighlightedPath(highlightedPath === pathId ? null : pathId);
+                  }}
+                  style={{ cursor: 'pointer' }}
+                >
+                  <div className="arbitrage-header">
+                    <strong>{warning.startNodeDisplay}</strong>에서 시작하여 <strong>{warning.profitRate}%</strong> 이익 
+                    ({formatNumber(warning.profit, 'currency')}원 수익)
+                  </div>
+                  <div className="arbitrage-path">
+                    경로: {warning.pathDescription}
+                  </div>
+                  <div className="arbitrage-details">
+                    {formatNumber(warning.startAmount, 'currency')}원 → {formatNumber(warning.finalAmount, 'currency')}원
+                  </div>
+                </div>
+              ))}
+              {arbitrageWarnings.length > 3 && (
+                <p>...외 {arbitrageWarnings.length - 3}개 더</p>
+              )}
+            </div>
+          )}
           
           <ResultsSection
             calculationResults={calculationResults}

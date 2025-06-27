@@ -15,7 +15,8 @@ const CurrencyGraph = ({
   onNodeSelect,
   selectedNode,
   selectedTarget,
-  highlightedPath
+  highlightedPath,
+  arbitrageWarnings
 }) => {
   const svgRef = useRef();
 
@@ -106,9 +107,26 @@ const CurrencyGraph = ({
     // 하이라이트된 경로 확인 함수
     const isEdgeHighlighted = (edge) => {
       if (!highlightedPath) return false;
-      return highlightedPath.some(step => 
-        step.from === edge.source && step.to === edge.target
-      );
+      
+      // 일반 변환 경로인 경우 (배열)
+      if (Array.isArray(highlightedPath)) {
+        return highlightedPath.some(step => 
+          step.from === edge.source && step.to === edge.target
+        );
+      }
+      
+      // arbitrage 경로인 경우 (문자열 ID)
+      if (typeof highlightedPath === 'string' && highlightedPath.startsWith('arbitrage-')) {
+        const index = parseInt(highlightedPath.replace('arbitrage-', ''));
+        if (arbitrageWarnings && arbitrageWarnings[index]) {
+          const arbitragePath = arbitrageWarnings[index].steps;
+          return arbitragePath.some(step => 
+            step.from === edge.source && step.to === edge.target
+          );
+        }
+      }
+      
+      return false;
     };
 
     // 엣지 렌더링 (directed)
@@ -275,9 +293,26 @@ const CurrencyGraph = ({
     // 하이라이트된 경로에 포함된 노드 확인 함수
     const isNodeHighlighted = (node) => {
       if (!highlightedPath) return false;
-      return highlightedPath.some(step => 
-        step.from === node.id || step.to === node.id
-      );
+      
+      // 일반 변환 경로인 경우 (배열)
+      if (Array.isArray(highlightedPath)) {
+        return highlightedPath.some(step => 
+          step.from === node.id || step.to === node.id
+        );
+      }
+      
+      // arbitrage 경로인 경우 (문자열 ID)
+      if (typeof highlightedPath === 'string' && highlightedPath.startsWith('arbitrage-')) {
+        const index = parseInt(highlightedPath.replace('arbitrage-', ''));
+        if (arbitrageWarnings && arbitrageWarnings[index]) {
+          const arbitragePath = arbitrageWarnings[index].steps;
+          return arbitragePath.some(step => 
+            step.from === node.id || step.to === node.id
+          );
+        }
+      }
+      
+      return false;
     };
 
     // 노드 원형
