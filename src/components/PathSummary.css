@@ -15,7 +15,7 @@
   background: #f8f9fa;
   border-bottom: 1px solid #e9ecef;
   transition: background-color 0.2s ease;
-  min-height: 60px;
+  min-height: 45px;
 }
 
 .path-summary-header:hover {

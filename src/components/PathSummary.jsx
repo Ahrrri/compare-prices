@@ -29,13 +29,10 @@ const PathSummary = ({
           {path.actualInput && path.actualInput !== path.nominalInput ? (
             <>
               <div style={{marginBottom: '0.2rem'}}>
-                <strong>실제: {formatNumber(path.actualInput, getCurrencyType(selectedSource?.id || sourceCurrency))} {getCurrencyName(selectedSource?.id || sourceCurrency)} → {formatNumber(path.finalAmount, getCurrencyType(selectedTarget?.id || targetCurrency))} {getCurrencyName(selectedTarget?.id || targetCurrency)}</strong>
+                <strong>실제: {formatNumber(path.actualInput, getCurrencyType(selectedSource?.id || sourceCurrency))} {getCurrencyName(selectedSource?.id || sourceCurrency)} → {formatNumber(path.finalAmount, getCurrencyType(selectedTarget?.id || targetCurrency))} {getCurrencyName(selectedTarget?.id || targetCurrency)} ⚠️</strong>
               </div>
               <div style={{fontSize: '0.8rem', color: '#666'}}>
-                명목: {formatNumber(path.nominalInput || (path.steps.length > 0 ? path.steps[0].inputAmount : 0), getCurrencyType(selectedSource?.id || sourceCurrency))} → 효율: {calculateEfficiencyRatio(selectedSource?.id || sourceCurrency, path.actualInput, selectedTarget?.id || targetCurrency, path.finalAmount).text}
-              </div>
-              <div style={{fontSize: '0.75rem', color: '#e65100'}}>
-                ⚠️ 잔여 한도로 인해 {formatNumber((path.nominalInput || path.steps[0]?.inputAmount || 0) - path.actualInput, getCurrencyType(selectedSource?.id || sourceCurrency))} 미사용
+                효율: {calculateEfficiencyRatio(selectedSource?.id || sourceCurrency, path.actualInput, selectedTarget?.id || targetCurrency, path.finalAmount).text}
               </div>
             </>
           ) : (

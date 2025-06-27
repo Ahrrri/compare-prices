@@ -68,13 +68,15 @@ export function createCurrencyGraph(settings) {
         description: '현금 → 넥슨캐시 (1:1)' 
       });
     } else {
+      const voucherInfo = voucherDiscounts[bestOption.key];
       edges.push({
         from: 'KRW',
         to: 'NX',
         type: 'voucher',
         fee: -bestOption.rate,
         description: `${bestOption.name} 할인 (${bestOption.rate}% 할인)`,
-        voucherKey: bestOption.key
+        voucherKey: bestOption.key,
+        remainingLimit: voucherInfo?.remainingLimit || 0
       });
     }
   }
@@ -120,7 +122,7 @@ export function createCurrencyGraph(settings) {
   // 캐시템 경매장 경로들 (넥슨캐시 → 메소, 일방향만)
   const cashItemFeeRate = (mvpGrade === 'SILVER_PLUS') ? 3 : 5;
   
-  // 각 그룹별로 캐시템 처리 (개선된 로직)
+  // 각 그룹별로 캐시템 처리 (개별 아이템 + 마일리지 비율별 엣지 생성)
   ['GROUP1', 'GROUP2', 'GROUP3'].forEach((group, groupIndex) => {
     const groupNum = groupIndex + 1;
     const isEnabled = exchangeOptions?.[`cashItem_G${groupNum}`]?.enabled;
@@ -129,22 +131,29 @@ export function createCurrencyGraph(settings) {
       const availableItems = cashItemRates[group].items.filter(item => 
         item.remainingLimit > 0 &&
         item.meso > 0 && 
-        item.nx > 0
+        item.nx > 0 &&
+        item.availableMileageRatios && item.availableMileageRatios.length > 0
       );
       
-      if (availableItems.length > 0) {
-        // 복합 캐시템 판매 엣지 생성 (모든 아이템 효율 순 처리)
-        edges.push({
-          from: 'NX',
-          to: `MESO_G${groupNum}`,
-          type: 'cashitem_multi',
-          fee: cashItemFeeRate,
-          availableItems: availableItems,
-          availableMileage: settings.availableMileage || 0,
-          mileageRate: settings.mileageRates?.[group] || 70, // 그룹별 마일리지 변환 비율
-          description: `캐시템 경매장 (최적 조합 판매)`
+      // 각 아이템별로 개별 엣지 생성
+      availableItems.forEach(item => {
+        // 아이템이 지원하는 각 마일리지 비율별로 엣지 생성
+        item.availableMileageRatios.forEach(mileageRatio => {
+          const mileageText = mileageRatio === 0 ? '' : ` (마일리지 ${mileageRatio}%)`;
+          
+          edges.push({
+            from: 'NX',
+            to: `MESO_G${groupNum}`,
+            type: 'cashitem_single',
+            fee: cashItemFeeRate,
+            item: item,
+            mileageRatio: mileageRatio,
+            availableMileage: settings.availableMileage || 0,
+            mileageRate: settings.mileageRates?.[group] || 70,
+            description: `${item.name}${mileageText}`
+          });
         });
-      }
+      });
     }
   });
 
@@ -258,182 +267,143 @@ export function createCurrencyGraph(settings) {
 }
 
 /**
- * 캐시템 경매장 최적 변환 계산 함수
- * 
- * 로직:
- * 1. 모든 아이템을 효율 순으로 정렬 (마일리지 고려)
- * 2. 가장 효율 좋은 아이템부터 차례대로 사용
- * 3. 각 아이템의 한도까지 사용 후 다음 아이템으로
- * 4. 마일리지 사용 시 실제 캐시 비용으로 효율 재계산
- * 
- * @param {number} nxAmount - 사용할 총 넥슨캐시 양
- * @param {object} edge - 캐시템 엣지 정보
+ * 개별 캐시템 변환 함수 (단일 아이템 + 고정 마일리지 비율)
+ * @param {number} nxAmount - 사용할 넥슨캐시 양
+ * @param {object} edge - 캐시템 엣지 정보 (단일 아이템)
  * @returns {object} { meso: 획득 메소 양, usedCash: 사용한 캐시, usedMileage: 사용한 마일리지, remainingCash: 남은 캐시, remainingMileage: 남은 마일리지 }
  */
-function calculateOptimalCashItemConversion(nxAmount, edge) {
-  const { availableItems, availableMileage = 0, fee, mileageRate = 70 } = edge;
+function calculateSingleCashItemConversion(nxAmount, edge) {
+  const { item, mileageRatio, availableMileage = 0, fee, mileageRate = 70 } = edge;
   
-  console.log(`💰 캐시템 변환 시작: ${nxAmount.toLocaleString()}캐시, 보유 마일리지: ${availableMileage.toLocaleString()}`);
+  console.log(`💰 단일 캐시템 변환 시작: ${item.name} (마일리지 ${mileageRatio}%), ${nxAmount.toLocaleString()}캐시`);
   
-  // 아이템별 실제 효율 계산 (마일리지 고려)
-  const itemsWithEfficiency = availableItems.map(item => {
-    // 기본 효율 (마일리지 미사용)
-    const basicEfficiency = (item.meso * (1 - fee / 100)) / item.nx;
-    
-    // 마일리지 사용 시 효율 계산
-    let mileageEfficiency = basicEfficiency;
-    if (item.mileageRatio > 0 && availableMileage > 0) {
-      const mileageUsableNx = item.nx * (item.mileageRatio / 100);
-      const actualCashCost = item.nx - mileageUsableNx;
-      
-      // 마일리지를 캐시로 환산한 총 비용
-      const mileageCashEquivalent = mileageUsableNx * (mileageRate / 100);
-      const totalCost = actualCashCost + mileageCashEquivalent;
-      
-      if (totalCost > 0) {
-        mileageEfficiency = (item.meso * (1 - fee / 100)) / totalCost;
-      }
-    }
-    
+  // 구매 가능한 최대 개수 계산
+  const maxPurchasableByLimit = item.remainingLimit;
+  const maxPurchasableByCash = Math.floor(nxAmount / item.nx);
+  const maxPurchasable = Math.min(maxPurchasableByLimit, maxPurchasableByCash);
+  
+  if (maxPurchasable <= 0) {
+    console.log(`⚠️ ${item.name}: 구매 불가 (한도: ${maxPurchasableByLimit}, 캐시: ${maxPurchasableByCash})`);
     return {
-      ...item,
-      basicEfficiency,
-      mileageEfficiency,
-      // 마일리지 사용이 더 효율적인지 판단
-      shouldUseMileage: item.mileageRatio > 0 && availableMileage > 0 && mileageEfficiency > basicEfficiency,
-      bestEfficiency: Math.max(basicEfficiency, mileageEfficiency)
+      meso: 0,
+      usedCash: 0,
+      usedMileage: 0,
+      earnedMileage: 0,
+      netMileageUsed: 0,
+      netCashCost: 0,
+      remainingCash: nxAmount,
+      remainingMileage: availableMileage,
+      itemCombination: []
     };
-  });
-  
-  // 효율 순으로 정렬 (높은 효율부터)
-  const sortedItems = itemsWithEfficiency.sort((a, b) => b.bestEfficiency - a.bestEfficiency);
-  
-  console.log(`📊 아이템 효율 순위 (마일리지 ${mileageRate}% 가치 기준):`);
-  sortedItems.forEach((item, index) => {
-    const efficiencyText = item.shouldUseMileage 
-      ? `마일리지 사용 ${item.mileageEfficiency.toFixed(0)}` 
-      : `기본 ${item.basicEfficiency.toFixed(0)}`;
-    console.log(`  ${index + 1}. ${item.name}: ${efficiencyText} 메소/캐시`);
-  });
-  
-  let remainingNx = nxAmount;
-  let totalMeso = 0;
-  let usedMileage = 0; // 실제 사용한 마일리지
-  let availableMileageLeft = availableMileage; // 남은 마일리지
-  let usedItems = []; // 사용된 아이템 조합 추적
-  
-  // 효율 순으로 아이템 사용
-  for (const item of sortedItems) {
-    if (remainingNx <= 0) break;
-    
-    const maxPurchasable = item.remainingLimit; // 구매 가능한 최대 개수
-    const nxPerItem = item.nx;
-    const maxNxForThisItem = maxPurchasable * nxPerItem;
-    
-    if (maxNxForThisItem <= 0) continue;
-    
-    // 이 아이템에 사용할 캐시 양 결정
-    const nxToUseForThisItem = Math.min(remainingNx, maxNxForThisItem);
-    const itemsToBuy = Math.floor(nxToUseForThisItem / nxPerItem);
-    
-    if (itemsToBuy <= 0) continue;
-    
-    // 마일리지 사용 여부 결정
-    let usesMileageForPurchase = false;
-    let requiredMileage = 0;
-    if (item.shouldUseMileage) {
-      const mileagePerItem = Math.ceil(nxPerItem * (item.mileageRatio / 100));
-      requiredMileage = itemsToBuy * mileagePerItem;
-      
-      if (availableMileageLeft >= requiredMileage) {
-        usesMileageForPurchase = true;
-        availableMileageLeft -= requiredMileage;
-        usedMileage += requiredMileage;
-      }
-    }
-    
-    // 실제 캐시 소모량 계산 (마일리지 사용 시 해당 부분만큼 캐시 절약)
-    let cashUsedForItem = itemsToBuy * nxPerItem;
-    if (usesMileageForPurchase) {
-      // 마일리지로 대체한 만큼 캐시 소모 줄임
-      const mileageCashEquivalent = requiredMileage; // 마일리지 1 = 캐시 1로 대체
-      cashUsedForItem = itemsToBuy * nxPerItem - mileageCashEquivalent;
-      console.log(`  ✨ ${item.name} ${itemsToBuy}개 마일리지 구매 (마일리지 ${requiredMileage.toLocaleString()}, 캐시 ${cashUsedForItem.toLocaleString()})`);
-    } else {
-      console.log(`  💸 ${item.name} ${itemsToBuy}개 캐시 구매 (${cashUsedForItem.toLocaleString()} 캐시 사용)`);
-    }
-    
-    // 획득 메소 계산
-    const mesoFromThisItem = itemsToBuy * item.meso * (1 - fee / 100);
-    totalMeso += mesoFromThisItem;
-    remainingNx -= cashUsedForItem;
-    
-    // 사용된 아이템 정보 저장
-    usedItems.push({
-      name: item.name,
-      quantity: itemsToBuy,
-      usedMileage: usesMileageForPurchase,
-      mileageUsed: usesMileageForPurchase ? requiredMileage : 0,
-      cashUsed: cashUsedForItem,
-      mesoGained: Math.floor(mesoFromThisItem)
-    });
-    
-    console.log(`    → ${mesoFromThisItem.toLocaleString()} 메소 획득`);
   }
   
-  if (remainingNx > 0) {
-    console.log(`⚠️ 남은 캐시: ${remainingNx.toLocaleString()} (아이템 한도 부족)`);
+  // 마일리지 사용량 계산
+  let usedMileage = 0;
+  let actualItemsToBuy = maxPurchasable;
+  
+  if (mileageRatio > 0) {
+    const requiredMileagePerItem = Math.ceil(item.nx * (mileageRatio / 100));
+    const maxPurchasableByMileage = Math.floor(availableMileage / requiredMileagePerItem);
+    
+    if (maxPurchasableByMileage < maxPurchasable) {
+      actualItemsToBuy = maxPurchasableByMileage;
+      console.log(`📉 마일리지 부족으로 구매량 조정: ${maxPurchasable} → ${actualItemsToBuy}`);
+    }
+    
+    usedMileage = actualItemsToBuy * requiredMileagePerItem;
   }
   
-  console.log(`💰 캐시템 변환 완료: ${totalMeso.toLocaleString()} 메소 획득`);
+  // 실제 캐시 소모량 계산 (마일리지 사용분만큼 절약)
+  const totalCashCost = actualItemsToBuy * item.nx;
+  const cashUsed = mileageRatio > 0 ? totalCashCost - usedMileage : totalCashCost;
   
-  const usedCash = nxAmount - remainingNx;
+  // 획득 메소 계산
+  const totalMeso = actualItemsToBuy * item.meso * (1 - fee / 100);
   
   // 마일리지 적립 계산 (캐시 사용량의 5%)
-  const earnedMileage = Math.floor(usedCash * 0.05);
+  const earnedMileage = Math.floor(cashUsed * 0.05);
   
-  // 순 마일리지 소모량 (사용량 - 적립량)
+  // 순 마일리지 소모량
   const netMileageUsed = usedMileage - earnedMileage;
   
-  // 순 캐시 비용 계산 (마일리지를 캐시로 환산)
+  // 순 캐시 비용 (마일리지를 캐시로 환산)
   const mileageCashEquivalent = netMileageUsed * (mileageRate / 100);
-  const netCashCost = usedCash + mileageCashEquivalent;
+  const netCashCost = cashUsed + mileageCashEquivalent;
   
   const result = {
     meso: Math.floor(totalMeso),
-    usedCash,
-    usedMileage,
-    earnedMileage,
-    netMileageUsed,
-    netCashCost,
-    remainingCash: remainingNx,
-    remainingMileage: availableMileageLeft + earnedMileage, // 적립된 마일리지 반영
-    itemCombination: usedItems // 사용된 아이템 조합 정보 추가
+    usedCash: cashUsed,
+    usedMileage: usedMileage,
+    earnedMileage: earnedMileage,
+    netMileageUsed: netMileageUsed,
+    netCashCost: netCashCost,
+    remainingCash: nxAmount - cashUsed,
+    remainingMileage: availableMileage - usedMileage + earnedMileage,
+    itemCombination: [{
+      name: item.name,
+      quantity: actualItemsToBuy,
+      usedMileage: mileageRatio > 0,
+      mileageUsed: usedMileage,
+      cashUsed: cashUsed,
+      mesoGained: Math.floor(totalMeso)
+    }]
   };
   
-  console.log(`📊 사용 현황: 캐시 ${usedCash.toLocaleString()}/${nxAmount.toLocaleString()}, 마일리지 사용 ${usedMileage.toLocaleString()} - 적립 ${earnedMileage.toLocaleString()} = 순소모 ${netMileageUsed.toLocaleString()}`);
-  console.log(`💰 순 비용: ${netCashCost.toLocaleString()} 캐시 (마일리지 ${mileageRate}% 환산 포함)`);
+  console.log(`✅ ${item.name} ${actualItemsToBuy}개 구매: 캐시 ${cashUsed.toLocaleString()}, 마일리지 ${usedMileage.toLocaleString()} → ${totalMeso.toLocaleString()} 메소`);
   
   return result;
 }
 
-// 실제 총 투입량 계산 함수
+// 실제 총 투입량 계산 함수 (역방향 전파 방식)
 function calculateActualTotalInput(steps, initialAmount) {
   if (steps.length === 0) return initialAmount;
   
-  // 첫 번째 단계의 실제 투입량으로 시작
-  const firstStep = steps[0];
-  let actualTotal = firstStep.actualInputAmount || firstStep.inputAmount;
+  // 뒤에서부터 앞으로 역추적하여 실제 소진율 계산
+  let currentUtilizationRatio = 1.0; // 100% 사용률로 시작
   
-  // 나머지 단계들에서 추가 투입이 있는지 확인
-  // (현재는 캐시템만 해당하지만, 향후 확장 가능)
-  for (let i = 1; i < steps.length; i++) {
+  // 뒤에서부터 각 단계의 소진율을 계산
+  for (let i = steps.length - 1; i >= 0; i--) {
     const step = steps[i];
-    // 만약 중간 단계에서 외부 자원(마일리지 등)이 추가로 필요한 경우
-    // 여기서 처리할 수 있음 (현재는 첫 단계에서만 처리)
+    
+    // 모든 단계에서 실제 투입량과 명목 투입량 비교
+    const nominalInput = step.inputAmount;
+    let actualUsed = nominalInput; // 기본값: 100% 사용
+    
+    // 1. 캐시템 변환의 경우
+    if (step.cashItemDetails) {
+      actualUsed = step.cashItemDetails.usedCash || step.actualInputAmount || nominalInput;
+    }
+    // 2. 다른 종류의 제한이 있는 변환의 경우 (향후 확장)
+    else if (step.actualInputAmount !== undefined && step.actualInputAmount !== nominalInput) {
+      actualUsed = step.actualInputAmount;
+    }
+    // 3. 상품권 한도, 거래소 한도 등 다른 제약이 있는 경우 (향후 확장)
+    else if (step.utilizationDetails) {
+      // 예: step.utilizationDetails = { used: 80000, limit: 100000, reason: "상품권 월 한도" }
+      actualUsed = step.utilizationDetails.used || nominalInput;
+    }
+    
+    // 소진율 계산
+    const stepUtilizationRatio = actualUsed / nominalInput;
+    
+    // 100% 미만 사용된 경우에만 로그 출력
+    if (stepUtilizationRatio < 1.0) {
+      const reason = step.cashItemDetails ? "캐시템 한도" : 
+                     step.utilizationDetails?.reason || 
+                     "기타 제약";
+      console.log(`🔄 Step ${i}: ${nominalInput.toLocaleString()} → ${actualUsed.toLocaleString()} (${(stepUtilizationRatio * 100).toFixed(1)}% 사용, ${reason})`);
+    }
+    
+    // 현재 소진율에 이 단계의 소진율을 곱해서 누적
+    currentUtilizationRatio *= stepUtilizationRatio;
   }
   
-  return actualTotal;
+  // 초기 투입량에 최종 소진율 적용
+  const actualTotalInput = initialAmount * currentUtilizationRatio;
+  
+  console.log(`📊 전체 소진율: ${(currentUtilizationRatio * 100).toFixed(1)}% (${initialAmount.toLocaleString()} → ${actualTotalInput.toLocaleString()})`);
+  
+  return actualTotalInput;
 }
 
 // 경로 계산 함수
@@ -449,6 +419,15 @@ export function calculateConversion(fromAmount, edge) {
     // 상품권 할인: 할인율만큼 적게 지불하여 더 많은 양 구매
     // 예: 5% 할인 시 95,000원으로 100,000 넥슨캐시 구매
     // 즉, 95,000원 → 100,000 넥슨캐시 = 95,000 / (1 - 0.05)
+    
+    // 상품권 한도 확인
+    if (edge.voucherKey && edge.remainingLimit !== undefined) {
+      // 한도가 설정된 경우, 할인된 가격으로 구매할 수 있는 최대량 계산
+      const maxKrwByLimit = edge.remainingLimit;
+      const actualKrwUsed = Math.min(fromAmount, maxKrwByLimit);
+      return actualKrwUsed / (1 - Math.abs(fee) / 100);
+    }
+    
     return fromAmount / (1 - Math.abs(fee) / 100);
   }
   
@@ -485,8 +464,14 @@ export function calculateConversion(fromAmount, edge) {
   }
   
   if (type === 'cashitem_multi') {
-    // 넥슨캐시 → 메소 (캐시템 경매장) - 개선된 복합 아이템 처리
-    return calculateOptimalCashItemConversion(fromAmount, edge);
+    // 넥슨캐시 → 메소 (캐시템 경매장) - 레거시 복합 아이템 처리 (더 이상 사용되지 않음)
+    console.warn('cashitem_multi 타입은 더 이상 지원되지 않습니다. cashitem_single을 사용하세요.');
+    return 0;
+  }
+  
+  if (type === 'cashitem_single') {
+    // 넥슨캐시 → 메소 (캐시템 경매장) - 개별 아이템 처리
+    return calculateSingleCashItemConversion(fromAmount, edge);
   }
   
   if (type === 'soltrade') {

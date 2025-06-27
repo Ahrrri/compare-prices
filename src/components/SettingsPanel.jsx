@@ -56,7 +56,7 @@ const SettingsPanel = ({
       name: '새 아이템',
       meso: 50000000,
       nx: 1000,
-      mileageRatio: 0,
+      availableMileageRatios: [0],
       remainingLimit: 5
     };
     
@@ -307,7 +307,7 @@ const SettingsPanel = ({
                 }}
                 disabled={!exchangeOptions[`cashItem_G${index + 1}`]?.enabled}
               >
-                효율순 정렬 ↓
+                효율순 정렬(캐시가격만 고려) ↓
               </button>
             </div>
           </div>
@@ -365,20 +365,10 @@ const SettingsPanel = ({
                   )}
                   
                   <div className="mileage-ratio">
-                    <label>마일리지:</label>
-                    <select
-                      className="ratio-select"
-                      value={item.mileageRatio}
-                      onChange={(e) => {
-                        const value = parseInt(e.target.value);
-                        updateCashItem(group, item.id, 'mileageRatio', value);
-                      }}
-                      disabled={!exchangeOptions[`cashItem_G${index + 1}`]?.enabled}
-                    >
-                      <option value={0}>사용불가</option>
-                      <option value={30}>30%</option>
-                      <option value={100}>100%</option>
-                    </select>
+                    <label>마일리지 비율:</label>
+                    <span className="cash-item-unit">
+                      {(item.availableMileageRatios || [0]).map(ratio => `${ratio}%`).join(', ')}
+                    </span>
                   </div>
                   
                   <div className="item-limits">
@@ -442,7 +432,12 @@ const SettingsPanel = ({
               }))
               .sort((a, b) => b.efficiency - a.efficiency); // 효율 순 정렬
             
-            const mileageItems = items.filter(item => item.mileageRatio > 0 && item.meso > 0 && item.nx > 0);
+            const mileageItems = items.filter(item => 
+              item.availableMileageRatios && 
+              item.availableMileageRatios.some(ratio => ratio > 0) && 
+              item.meso > 0 && 
+              item.nx > 0
+            );
             
             // 가장 효율 좋은 아이템 (기준 아이템)
             const bestEfficiencyItem = allItemsAsCashOnly.length > 0 ? allItemsAsCashOnly[0] : null;
@@ -454,21 +449,24 @@ const SettingsPanel = ({
             // 가장 효율 좋은 아이템과 선택된 마일리지 아이템으로 마일리지 가치 계산
             let calculatedRate = 0;
             if (bestEfficiencyItem && mileageItem) {
-              const mvpFeeRate = mvpGrade === 'SILVER_PLUS' ? 3 : 5;
+              // 해당 아이템의 최대 마일리지 비율 사용
+              const maxMileageRatio = Math.max(...(mileageItem.availableMileageRatios || [0]));
               
-              // 1개 아이템 기준으로 계산
-              const bestEfficiencyMesoPerCash = bestEfficiencyItem.efficiency; // bestEfficiencyItem.meso / bestEfficiencyItem.nx
-              const mileageCashPortion = mileageItem.nx * (100 - mileageItem.mileageRatio) / 100;
-              const mileagePortion = mileageItem.nx * mileageItem.mileageRatio / 100;
-              
-              if (mileagePortion > 0) {
-                const mileageMesoPerCash = mileageItem.meso / mileageCashPortion;
+              if (maxMileageRatio > 0) {
+                // 1개 아이템 기준으로 계산
+                const bestEfficiencyMesoPerCash = bestEfficiencyItem.efficiency;
+                const mileageCashPortion = mileageItem.nx * (100 - maxMileageRatio) / 100;
+                const mileagePortion = mileageItem.nx * maxMileageRatio / 100;
                 
-                // 마일리지를 사용했을 때 캐시 대비 메소 효율이 더 좋은 경우에만 가치 있음
-                if (mileageMesoPerCash > bestEfficiencyMesoPerCash) {
-                  // 1 마일리지가 절약해주는 캐시량
-                  const cashSavedPerMileage = (mileageItem.meso / bestEfficiencyMesoPerCash - mileageCashPortion) / mileagePortion;
-                  calculatedRate = Math.round(cashSavedPerMileage * 100);
+                if (mileagePortion > 0) {
+                  const mileageMesoPerCash = mileageItem.meso / mileageCashPortion;
+                  
+                  // 마일리지를 사용했을 때 캐시 대비 메소 효율이 더 좋은 경우에만 가치 있음
+                  if (mileageMesoPerCash > bestEfficiencyMesoPerCash) {
+                    // 1 마일리지가 절약해주는 캐시량
+                    const cashSavedPerMileage = (mileageItem.meso / bestEfficiencyMesoPerCash - mileageCashPortion) / mileagePortion;
+                    calculatedRate = Math.round(cashSavedPerMileage * 100);
+                  }
                 }
               }
             }
@@ -477,26 +475,31 @@ const SettingsPanel = ({
             const allRates = [];
             if (bestEfficiencyItem) {
               mileageItems.forEach(mItem => {
-                const mvpFeeRate = mvpGrade === 'SILVER_PLUS' ? 3 : 5;
                 const bestEfficiencyMesoPerCash = bestEfficiencyItem.efficiency;
-                const mileageCashPortion = mItem.nx * (100 - mItem.mileageRatio) / 100;
-                const mileagePortion = mItem.nx * mItem.mileageRatio / 100;
                 
-                if (mileagePortion > 0) {
-                  const mileageMesoPerCash = mItem.meso / mileageCashPortion;
-                  
-                  if (mileageMesoPerCash > bestEfficiencyMesoPerCash) {
-                    const cashSavedPerMileage = (mItem.meso / bestEfficiencyMesoPerCash - mileageCashPortion) / mileagePortion;
-                    const rate = Math.round(cashSavedPerMileage * 100);
-                    allRates.push({
-                      rate,
-                      bestEfficiencyId: bestEfficiencyItem.id,
-                      mileageId: mItem.id,
-                      bestEfficiencyName: bestEfficiencyItem.name,
-                      mileageName: mItem.name
-                    });
+                // 각 아이템의 각 마일리지 비율에 대해 계산
+                (mItem.availableMileageRatios || []).forEach(mileageRatio => {
+                  if (mileageRatio > 0) {
+                    const mileageCashPortion = mItem.nx * (100 - mileageRatio) / 100;
+                    const mileagePortion = mItem.nx * mileageRatio / 100;
+                    
+                    if (mileagePortion > 0) {
+                      const mileageMesoPerCash = mItem.meso / mileageCashPortion;
+                      
+                      if (mileageMesoPerCash > bestEfficiencyMesoPerCash) {
+                        const cashSavedPerMileage = (mItem.meso / bestEfficiencyMesoPerCash - mileageCashPortion) / mileagePortion;
+                        const rate = Math.round(cashSavedPerMileage * 100);
+                        allRates.push({
+                          rate,
+                          bestEfficiencyId: bestEfficiencyItem.id,
+                          mileageId: mItem.id,
+                          bestEfficiencyName: bestEfficiencyItem.name,
+                          mileageName: `${mItem.name} (${mileageRatio}%)`
+                        });
+                      }
+                    }
                   }
-                }
+                });
               });
             }
             
@@ -585,8 +588,8 @@ const SettingsPanel = ({
                   </>
                 ) : (
                   <div className="no-calculation">
-                    {noMileageItems.length === 0 && "마일리지 미사용 아이템이 없습니다."}
-                    {mileageItems.length === 0 && "마일리지 사용 아이템이 없습니다."}
+                    {mileageItems.length === 0 && "마일리지 사용 가능한 아이템이 없습니다."}
+                    {!bestEfficiencyItem && "효율 계산이 불가능합니다."}
                   </div>
                 )}
               </div>

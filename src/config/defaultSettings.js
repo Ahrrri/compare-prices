@@ -5,7 +5,7 @@ export const DEFAULT_SETTINGS = {
   mvpGrade: 'SILVER_PLUS',
   
   // 보유 마일리지 기본값
-  availableMileage: 0,
+  availableMileage: 30000,
   
   // 마일리지 변환 비율 기본값 (%)
   mileageRates: {
@@ -23,7 +23,7 @@ export const DEFAULT_SETTINGS = {
           name: '로얄',
           meso: 79870000,
           nx: 2200,
-          mileageRatio: 0,
+          availableMileageRatios: [0], // 마일리지 사용 불가
           remainingLimit: 50
         },
         {
@@ -31,7 +31,7 @@ export const DEFAULT_SETTINGS = {
           name: '플가',
           meso: 172999999,
           nx: 5900,
-          mileageRatio: 30,
+          availableMileageRatios: [0], // 마일리지 사용 불가
           remainingLimit: 10
         },
         {
@@ -39,7 +39,7 @@ export const DEFAULT_SETTINGS = {
           name: '프마피',
           meso: 67730000,
           nx: 1900,
-          mileageRatio: 0,
+          availableMileageRatios: [0], // 마일리지 사용 불가
           remainingLimit: 10
         },
         {
@@ -47,7 +47,7 @@ export const DEFAULT_SETTINGS = {
           name: '플애플',
           meso: 133000000,
           nx: 3500,
-          mileageRatio: 0,
+          availableMileageRatios: [0], // 마일리지 사용 불가
           remainingLimit: 10
         },
         {
@@ -55,7 +55,7 @@ export const DEFAULT_SETTINGS = {
           name: '하이퍼 확성기',
           meso: 31555444,
           nx: 990,
-          mileageRatio: 30,
+          availableMileageRatios: [0, 30], // 0%, 30% 사용 가능
           remainingLimit: 20
         }
       ]
@@ -67,7 +67,7 @@ export const DEFAULT_SETTINGS = {
           name: '로얄',
           meso: 199999999,
           nx: 2200,
-          mileageRatio: 0,
+          availableMileageRatios: [0],
           remainingLimit: 5
         },
         {
@@ -75,7 +75,7 @@ export const DEFAULT_SETTINGS = {
           name: '플가',
           meso: 506990005,
           nx: 5900,
-          mileageRatio: 30,
+          availableMileageRatios: [0],
           remainingLimit: 2
         },
         {
@@ -83,7 +83,7 @@ export const DEFAULT_SETTINGS = {
           name: '프마피',
           meso: 166666655,
           nx: 1900,
-          mileageRatio: 0,
+          availableMileageRatios: [0],
           remainingLimit: 10
         },
         {
@@ -91,7 +91,7 @@ export const DEFAULT_SETTINGS = {
           name: '플애플',
           meso: 277777777,
           nx: 3500,
-          mileageRatio: 0,
+          availableMileageRatios: [0],
           remainingLimit: 0
         },
         {
@@ -99,7 +99,7 @@ export const DEFAULT_SETTINGS = {
           name: '하이퍼 확성기',
           meso: 76999999,
           nx: 990,
-          mileageRatio: 30,
+          availableMileageRatios: [0, 30],
           remainingLimit: 20
         },
         {
@@ -107,7 +107,7 @@ export const DEFAULT_SETTINGS = {
           name: '마일리턴',
           meso: 160000000,
           nx: 6900,
-          mileageRatio: 100,
+          availableMileageRatios: [0, 30, 100],
           remainingLimit: 50
         },
         {
@@ -115,7 +115,7 @@ export const DEFAULT_SETTINGS = {
           name: '쁘생물',
           meso: 1277777777,
           nx: 13900,
-          mileageRatio: 30,
+          availableMileageRatios: [0, 30],
           remainingLimit: 3
         }
       ]
@@ -127,7 +127,7 @@ export const DEFAULT_SETTINGS = {
           name: '로얄',
           meso: 76444211,
           nx: 2200,
-          mileageRatio: 0,
+          availableMileageRatios: [0],
           remainingLimit: 50
         },
         {
@@ -135,7 +135,7 @@ export const DEFAULT_SETTINGS = {
           name: '플가',
           meso: 150000000,
           nx: 5900,
-          mileageRatio: 30,
+          availableMileageRatios: [0, 30],
           remainingLimit: 10
         },
         {
@@ -143,7 +143,7 @@ export const DEFAULT_SETTINGS = {
           name: '프마피',
           meso: 52222220,
           nx: 1900,
-          mileageRatio: 0,
+          availableMileageRatios: [0],
           remainingLimit: 10
         },
         {
@@ -151,7 +151,7 @@ export const DEFAULT_SETTINGS = {
           name: '플애플',
           meso: 130000000,
           nx: 3500,
-          mileageRatio: 0,
+          availableMileageRatios: [0],
           remainingLimit: 10
         },
         {
@@ -159,7 +159,7 @@ export const DEFAULT_SETTINGS = {
           name: '하이퍼 확성기',
           meso: 33810000,
           nx: 990,
-          mileageRatio: 30,
+          availableMileageRatios: [0, 30],
           remainingLimit: 20
         }
       ]
