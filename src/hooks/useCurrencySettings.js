@@ -21,6 +21,8 @@ export const useCurrencySettings = (userSettings = {}) => {
   const [mvpGrade, setMvpGrade] = useState(initialSettings.mvpGrade);
   const [voucherDiscounts, setVoucherDiscounts] = useState(initialSettings.voucherDiscounts);
   const [exchangeOptions, setExchangeOptions] = useState(initialSettings.exchangeOptions);
+  const [availableMileage, setAvailableMileage] = useState(initialSettings.availableMileage);
+  const [mileageRates, setMileageRates] = useState(initialSettings.mileageRates);
 
   // 설정 초기화 함수
   const resetToDefaults = () => {
@@ -31,6 +33,8 @@ export const useCurrencySettings = (userSettings = {}) => {
     setMvpGrade(DEFAULT_SETTINGS.mvpGrade);
     setVoucherDiscounts(DEFAULT_SETTINGS.voucherDiscounts);
     setExchangeOptions(DEFAULT_SETTINGS.exchangeOptions);
+    setAvailableMileage(DEFAULT_SETTINGS.availableMileage);
+    setMileageRates(DEFAULT_SETTINGS.mileageRates);
   };
 
   // 현재 설정을 객체로 반환
@@ -41,7 +45,9 @@ export const useCurrencySettings = (userSettings = {}) => {
     cashItemRates,
     mvpGrade,
     voucherDiscounts,
-    exchangeOptions
+    exchangeOptions,
+    availableMileage,
+    mileageRates
   });
 
   return {
@@ -53,6 +59,8 @@ export const useCurrencySettings = (userSettings = {}) => {
     mvpGrade,
     voucherDiscounts,
     exchangeOptions,
+    availableMileage,
+    mileageRates,
     
     // Setters
     setMesoMarketRates,
@@ -62,6 +70,8 @@ export const useCurrencySettings = (userSettings = {}) => {
     setMvpGrade,
     setVoucherDiscounts,
     setExchangeOptions,
+    setAvailableMileage,
+    setMileageRates,
     
     // Utility functions
     resetToDefaults,

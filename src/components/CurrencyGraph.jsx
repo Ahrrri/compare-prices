@@ -12,6 +12,8 @@ const CurrencyGraph = ({
   mvpGrade, 
   voucherDiscounts,
   exchangeOptions,
+  availableMileage,
+  mileageRates,
   onNodeSelect,
   selectedNode,
   selectedTarget,
@@ -29,7 +31,9 @@ const CurrencyGraph = ({
       cashItemRates,
       mvpGrade,
       voucherDiscounts,
-      exchangeOptions
+      exchangeOptions,
+      availableMileage,
+      mileageRates
     };
     
     const graph = createCurrencyGraph(settings);
@@ -434,32 +438,12 @@ const CurrencyGraph = ({
       tooltip.remove();
     };
 
-  }, [mesoMarketRates, cashTradeRates, solTradeRates, cashItemRates, mvpGrade, voucherDiscounts, exchangeOptions, inputAmount, selectedNode, selectedTarget, highlightedPath]);
+  }, [mesoMarketRates, cashTradeRates, solTradeRates, cashItemRates, mvpGrade, voucherDiscounts, exchangeOptions, availableMileage, mileageRates, inputAmount, selectedNode, selectedTarget, highlightedPath]);
 
   return (
     <div className="currency-graph-container">
       <svg ref={svgRef}></svg>
       <div className="currency-graph-legend">
-        <div className="legend-items">
-          <div className="legend-item">
-            <span className="legend-indicator legend-direct"></span> 직접 변환
-          </div>
-          <div className="legend-item">
-            <span className="legend-indicator legend-voucher"></span> 상품권 할인
-          </div>
-          <div className="legend-item">
-            <span className="legend-indicator legend-meso-market"></span> 메소마켓
-          </div>
-          <div className="legend-item">
-            <span className="legend-indicator legend-cash-trade"></span> 현금거래
-          </div>
-          <div className="legend-item">
-            <span className="legend-indicator legend-cash-item"></span> 캐시템 경매장
-          </div>
-          <div className="legend-item">
-            <span className="legend-indicator legend-sol-trade"></span> 조각 거래
-          </div>
-        </div>
         <div className="legend-indicators">
           <span className="legend-start-point">●</span> 시작점 | 
           <span className="legend-target-point">●</span> 목표점

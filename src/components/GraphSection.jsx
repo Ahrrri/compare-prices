@@ -11,6 +11,8 @@ const GraphSection = ({
   mvpGrade,
   voucherDiscounts,
   exchangeOptions,
+  availableMileage,
+  mileageRates,
   selectedNode,
   selectedTarget,
   highlightedPath,
@@ -24,7 +26,15 @@ const GraphSection = ({
       
       <div className="graph-status">
         {selectedNode && !selectedTarget && (
-          <p>시작점: <strong>{selectedNode.name}</strong> | 목표점을 클릭하세요</p>
+          <p>
+            시작점: <strong>{selectedNode.name}</strong> | 목표점을 클릭하세요
+            <button 
+              className="reset-button"
+              onClick={onReset}
+            >
+              초기화
+            </button>
+          </p>
         )}
         {selectedNode && selectedTarget && (
           <p>
@@ -51,6 +61,8 @@ const GraphSection = ({
         mvpGrade={mvpGrade}
         voucherDiscounts={voucherDiscounts}
         exchangeOptions={exchangeOptions}
+        availableMileage={availableMileage}
+        mileageRates={mileageRates}
         onNodeSelect={onNodeSelect}
         selectedNode={selectedNode}
         selectedTarget={selectedTarget}

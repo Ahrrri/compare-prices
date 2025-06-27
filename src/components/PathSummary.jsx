@@ -32,20 +32,45 @@ const PathSummary = ({
           <div className="conversion-steps">
             {path.steps.map((step, stepIndex) => (
                 <div key={stepIndex} className="conversion-step">
-                  <span className="amount">
-                    {typeof step.inputAmount === 'number' && step.inputAmount !== null && !isNaN(step.inputAmount) 
-                      ? formatNumber(step.inputAmount, getCurrencyType(step.from)) 
-                      : (step.inputAmount || '0')}
-                  </span>
-                  <span className="currency">{getCurrencyName(step.from) || step.from}</span>
-                  <span className="arrow">→</span>
-                  <span className="amount">
-                    {typeof step.outputAmount === 'number' && step.outputAmount !== null && !isNaN(step.outputAmount)
-                      ? formatNumber(step.outputAmount, getCurrencyType(step.to))
-                      : (step.outputAmount || '0')}
-                  </span>
-                  <span className="currency">{getCurrencyName(step.to) || step.to}</span>
-                  <span className="description">({step.description || ''})</span>
+                  <div>
+                    <span className="amount">
+                      {typeof step.inputAmount === 'number' && step.inputAmount !== null && !isNaN(step.inputAmount) 
+                        ? formatNumber(step.inputAmount, getCurrencyType(step.from)) 
+                        : (step.inputAmount || '0')}
+                    </span>
+                    <span className="currency">{getCurrencyName(step.from) || step.from}</span>
+                    <span className="arrow">→</span>
+                    <span className="amount">
+                      {typeof step.outputAmount === 'number' && step.outputAmount !== null && !isNaN(step.outputAmount)
+                        ? formatNumber(step.outputAmount, getCurrencyType(step.to))
+                        : (step.outputAmount || '0')}
+                    </span>
+                    <span className="currency">{getCurrencyName(step.to) || step.to}</span>
+                    <span className="description">({step.description || ''})</span>
+                  </div>
+                  
+                  {/* 캐시템 상세 정보 표시 */}
+                  {step.cashItemDetails && (
+                    <div className="cashitem-details">
+                      <div className="usage-info">
+                        캐시 사용: {formatNumber(step.cashItemDetails.usedCash, 'currency')} / {formatNumber(step.inputAmount, 'currency')}
+                        {step.cashItemDetails.usedMileage > 0 && (
+                          <span>, 마일리지 사용: {formatNumber(step.cashItemDetails.usedMileage, 'currency')}</span>
+                        )}
+                      </div>
+                      {(step.cashItemDetails.remainingCash > 0 || step.cashItemDetails.remainingMileage > 0) && (
+                        <div className="remaining-info">
+                          {step.cashItemDetails.remainingCash > 0 && (
+                            <span>캐시 잔여: {formatNumber(step.cashItemDetails.remainingCash, 'currency')}</span>
+                          )}
+                          {step.cashItemDetails.remainingMileage > 0 && step.cashItemDetails.remainingCash > 0 && <span>, </span>}
+                          {step.cashItemDetails.remainingMileage > 0 && (
+                            <span>마일리지 잔여: {formatNumber(step.cashItemDetails.remainingMileage, 'currency')}</span>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
             ))}
           </div>

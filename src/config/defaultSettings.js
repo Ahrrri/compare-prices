@@ -3,6 +3,16 @@
 export const DEFAULT_SETTINGS = {
   // MVP 등급 기본값
   mvpGrade: 'SILVER_PLUS',
+  
+  // 보유 마일리지 기본값
+  availableMileage: 0,
+  
+  // 마일리지 변환 비율 기본값 (%)
+  mileageRates: {
+    GROUP1: 30,
+    GROUP2: 30,
+    GROUP3: 30
+  },
 
   // 캐시템 경매장 시세 (넥슨캐시로 캐시템 구매 후 메소로 판매) G1: 일반섭, G2: 에/헬, G3: 챌린저스
   cashItemRates: {
@@ -356,6 +366,10 @@ export function mergeSettings(userSettings = {}) {
     exchangeOptions: {
       ...DEFAULT_SETTINGS.exchangeOptions,
       ...userSettings.exchangeOptions
+    },
+    mileageRates: {
+      ...DEFAULT_SETTINGS.mileageRates,
+      ...userSettings.mileageRates
     }
   };
 }

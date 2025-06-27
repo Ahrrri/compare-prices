@@ -64,9 +64,16 @@
 
 .conversion-step {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
+  flex-direction: column;
   margin: 0.5rem 0;
   font-size: 0.95rem;
+}
+
+.conversion-step > div:first-child {
+  display: flex;
+  align-items: center;
+  width: 100%;
 }
 
 .conversion-step .amount {
@@ -118,4 +125,25 @@
   padding: 0.5rem;
   background: #ffebee;
   border-radius: 4px;
+}
+
+/* 캐시템 상세 정보 스타일 */
+.cashitem-details {
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  background: #e8f5e9;
+  border-radius: 4px;
+  border-left: 3px solid #4caf50;
+  font-size: 0.85rem;
+}
+
+.usage-info {
+  color: #2e7d32;
+  font-weight: 500;
+  margin-bottom: 0.3rem;
+}
+
+.remaining-info {
+  color: #ff6f00;
+  font-weight: 500;
 }

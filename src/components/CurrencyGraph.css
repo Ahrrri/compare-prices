@@ -16,48 +16,10 @@
   color: #666;
 }
 
-.legend-items {
-  display: flex;
-  gap: 20px;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-.legend-item {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-
 .legend-indicator {
   width: 12px;
   height: 12px;
   display: inline-block;
-}
-
-/* 범례 색상 */
-.legend-direct {
-  background: #2196F3;
-}
-
-.legend-voucher {
-  background: #4CAF50;
-}
-
-.legend-meso-market {
-  background: #FF9800;
-}
-
-.legend-cash-trade {
-  background: #F44336;
-}
-
-.legend-cash-item {
-  background: #795548;
-}
-
-.legend-sol-trade {
-  background: #9C27B0;
 }
 
 .legend-indicators {

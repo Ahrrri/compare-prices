@@ -16,6 +16,7 @@ function App() {
   const [targetCurrency, setTargetCurrency] = useState(null)
   const [highlightedPath, setHighlightedPath] = useState(null)
   const [arbitrageWarnings, setArbitrageWarnings] = useState([])
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
 
   // 커스텀 훅에서 설정 상태들 가져오기
   const {
@@ -26,6 +27,8 @@ function App() {
     mvpGrade,
     voucherDiscounts,
     exchangeOptions,
+    availableMileage,
+    mileageRates,
     setMesoMarketRates,
     setCashTradeRates,
     setSolTradeRates,
@@ -33,6 +36,8 @@ function App() {
     setMvpGrade,
     setVoucherDiscounts,
     setExchangeOptions,
+    setAvailableMileage,
+    setMileageRates,
     resetToDefaults
   } = useCurrencySettings();
 
@@ -100,8 +105,8 @@ function App() {
     return 'default';
   };
 
-  // 계산 로직
-  useEffect(() => {
+  // 수동 경로 계산 함수
+  const handleCalculatePath = () => {
     if (selectedNode && selectedTarget && inputAmount) {
       const settings = {
         mesoMarketRates,
@@ -110,7 +115,9 @@ function App() {
         cashItemRates,
         mvpGrade,
         voucherDiscounts,
-        exchangeOptions
+        exchangeOptions,
+        availableMileage,
+        mileageRates
       };
 
       const graph = createCurrencyGraph(settings);
@@ -130,10 +137,10 @@ function App() {
     } else {
       setCalculationResults([]);
     }
-  }, [selectedNode, selectedTarget, inputAmount, mesoMarketRates, cashTradeRates, solTradeRates, cashItemRates, mvpGrade, voucherDiscounts, exchangeOptions]);
+  };
 
-  // 무한동력 감지 (설정 변경 시마다 체크)
-  useEffect(() => {
+  // 그래프 업데이트 및 무한동력 감지 통합 함수
+  const handleUpdateGraphAndDetectArbitrage = () => {
     const settings = {
       mesoMarketRates,
       cashTradeRates,
@@ -141,10 +148,14 @@ function App() {
       cashItemRates,
       mvpGrade,
       voucherDiscounts,
-      exchangeOptions
+      exchangeOptions,
+      availableMileage,
+      mileageRates
     };
 
     const graph = createCurrencyGraph(settings);
+    
+    // 무한동력 감지
     const arbitrageOpportunities = detectArbitrage(graph, 1000000); // 100만원으로 테스트
     
     if (arbitrageOpportunities.length > 0) {
@@ -153,7 +164,23 @@ function App() {
     } else {
       setArbitrageWarnings([]);
     }
-  }, [mesoMarketRates, cashTradeRates, solTradeRates, cashItemRates, mvpGrade, voucherDiscounts, exchangeOptions]);
+    
+    // 변경사항 저장됨 표시
+    setHasUnsavedChanges(false);
+    
+    console.log('그래프가 업데이트되고 무한동력 감지가 완료되었습니다.');
+  };
+
+  // 설정 변경 추적 (초기 로드 제외)
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
+  
+  useEffect(() => {
+    if (isInitialLoad) {
+      setIsInitialLoad(false);
+      return;
+    }
+    setHasUnsavedChanges(true);
+  }, [mesoMarketRates, cashTradeRates, solTradeRates, cashItemRates, mvpGrade, voucherDiscounts, exchangeOptions, availableMileage, mileageRates]);
 
   return (
     <div className="app">
@@ -180,7 +207,13 @@ function App() {
             setVoucherDiscounts={setVoucherDiscounts}
             exchangeOptions={exchangeOptions}
             setExchangeOptions={setExchangeOptions}
+            availableMileage={availableMileage}
+            setAvailableMileage={setAvailableMileage}
+            mileageRates={mileageRates}
+            setMileageRates={setMileageRates}
             resetToDefaults={resetToDefaults}
+            onUpdateGraph={handleUpdateGraphAndDetectArbitrage}
+            hasUnsavedChanges={hasUnsavedChanges}
           />
         </div>
 
@@ -190,6 +223,7 @@ function App() {
             onAmountChange={handleAmountChange}
             selectedNode={selectedNode}
             getCurrencyName={getCurrencyName}
+            onCalculatePath={handleCalculatePath}
           />
           
           <GraphSection
@@ -201,6 +235,8 @@ function App() {
             mvpGrade={mvpGrade}
             voucherDiscounts={voucherDiscounts}
             exchangeOptions={exchangeOptions}
+            availableMileage={availableMileage}
+            mileageRates={mileageRates}
             selectedNode={selectedNode}
             selectedTarget={selectedTarget}
             highlightedPath={highlightedPath}

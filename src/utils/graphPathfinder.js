@@ -120,7 +120,7 @@ export function createCurrencyGraph(settings) {
   // 캐시템 경매장 경로들 (넥슨캐시 → 메소, 일방향만)
   const cashItemFeeRate = (mvpGrade === 'SILVER_PLUS') ? 3 : 5;
   
-  // 각 그룹별로 효율 좋은 캐시템 선택 (상품권과 동일한 로직)
+  // 각 그룹별로 캐시템 처리 (개선된 로직)
   ['GROUP1', 'GROUP2', 'GROUP3'].forEach((group, groupIndex) => {
     const groupNum = groupIndex + 1;
     const isEnabled = exchangeOptions?.[`cashItem_G${groupNum}`]?.enabled;
@@ -133,28 +133,16 @@ export function createCurrencyGraph(settings) {
       );
       
       if (availableItems.length > 0) {
-        // 효율 순으로 정렬 (메소/넥슨캐시 비율이 높은 순)
-        const sortedItems = availableItems.sort((a, b) => {
-          const efficiencyA = (a.meso / a.nx) * (1 - cashItemFeeRate / 100);
-          const efficiencyB = (b.meso / b.nx) * (1 - cashItemFeeRate / 100);
-          return efficiencyB - efficiencyA;
-        });
-        
-        // 가장 효율 좋은 아이템 선택
-        const bestItem = sortedItems[0];
-        
+        // 복합 캐시템 판매 엣지 생성 (모든 아이템 효율 순 처리)
         edges.push({
           from: 'NX',
           to: `MESO_G${groupNum}`,
-          type: 'cashitem',
+          type: 'cashitem_multi',
           fee: cashItemFeeRate,
-          mesoPerNx: bestItem.meso,
-          nxAmount: bestItem.nx,
-          itemName: bestItem.name,
-          itemId: bestItem.id,
-          limit: bestItem.limit,
-          remainingLimit: bestItem.remainingLimit,
-          description: `${bestItem.name} 판매 (판매자 ${cashItemFeeRate}% 수수료)`
+          availableItems: availableItems,
+          availableMileage: settings.availableMileage || 0,
+          mileageRate: settings.mileageRates?.[group] || 70, // 그룹별 마일리지 변환 비율
+          description: `캐시템 경매장 (최적 조합 판매)`
         });
       }
     }
@@ -269,6 +257,132 @@ export function createCurrencyGraph(settings) {
   return { nodes, edges };
 }
 
+/**
+ * 캐시템 경매장 최적 변환 계산 함수
+ * 
+ * 로직:
+ * 1. 모든 아이템을 효율 순으로 정렬 (마일리지 고려)
+ * 2. 가장 효율 좋은 아이템부터 차례대로 사용
+ * 3. 각 아이템의 한도까지 사용 후 다음 아이템으로
+ * 4. 마일리지 사용 시 실제 캐시 비용으로 효율 재계산
+ * 
+ * @param {number} nxAmount - 사용할 총 넥슨캐시 양
+ * @param {object} edge - 캐시템 엣지 정보
+ * @returns {object} { meso: 획득 메소 양, usedCash: 사용한 캐시, usedMileage: 사용한 마일리지, remainingCash: 남은 캐시, remainingMileage: 남은 마일리지 }
+ */
+function calculateOptimalCashItemConversion(nxAmount, edge) {
+  const { availableItems, availableMileage = 0, fee, mileageRate = 70 } = edge;
+  
+  console.log(`💰 캐시템 변환 시작: ${nxAmount.toLocaleString()}캐시, 보유 마일리지: ${availableMileage.toLocaleString()}`);
+  
+  // 아이템별 실제 효율 계산 (마일리지 고려)
+  const itemsWithEfficiency = availableItems.map(item => {
+    // 기본 효율 (마일리지 미사용)
+    const basicEfficiency = (item.meso * (1 - fee / 100)) / item.nx;
+    
+    // 마일리지 사용 시 효율 계산
+    let mileageEfficiency = basicEfficiency;
+    if (item.mileageRatio > 0 && availableMileage > 0) {
+      const mileageUsableNx = item.nx * (item.mileageRatio / 100);
+      const actualCashCost = item.nx - mileageUsableNx;
+      
+      // 마일리지를 캐시로 환산한 총 비용
+      const mileageCashEquivalent = mileageUsableNx * (mileageRate / 100);
+      const totalCost = actualCashCost + mileageCashEquivalent;
+      
+      if (totalCost > 0) {
+        mileageEfficiency = (item.meso * (1 - fee / 100)) / totalCost;
+      }
+    }
+    
+    return {
+      ...item,
+      basicEfficiency,
+      mileageEfficiency,
+      // 마일리지 사용이 더 효율적인지 판단
+      shouldUseMileage: item.mileageRatio > 0 && availableMileage > 0 && mileageEfficiency > basicEfficiency,
+      bestEfficiency: Math.max(basicEfficiency, mileageEfficiency)
+    };
+  });
+  
+  // 효율 순으로 정렬 (높은 효율부터)
+  const sortedItems = itemsWithEfficiency.sort((a, b) => b.bestEfficiency - a.bestEfficiency);
+  
+  console.log(`📊 아이템 효율 순위 (마일리지 ${mileageRate}% 가치 기준):`);
+  sortedItems.forEach((item, index) => {
+    const efficiencyText = item.shouldUseMileage 
+      ? `마일리지 사용 ${item.mileageEfficiency.toFixed(0)}` 
+      : `기본 ${item.basicEfficiency.toFixed(0)}`;
+    console.log(`  ${index + 1}. ${item.name}: ${efficiencyText} 메소/캐시`);
+  });
+  
+  let remainingNx = nxAmount;
+  let totalMeso = 0;
+  let usedMileage = 0; // 실제 사용한 마일리지
+  let availableMileageLeft = availableMileage; // 남은 마일리지
+  
+  // 효율 순으로 아이템 사용
+  for (const item of sortedItems) {
+    if (remainingNx <= 0) break;
+    
+    const maxPurchasable = item.remainingLimit; // 구매 가능한 최대 개수
+    const nxPerItem = item.nx;
+    const maxNxForThisItem = maxPurchasable * nxPerItem;
+    
+    if (maxNxForThisItem <= 0) continue;
+    
+    // 이 아이템에 사용할 캐시 양 결정
+    const nxToUseForThisItem = Math.min(remainingNx, maxNxForThisItem);
+    const itemsToBuy = Math.floor(nxToUseForThisItem / nxPerItem);
+    
+    if (itemsToBuy <= 0) continue;
+    
+    // 마일리지 사용 여부 결정
+    let usesMileageForPurchase = false;
+    if (item.shouldUseMileage) {
+      const mileagePerItem = Math.ceil(nxPerItem * (item.mileageRatio / 100));
+      const requiredMileage = itemsToBuy * mileagePerItem;
+      
+      if (availableMileageLeft >= requiredMileage) {
+        usesMileageForPurchase = true;
+        availableMileageLeft -= requiredMileage;
+        usedMileage += requiredMileage;
+        console.log(`  ✨ ${item.name} ${itemsToBuy}개 마일리지 구매 (${requiredMileage.toLocaleString()} 마일리지 사용)`);
+      }
+    }
+    
+    if (!usesMileageForPurchase) {
+      console.log(`  💸 ${item.name} ${itemsToBuy}개 캐시 구매 (${(itemsToBuy * nxPerItem).toLocaleString()} 캐시 사용)`);
+    }
+    
+    // 획득 메소 계산
+    const mesoFromThisItem = itemsToBuy * item.meso * (1 - fee / 100);
+    totalMeso += mesoFromThisItem;
+    remainingNx -= itemsToBuy * nxPerItem;
+    
+    console.log(`    → ${mesoFromThisItem.toLocaleString()} 메소 획득`);
+  }
+  
+  if (remainingNx > 0) {
+    console.log(`⚠️ 남은 캐시: ${remainingNx.toLocaleString()} (아이템 한도 부족)`);
+  }
+  
+  console.log(`💰 캐시템 변환 완료: ${totalMeso.toLocaleString()} 메소 획득`);
+  
+  const usedCash = nxAmount - remainingNx;
+  const result = {
+    meso: Math.floor(totalMeso),
+    usedCash,
+    usedMileage,
+    remainingCash: remainingNx,
+    remainingMileage: availableMileageLeft
+  };
+  
+  console.log(`📊 사용 현황: 캐시 ${usedCash.toLocaleString()}/${nxAmount.toLocaleString()}, 마일리지 ${usedMileage.toLocaleString()}/${availableMileage.toLocaleString()}`);
+  
+  return result;
+}
+
 // 경로 계산 함수
 export function calculateConversion(fromAmount, edge) {
   const { fee, rate, type } = edge;
@@ -306,8 +420,7 @@ export function calculateConversion(fromAmount, edge) {
   }
   
   if (type === 'cashitem') {
-    // 넥슨캐시 → 메소 (캐시템 경매장)
-    // 설정: X 메소 / Y 캐시, 구매자 수수료
+    // 넥슨캐시 → 메소 (캐시템 경매장) - 레거시 단일 아이템 처리
     const { mesoPerNx, nxAmount, remainingLimit = Infinity } = edge;
     const mesoPerSingleNx = mesoPerNx / nxAmount;
     
@@ -316,6 +429,11 @@ export function calculateConversion(fromAmount, edge) {
     const actualNxUsed = Math.min(fromAmount, maxNxByLimit);
     
     return Math.floor(actualNxUsed * mesoPerSingleNx * (1 - fee / 100));
+  }
+  
+  if (type === 'cashitem_multi') {
+    // 넥슨캐시 → 메소 (캐시템 경매장) - 개선된 복합 아이템 처리
+    return calculateOptimalCashItemConversion(fromAmount, edge);
   }
   
   if (type === 'soltrade') {
@@ -353,19 +471,10 @@ export function findAllPaths(graph, fromNodeId, toNodeId, maxDepth = null, amoun
   // 깊이 제한: 일반 변환은 노드 수 - 1로 충분
   const actualMaxDepth = maxDepth || (nodes.length - 1);
   
-  // 무한동력 감지를 위한 임계값 (시작 금액의 10배)
-  const arbitrageThreshold = startAmount * 10;
-  
   function dfs(currentNodeId, targetNodeId, currentPath, currentAmount, visited, depth) {
     // 깊이 제한
     if (depth > actualMaxDepth) return;
-    
-    // 무한동력 감지: 현재 금액이 시작 금액의 10배를 넘으면 중단
-    if (currentAmount > arbitrageThreshold) {
-      console.warn(`무한동력 감지: 경로에서 금액이 ${currentAmount.toLocaleString()}로 비정상적으로 증가했습니다.`);
-      return;
-    }
-    
+      
     // 목표 노드에 도달한 경우
     if (currentNodeId === targetNodeId) {
       paths.push({
@@ -380,7 +489,18 @@ export function findAllPaths(graph, fromNodeId, toNodeId, maxDepth = null, amoun
     
     for (const edge of outgoingEdges) {
       if (!visited.has(edge.to)) {
-        const newAmount = calculateConversion(currentAmount, edge);
+        const conversionResult = calculateConversion(currentAmount, edge);
+        
+        // 캐시템 변환의 경우 객체 반환, 일반 변환의 경우 숫자 반환
+        let newAmount, cashItemDetails = null;
+        if (typeof conversionResult === 'object' && conversionResult.meso !== undefined) {
+          // 캐시템 변환 결과
+          newAmount = conversionResult.meso;
+          cashItemDetails = conversionResult;
+        } else {
+          // 일반 변환 결과
+          newAmount = conversionResult;
+        }
         
         // 계산 결과가 비정상적인지 확인
         if (newAmount <= 0 || !isFinite(newAmount)) {
@@ -396,7 +516,8 @@ export function findAllPaths(graph, fromNodeId, toNodeId, maxDepth = null, amoun
           inputAmount: currentAmount,
           outputAmount: newAmount,
           edge: edge,
-          description: edge.description
+          description: edge.description,
+          cashItemDetails // 캐시템 상세 정보 (있는 경우)
         };
         
         dfs(edge.to, targetNodeId, [...currentPath, step], newAmount, newVisited, depth + 1);
@@ -440,7 +561,18 @@ function findCyclePaths(graph, startNodeId, startAmount, maxDepth = 5) {
         continue;
       }
       
-      const newAmount = calculateConversion(currentAmount, edge);
+      const conversionResult = calculateConversion(currentAmount, edge);
+      
+      // 캐시템 변환의 경우 객체 반환, 일반 변환의 경우 숫자 반환
+      let newAmount, cashItemDetails = null;
+      if (typeof conversionResult === 'object' && conversionResult.meso !== undefined) {
+        // 캐시템 변환 결과
+        newAmount = conversionResult.meso;
+        cashItemDetails = conversionResult;
+      } else {
+        // 일반 변환 결과
+        newAmount = conversionResult;
+      }
       
       if (newAmount <= 0 || !isFinite(newAmount)) {
         continue;
@@ -452,7 +584,8 @@ function findCyclePaths(graph, startNodeId, startAmount, maxDepth = 5) {
         inputAmount: currentAmount,
         outputAmount: newAmount,
         edge: edge,
-        description: edge.description
+        description: edge.description,
+        cashItemDetails // 캐시템 상세 정보 (있는 경우)
       };
       
       const newVisited = new Set(visited);
@@ -614,8 +747,19 @@ export function detectArbitrage(graph, startAmount = 1000000) {
 
 // 최적 경로들 선별 (효율성 순으로 정렬)
 export function getBestPaths(allPaths) {
-  // 최종 금액 기준으로 정렬 (이미 실제 금액으로 계산되어 있음)
-  return allPaths.sort((a, b) => b.finalAmount - a.finalAmount);
+  // 효율 기준으로 정렬 (최종 금액 / 시작 금액)
+  return allPaths.sort((a, b) => {
+    // 각 경로의 시작 금액 계산 (첫 번째 step의 inputAmount)
+    const startAmountA = a.steps.length > 0 ? a.steps[0].inputAmount : 1;
+    const startAmountB = b.steps.length > 0 ? b.steps[0].inputAmount : 1;
+    
+    // 효율 계산 (최종 금액 / 시작 금액)
+    const efficiencyA = a.finalAmount / startAmountA;
+    const efficiencyB = b.finalAmount / startAmountB;
+    
+    // 높은 효율 순으로 정렬
+    return efficiencyB - efficiencyA;
+  });
 }
 
 // 숫자 포맷팅 함수

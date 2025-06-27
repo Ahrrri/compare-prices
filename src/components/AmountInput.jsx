@@ -5,7 +5,8 @@ const AmountInput = ({
   inputAmountDisplay,
   onAmountChange,
   selectedNode,
-  getCurrencyName
+  getCurrencyName,
+  onCalculatePath
 }) => {
   return (
     <div className="input-section">
@@ -21,6 +22,9 @@ const AmountInput = ({
         <span className="currency-unit">
           {selectedNode ? getCurrencyName(selectedNode.id) : '단위'}
         </span>
+        <button className="calculate-path-btn" onClick={onCalculatePath}>
+          🔍 경로 분석
+        </button>
       </div>
       <p className="input-help-text">
         예: 10,000 (1만원), 100,000,000 (1억 메소)
