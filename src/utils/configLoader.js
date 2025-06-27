@@ -1,4 +1,5 @@
 // 외부 설정 파일 로더
+import { mergeSettings } from '../config/defaultSettings';
 
 /**
  * 외부 JSON 설정 파일을 로드합니다.
@@ -376,78 +377,107 @@ export function importSettingsFromFile() {
               
               const exchangeOptions = unflattenExchangeOptions(flattenedOptions);
               
-              const settings = {
-                mesoMarketRates: {
-                  GROUP1_3: {
-                    buy: config["메소마켓 시세"]["그룹1+3 (일반섭+챌린저스)"]["메소→메포 (메포/1억메소)"]["price"],
-                    sell: config["메소마켓 시세"]["그룹1+3 (일반섭+챌린저스)"]["메포→메소 (메포/1억메소)"]["price"]
-                  },
-                  GROUP2: {
-                    buy: config["메소마켓 시세"]["그룹2 (에오스)"]["메소→메포 (메포/1억메소)"]["price"],
-                    sell: config["메소마켓 시세"]["그룹2 (에오스)"]["메포→메소 (메포/1억메소)"]["price"]
-                  }
-                },
-                cashTradeRates: {
-                  GROUP1: {
-                    buy: config["현금거래 시세"]["그룹1 (일반섭)"]["현금→메소 (원/1억메소)"]["price"],
-                    sell: config["현금거래 시세"]["그룹1 (일반섭)"]["메소→현금 (원/1억메소)"]["price"]
-                  },
-                  GROUP2: {
-                    buy: config["현금거래 시세"]["그룹2 (에오스)"]["현금→메소 (원/1억메소)"]["price"],
-                    sell: config["현금거래 시세"]["그룹2 (에오스)"]["메소→현금 (원/1억메소)"]["price"]
-                  },
-                  GROUP3: {
-                    buy: config["현금거래 시세"]["그룹3 (챌린저스)"]["현금→메소 (원/1억메소)"]["price"],
-                    sell: config["현금거래 시세"]["그룹3 (챌린저스)"]["메소→현금 (원/1억메소)"]["price"]
-                  }
-                },
-                solTradeRates: {
-                  cash: {
-                    GROUP1: {
-                      buy: config["조각 거래"]["그룹1 (일반섭)"]["현금→조각 (원/개)"]["price"],
-                      sell: config["조각 거래"]["그룹1 (일반섭)"]["조각→현금 (원/개)"]["price"]
-                    },
-                    GROUP2: {
-                      buy: config["조각 거래"]["그룹2 (에오스)"]["현금→조각 (원/개)"]["price"],
-                      sell: config["조각 거래"]["그룹2 (에오스)"]["조각→현금 (원/개)"]["price"]
-                    },
-                    GROUP3: {
-                      buy: config["조각 거래"]["그룹3 (챌린저스)"]["현금→조각 (원/개)"]["price"],
-                      sell: config["조각 거래"]["그룹3 (챌린저스)"]["조각→현금 (원/개)"]["price"]
-                    }
-                  },
-                  meso: {
-                    GROUP1: {
-                      buy: config["조각 거래"]["그룹1 (일반섭)"]["메소→조각 (메소/개)"]["price"],
-                      sell: config["조각 거래"]["그룹1 (일반섭)"]["조각→메소 (메소/개)"]["price"]
-                    },
-                    GROUP2: {
-                      buy: config["조각 거래"]["그룹2 (에오스)"]["메소→조각 (메소/개)"]["price"],
-                      sell: config["조각 거래"]["그룹2 (에오스)"]["조각→메소 (메소/개)"]["price"]
-                    },
-                    GROUP3: {
-                      buy: config["조각 거래"]["그룹3 (챌린저스)"]["메소→조각 (메소/개)"]["price"],
-                      sell: config["조각 거래"]["그룹3 (챌린저스)"]["조각→메소 (메소/개)"]["price"]
-                    }
-                  }
-                },
-                cashItemRates: {
-                  GROUP1: {
-                    items: config["캐시템 경매장"]["그룹1 (일반섭)"]["아이템 목록"] || []
-                  },
-                  GROUP2: {
-                    items: config["캐시템 경매장"]["그룹2 (에오스)"]["아이템 목록"] || []
-                  },
-                  GROUP3: {
-                    items: config["캐시템 경매장"]["그룹3 (챌린저스)"]["아이템 목록"] || []
-                  }
-                },
-                mvpGrade: config["MVP 등급"],
-                voucherDiscounts: config["상품권 할인"],
-                exchangeOptions: exchangeOptions
-              };
+              // 파일에서 읽은 설정 (일부만 있을 수 있음)
+              const fileSettings = {};
               
-              resolve(settings);
+              // 메소마켓 시세
+              if (config["메소마켓 시세"]) {
+                fileSettings.mesoMarketRates = {};
+                if (config["메소마켓 시세"]["그룹1+3 (일반섭+챌린저스)"]) {
+                  fileSettings.mesoMarketRates.GROUP1_3 = {
+                    buy: config["메소마켓 시세"]["그룹1+3 (일반섭+챌린저스)"]["메소→메포 (메포/1억메소)"]?.["price"],
+                    sell: config["메소마켓 시세"]["그룹1+3 (일반섭+챌린저스)"]["메포→메소 (메포/1억메소)"]?.["price"]
+                  };
+                }
+                if (config["메소마켓 시세"]["그룹2 (에오스)"]) {
+                  fileSettings.mesoMarketRates.GROUP2 = {
+                    buy: config["메소마켓 시세"]["그룹2 (에오스)"]["메소→메포 (메포/1억메소)"]?.["price"],
+                    sell: config["메소마켓 시세"]["그룹2 (에오스)"]["메포→메소 (메포/1억메소)"]?.["price"]
+                  };
+                }
+              }
+              
+              // 현금거래 시세
+              if (config["현금거래 시세"]) {
+                fileSettings.cashTradeRates = {};
+                if (config["현금거래 시세"]["그룹1 (일반섭)"]) {
+                  fileSettings.cashTradeRates.GROUP1 = {
+                    buy: config["현금거래 시세"]["그룹1 (일반섭)"]["현금→메소 (원/1억메소)"]?.["price"],
+                    sell: config["현금거래 시세"]["그룹1 (일반섭)"]["메소→현금 (원/1억메소)"]?.["price"]
+                  };
+                }
+                if (config["현금거래 시세"]["그룹2 (에오스)"]) {
+                  fileSettings.cashTradeRates.GROUP2 = {
+                    buy: config["현금거래 시세"]["그룹2 (에오스)"]["현금→메소 (원/1억메소)"]?.["price"],
+                    sell: config["현금거래 시세"]["그룹2 (에오스)"]["메소→현금 (원/1억메소)"]?.["price"]
+                  };
+                }
+                if (config["현금거래 시세"]["그룹3 (챌린저스)"]) {
+                  fileSettings.cashTradeRates.GROUP3 = {
+                    buy: config["현금거래 시세"]["그룹3 (챌린저스)"]["현금→메소 (원/1억메소)"]?.["price"],
+                    sell: config["현금거래 시세"]["그룹3 (챌린저스)"]["메소→현금 (원/1억메소)"]?.["price"]
+                  };
+                }
+              }
+              
+              // 조각 거래 시세
+              if (config["조각 거래"]) {
+                fileSettings.solTradeRates = { cash: {}, meso: {} };
+                
+                // 각 그룹별로 처리
+                ["그룹1 (일반섭)", "그룹2 (에오스)", "그룹3 (챌린저스)"].forEach((groupName, index) => {
+                  const groupKey = `GROUP${index + 1}`;
+                  if (config["조각 거래"][groupName]) {
+                    fileSettings.solTradeRates.cash[groupKey] = {
+                      buy: config["조각 거래"][groupName]["현금→조각 (원/개)"]?.["price"],
+                      sell: config["조각 거래"][groupName]["조각→현금 (원/개)"]?.["price"]
+                    };
+                    fileSettings.solTradeRates.meso[groupKey] = {
+                      buy: config["조각 거래"][groupName]["메소→조각 (메소/개)"]?.["price"],
+                      sell: config["조각 거래"][groupName]["조각→메소 (메소/개)"]?.["price"]
+                    };
+                  }
+                });
+              }
+              
+              // 캐시템 경매장
+              if (config["캐시템 경매장"]) {
+                fileSettings.cashItemRates = {};
+                if (config["캐시템 경매장"]["그룹1 (일반섭)"]) {
+                  fileSettings.cashItemRates.GROUP1 = {
+                    items: config["캐시템 경매장"]["그룹1 (일반섭)"]["아이템 목록"] || []
+                  };
+                }
+                if (config["캐시템 경매장"]["그룹2 (에오스)"]) {
+                  fileSettings.cashItemRates.GROUP2 = {
+                    items: config["캐시템 경매장"]["그룹2 (에오스)"]["아이템 목록"] || []
+                  };
+                }
+                if (config["캐시템 경매장"]["그룹3 (챌린저스)"]) {
+                  fileSettings.cashItemRates.GROUP3 = {
+                    items: config["캐시템 경매장"]["그룹3 (챌린저스)"]["아이템 목록"] || []
+                  };
+                }
+              }
+              
+              // MVP 등급
+              if (config["MVP 등급"]) {
+                fileSettings.mvpGrade = config["MVP 등급"];
+              }
+              
+              // 상품권 할인
+              if (config["상품권 할인"]) {
+                fileSettings.voucherDiscounts = config["상품권 할인"];
+              }
+              
+              // 교환 옵션
+              if (exchangeOptions) {
+                fileSettings.exchangeOptions = exchangeOptions;
+              }
+              
+              // 기본값과 병합
+              const mergedSettings = mergeSettings(fileSettings);
+              resolve(mergedSettings);
           } else {
             console.error('지원하지 않는 설정 파일 버전입니다. v3.0 이상 파일만 지원됩니다.');
             resolve(null);

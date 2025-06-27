@@ -1,31 +1,186 @@
 // 메이플스토리 화폐 변환 계산기 기본 설정값
 
 export const DEFAULT_SETTINGS = {
+  // MVP 등급 기본값
+  mvpGrade: 'SILVER_PLUS',
+
+  // 캐시템 경매장 시세 (넥슨캐시로 캐시템 구매 후 메소로 판매) G1: 일반섭, G2: 에/헬, G3: 챌린저스
+  cashItemRates: {
+    GROUP1: {
+      items: [
+        {
+          id: 'royal_style',
+          name: '로얄',
+          meso: 79870000,
+          nx: 2200,
+          mileageRatio: 0,
+          remainingLimit: 50
+        },
+        {
+          id: 'karma_scissor',
+          name: '플가',
+          meso: 172999999,
+          nx: 5900,
+          mileageRatio: 30,
+          remainingLimit: 10
+        },
+        {
+          id: 'premium_masterpiece',
+          name: '프마피',
+          meso: 67730000,
+          nx: 1900,
+          mileageRatio: 0,
+          remainingLimit: 10
+        },
+        {
+          id: 'platinum_apple',
+          name: '플애플',
+          meso: 133000000,
+          nx: 3500,
+          mileageRatio: 0,
+          remainingLimit: 10
+        },
+        {
+          id: 'hyper_megaphone',
+          name: '하이퍼 확성기',
+          meso: 31555444,
+          nx: 990,
+          mileageRatio: 30,
+          remainingLimit: 20
+        }
+      ]
+    },
+    GROUP2: {
+      items: [
+        {
+          id: 'royal_style',
+          name: '로얄',
+          meso: 199999999,
+          nx: 2200,
+          mileageRatio: 0,
+          remainingLimit: 5
+        },
+        {
+          id: 'karma_scissor',
+          name: '플가',
+          meso: 506990005,
+          nx: 5900,
+          mileageRatio: 30,
+          remainingLimit: 2
+        },
+        {
+          id: 'premium_masterpiece',
+          name: '프마피',
+          meso: 166666655,
+          nx: 1900,
+          mileageRatio: 0,
+          remainingLimit: 10
+        },
+        {
+          id: 'platinum_apple',
+          name: '플애플',
+          meso: 277777777,
+          nx: 3500,
+          mileageRatio: 0,
+          remainingLimit: 0
+        },
+        {
+          id: 'hyper_megaphone',
+          name: '하이퍼 확성기',
+          meso: 76999999,
+          nx: 990,
+          mileageRatio: 30,
+          remainingLimit: 20
+        },
+        {
+          id: 'mileage_return',
+          name: '마일리턴',
+          meso: 160000000,
+          nx: 6900,
+          mileageRatio: 100,
+          remainingLimit: 50
+        },
+        {
+          id: 'petit_water',
+          name: '쁘생물',
+          meso: 1277777777,
+          nx: 13900,
+          mileageRatio: 30,
+          remainingLimit: 3
+        }
+      ]
+    },
+    GROUP3: {
+      items: [
+        {
+          id: 'royal_style',
+          name: '로얄',
+          meso: 76444211,
+          nx: 2200,
+          mileageRatio: 0,
+          remainingLimit: 50
+        },
+        {
+          id: 'karma_scissor',
+          name: '플가',
+          meso: 150000000,
+          nx: 5900,
+          mileageRatio: 30,
+          remainingLimit: 10
+        },
+        {
+          id: 'premium_masterpiece',
+          name: '프마피',
+          meso: 52222220,
+          nx: 1900,
+          mileageRatio: 0,
+          remainingLimit: 10
+        },
+        {
+          id: 'platinum_apple',
+          name: '플애플',
+          meso: 130000000,
+          nx: 3500,
+          mileageRatio: 0,
+          remainingLimit: 10
+        },
+        {
+          id: 'hyper_megaphone',
+          name: '하이퍼 확성기',
+          meso: 33810000,
+          nx: 990,
+          mileageRatio: 30,
+          remainingLimit: 20
+        }
+      ]
+    }
+  },
+
   // 메소마켓 시세 (그룹별, 1억 메소당 메이플포인트)
   mesoMarketRates: {
     GROUP1_3: {
-      buy: 2600,  // 메소로 메이플포인트 구매 시
-      sell: 2600  // 메이플포인트로 메소 구매 시
+      buy: 3000,  // 메소로 메이플포인트 구매 시
+      sell: 3000  // 메이플포인트로 메소 구매 시
     },
     GROUP2: {
-      buy: 1400,
-      sell: 1400
+      buy: 1200,
+      sell: 1200
     }
   },
 
   // 현금거래 시세 (그룹별, 1억 메소당 원)
   cashTradeRates: {
     GROUP1: {
-      buy: 1800,   // 현금으로 메소 구매 시
-      sell: 1800   // 메소를 현금으로 판매 시
+      buy: 2100,   // 현금으로 메소 구매 시
+      sell: 2100   // 메소를 현금으로 판매 시
     },
     GROUP2: {
-      buy: 1100,
-      sell: 1100
+      buy: 1000,
+      sell: 950
     },
     GROUP3: {
-      buy: 2200,
-      sell: 2200
+      buy: 2300,
+      sell: 2250
     }
   },
 
@@ -38,7 +193,7 @@ export const DEFAULT_SETTINGS = {
         sell: 100    // 조각을 현금으로 판매 시
       },
       GROUP2: {
-        buy: 80,
+        buy: 85,
         sell: 80
       },
       GROUP3: {
@@ -49,86 +204,19 @@ export const DEFAULT_SETTINGS = {
     // 메소 거래 (개당 메소)
     meso: {
       GROUP1: {
-        buy: 5000000,   // 메소로 조각 구매 시 (500만 메소)
-        sell: 5000000   // 조각을 메소로 판매 시
+        buy: 4900000,   // 메소로 조각 구매 시
+        sell: 4900000   // 조각을 메소로 판매 시
       },
       GROUP2: {
-        buy: 7000000,   // 700만 메소
-        sell: 7000000
+        buy: 8500000,
+        sell: 8500000
       },
       GROUP3: {
-        buy: 5500000,   // 550만 메소
-        sell: 5500000
+        buy: 6000000,
+        sell: 6000000
       }
     }
   },
-
-  // 캐시템 경매장 시세 (넥슨캐시로 캐시템 구매 후 메소로 판매)
-  cashItemRates: {
-    GROUP1: {
-      items: [
-        {
-          id: 'pet_equip',
-          name: '펫 장비',
-          meso: 78000000,
-          nx: 2200,
-          mileageRatio: 0,
-          remainingLimit: 5
-        },
-        {
-          id: 'cube',
-          name: '큐브',
-          meso: 45000000,
-          nx: 1200,
-          mileageRatio: 30,
-          remainingLimit: 10
-        }
-      ]
-    },
-    GROUP2: {
-      items: [
-        {
-          id: 'pet_equip',
-          name: '펫 장비',
-          meso: 173333333,
-          nx: 2200,
-          mileageRatio: 0,
-          remainingLimit: 5
-        },
-        {
-          id: 'cube',
-          name: '큐브',
-          meso: 120000000,
-          nx: 1200,
-          mileageRatio: 30,
-          remainingLimit: 10
-        }
-      ]
-    },
-    GROUP3: {
-      items: [
-        {
-          id: 'pet_equip',
-          name: '펫 장비',
-          meso: 78000000,
-          nx: 2200,
-          mileageRatio: 0,
-          remainingLimit: 5
-        },
-        {
-          id: 'cube',
-          name: '큐브',
-          meso: 45000000,
-          nx: 1200,
-          mileageRatio: 30,
-          remainingLimit: 10
-        }
-      ]
-    }
-  },
-
-  // MVP 등급 기본값
-  mvpGrade: 'SILVER_PLUS',
 
   // 상품권 할인 설정
   voucherDiscounts: {
@@ -180,12 +268,12 @@ export const DEFAULT_SETTINGS = {
     cashItem_G2: { enabled: true },
     cashItem_G3: { enabled: true },
     // 조각 거래
-    solCashBuy_G1: { enabled: true },
+    solCashBuy_G1: { enabled: false },
     solCashBuy_G2: { enabled: true },
-    solCashBuy_G3: { enabled: true },
-    solCashSell_G1: { enabled: true },
+    solCashBuy_G3: { enabled: false },
+    solCashSell_G1: { enabled: false },
     solCashSell_G2: { enabled: true },
-    solCashSell_G3: { enabled: true },
+    solCashSell_G3: { enabled: false },
     solMesoBuy_G1: { enabled: true },
     solMesoBuy_G2: { enabled: true },
     solMesoBuy_G3: { enabled: true },

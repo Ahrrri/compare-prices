@@ -787,7 +787,7 @@ const SettingsPanel = ({
               }));
             }}
           />
-          <label htmlFor="direct-conversion">현금 → 넥슨캐시 → 메이플포인트 직접 변환 허용</label>
+          <label htmlFor="direct-conversion">넥슨캐시 → 메이플포인트 직접 변환 허용</label>
         </div>
       )}
 
