@@ -1,27 +1,6 @@
 // 외부 설정 파일 로더
 import { mergeSettings } from '../config/defaultSettings';
 
-/**
- * 외부 JSON 설정 파일을 로드합니다.
- * @param {string} configPath - 설정 파일 경로 (기본값: '/config.json')
- * @returns {Promise<object>} 설정 객체
- */
-export async function loadExternalConfig(configPath = '/config.json') {
-  try {
-    const response = await fetch(configPath);
-    if (!response.ok) {
-      throw new Error(`설정 파일을 불러올 수 없습니다: ${response.status}`);
-    }
-    
-    const config = await response.json();
-    console.log('외부 설정 파일 로드 성공:', config.description || 'Unknown config');
-    
-    return config.settings || config;
-  } catch (error) {
-    console.warn('외부 설정 파일 로드 실패, 기본값 사용:', error.message);
-    return null;
-  }
-}
 
 
 /**

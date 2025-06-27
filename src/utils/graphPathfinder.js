@@ -477,6 +477,7 @@ function getNodeDisplayName(nodeId) {
   return nodeNames[nodeId] || nodeId;
 }
 
+
 // 경로에서 연속된 중복 노드 제거 함수
 function simplifyPath(steps) {
   if (steps.length === 0) return '';
@@ -519,7 +520,63 @@ export function detectArbitrage(graph, startAmount = 1000000) {
     }
   }
   
-  return arbitrageOpportunities;
+  // 순환 경로 정규화 및 중복 제거
+  const normalizedOpportunities = [];
+  
+  for (const opportunity of arbitrageOpportunities) {
+    // 순환 경로를 정규화 (알파벳 순으로 가장 작은 노드를 시작점으로)
+    const pathNodes = opportunity.steps.map(step => step.from);
+    pathNodes.push(opportunity.steps[opportunity.steps.length - 1].to); // 마지막 to 노드도 추가
+    
+    // 시작점을 제외한 순환 부분만 추출
+    const cycleNodes = pathNodes.slice(0, -1); // 마지막은 시작점과 같으므로 제거
+    
+    // 정규화된 순환 패턴 생성 (알파벳 순으로 가장 작은 노드부터 시작)
+    let minIndex = 0;
+    for (let i = 1; i < cycleNodes.length; i++) {
+      if (cycleNodes[i] < cycleNodes[minIndex]) {
+        minIndex = i;
+      }
+    }
+    
+    // 정규화된 순환 패턴
+    const normalizedCycle = [
+      ...cycleNodes.slice(minIndex),
+      ...cycleNodes.slice(0, minIndex)
+    ];
+    const normalizedKey = normalizedCycle.join('→');
+    
+    // 동일한 정규화된 패턴이 이미 있는지 확인
+    const existingBetter = normalizedOpportunities.find(existing => 
+      existing.normalizedKey === normalizedKey &&
+      existing.profit >= opportunity.profit
+    );
+    
+    if (!existingBetter) {
+      // 기존에 있는 더 나쁜 같은 패턴들 제거
+      const indexesToRemove = [];
+      for (let i = 0; i < normalizedOpportunities.length; i++) {
+        const existing = normalizedOpportunities[i];
+        if (existing.normalizedKey === normalizedKey &&
+            existing.profit < opportunity.profit) {
+          indexesToRemove.push(i);
+        }
+      }
+      
+      // 뒤에서부터 제거 (인덱스 변경 방지)
+      for (let i = indexesToRemove.length - 1; i >= 0; i--) {
+        normalizedOpportunities.splice(indexesToRemove[i], 1);
+      }
+      
+      normalizedOpportunities.push({
+        ...opportunity,
+        normalizedKey: normalizedKey
+      });
+    }
+  }
+  
+  // 이익이 큰 순서대로 정렬
+  return normalizedOpportunities.sort((a, b) => b.profit - a.profit);
 }
 
 // 최적 경로들 선별 (효율성 순으로 정렬)
