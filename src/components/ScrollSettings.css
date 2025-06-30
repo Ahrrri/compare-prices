@@ -1,0 +1,86 @@
+.scroll-settings {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.setting-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.setting-label {
+  font-weight: 500;
+  color: #333;
+  font-size: 0.9rem;
+}
+
+.setting-input,
+.setting-select {
+  padding: 0.5rem 0.75rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  transition: border-color 0.2s ease;
+}
+
+.setting-input:focus,
+.setting-select:focus {
+  outline: none;
+  border-color: #4CAF50;
+}
+
+.setting-hint {
+  font-size: 0.8rem;
+  color: #666;
+  font-style: italic;
+}
+
+.strategy-description {
+  font-size: 0.8rem;
+  color: #4CAF50;
+  font-weight: 500;
+  margin-top: 0.25rem;
+}
+
+.subsection-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333;
+  margin: 1rem 0 0.5rem 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.cost-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+/* 전략별 파라미터 섹션 강조 */
+.strategy-params {
+  background: #f0f8f0;
+  padding: 1rem;
+  border-radius: 8px;
+  border-left: 4px solid #4CAF50;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+  .cost-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* 입력 필드 크기 조정 */
+.setting-input[type="number"] {
+  text-align: right;
+}
+
+/* 호버 효과 */
+.setting-input:hover,
+.setting-select:hover {
+  border-color: #c0c0c0;
+}

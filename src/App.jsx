@@ -6,8 +6,10 @@ import SettingsPanel from './components/SettingsPanel'
 import AmountInput from './components/AmountInput'
 import GraphSection from './components/GraphSection'
 import ResultsSection from './components/ResultsSection'
+import ScrollSimulator from './components/ScrollSimulator'
 
 function App() {
+  const [activeTab, setActiveTab] = useState('currency')
   const [inputAmount, setInputAmount] = useState('')
   const [inputAmountDisplay, setInputAmountDisplay] = useState('')
   const [selectedNode, setSelectedNode] = useState(null)
@@ -192,114 +194,148 @@ function App() {
     setHasUnsavedChanges(true);
   }, [mesoMarketRates, cashTradeRates, solTradeRates, cashItemRates, mvpGrade, voucherDiscounts, exchangeOptions, availableMileage, mileageRates]);
 
+  const renderCurrencyCalculator = () => (
+    <div className="main-container">
+      <div className="settings-panel">
+        <SettingsPanel
+          mesoMarketRates={mesoMarketRates}
+          setMesoMarketRates={setMesoMarketRates}
+          cashTradeRates={cashTradeRates}
+          setCashTradeRates={setCashTradeRates}
+          solTradeRates={solTradeRates}
+          setSolTradeRates={setSolTradeRates}
+          cashItemRates={cashItemRates}
+          setCashItemRates={setCashItemRates}
+          mvpGrade={mvpGrade}
+          setMvpGrade={setMvpGrade}
+          voucherDiscounts={voucherDiscounts}
+          setVoucherDiscounts={setVoucherDiscounts}
+          exchangeOptions={exchangeOptions}
+          setExchangeOptions={setExchangeOptions}
+          availableMileage={availableMileage}
+          setAvailableMileage={setAvailableMileage}
+          mileageRates={mileageRates}
+          setMileageRates={setMileageRates}
+          resetToDefaults={resetToDefaults}
+          onUpdateGraph={handleUpdateGraphAndDetectArbitrage}
+          hasUnsavedChanges={hasUnsavedChanges}
+        />
+      </div>
+
+      <div className="graph-panel">
+        <AmountInput
+          inputAmountDisplay={inputAmountDisplay}
+          onAmountChange={handleAmountChange}
+          selectedNode={selectedNode}
+          getCurrencyName={getCurrencyName}
+          onCalculatePath={handleCalculatePath}
+        />
+        
+        <GraphSection
+          inputAmount={inputAmount}
+          mesoMarketRates={mesoMarketRates}
+          cashTradeRates={cashTradeRates}
+          solTradeRates={solTradeRates}
+          cashItemRates={cashItemRates}
+          mvpGrade={mvpGrade}
+          voucherDiscounts={voucherDiscounts}
+          exchangeOptions={exchangeOptions}
+          availableMileage={availableMileage}
+          mileageRates={mileageRates}
+          selectedNode={selectedNode}
+          selectedTarget={selectedTarget}
+          highlightedPath={highlightedPath}
+          arbitrageWarnings={arbitrageWarnings}
+          onNodeSelect={handleNodeSelect}
+          onReset={handleReset}
+        />
+        
+        {/* 무한동력 경고 */}
+        {arbitrageWarnings.length > 0 && (
+          <div className="arbitrage-warning">
+            <h3>⚠️ 무한동력 감지</h3>
+            <p>현재 설정에서 순환 거래로 이익을 낼 수 있는 경로가 감지되었습니다:</p>
+            {arbitrageWarnings.slice(0, 3).map((warning, index) => (
+              <div 
+                key={index} 
+                className={`arbitrage-item ${highlightedPath === `arbitrage-${index}` ? 'highlighted' : ''}`}
+                onClick={() => {
+                  const pathId = `arbitrage-${index}`;
+                  setHighlightedPath(highlightedPath === pathId ? null : pathId);
+                }}
+                style={{ cursor: 'pointer' }}
+              >
+                <div className="arbitrage-header">
+                  <strong>{warning.startNodeDisplay}</strong>에서 시작하여 <strong>{warning.profitRate}%</strong> 이익 
+                  ({formatNumber(warning.profit, 'currency')}원 수익)
+                </div>
+                <div className="arbitrage-path">
+                  경로: {warning.pathDescription}
+                </div>
+                <div className="arbitrage-details">
+                  {formatNumber(warning.startAmount, 'currency')}원 → {formatNumber(warning.finalAmount, 'currency')}원
+                </div>
+              </div>
+            ))}
+            {arbitrageWarnings.length > 3 && (
+              <p>...외 {arbitrageWarnings.length - 3}개 더</p>
+            )}
+          </div>
+        )}
+        
+        <ResultsSection
+          calculationResults={calculationResults}
+          selectedSource={selectedNode}
+          sourceCurrency={sourceCurrency}
+          selectedTarget={selectedTarget}
+          targetCurrency={targetCurrency}
+          formatNumber={formatNumber}
+          getCurrencyName={getCurrencyName}
+          getCurrencyType={getCurrencyType}
+          onPathHighlight={setHighlightedPath}
+        />
+      </div>
+    </div>
+  );
+
   return (
     <div className="app">
-      <h1>메이플스토리 화폐 변환 계산기</h1>
-      <p className="app-subtitle">
-        금액을 입력하고 노드를 클릭하여 변환 경로를 탐색하세요
-      </p>
+      <h1>메이플스토리 도구 모음</h1>
       
-      
-      <div className="main-container">
-        <div className="settings-panel">
-          <SettingsPanel
-            mesoMarketRates={mesoMarketRates}
-            setMesoMarketRates={setMesoMarketRates}
-            cashTradeRates={cashTradeRates}
-            setCashTradeRates={setCashTradeRates}
-            solTradeRates={solTradeRates}
-            setSolTradeRates={setSolTradeRates}
-            cashItemRates={cashItemRates}
-            setCashItemRates={setCashItemRates}
-            mvpGrade={mvpGrade}
-            setMvpGrade={setMvpGrade}
-            voucherDiscounts={voucherDiscounts}
-            setVoucherDiscounts={setVoucherDiscounts}
-            exchangeOptions={exchangeOptions}
-            setExchangeOptions={setExchangeOptions}
-            availableMileage={availableMileage}
-            setAvailableMileage={setAvailableMileage}
-            mileageRates={mileageRates}
-            setMileageRates={setMileageRates}
-            resetToDefaults={resetToDefaults}
-            onUpdateGraph={handleUpdateGraphAndDetectArbitrage}
-            hasUnsavedChanges={hasUnsavedChanges}
-          />
-        </div>
+      {/* 탭 네비게이션 */}
+      <div className="tab-navigation">
+        <button 
+          className={`tab-button ${activeTab === 'currency' ? 'active' : ''}`}
+          onClick={() => setActiveTab('currency')}
+        >
+          💰 화폐 변환 계산기
+        </button>
+        <button 
+          className={`tab-button ${activeTab === 'scroll' ? 'active' : ''}`}
+          onClick={() => setActiveTab('scroll')}
+        >
+          📜 주문서 강화 시뮬레이터
+        </button>
+      </div>
 
-        <div className="graph-panel">
-          <AmountInput
-            inputAmountDisplay={inputAmountDisplay}
-            onAmountChange={handleAmountChange}
-            selectedNode={selectedNode}
-            getCurrencyName={getCurrencyName}
-            onCalculatePath={handleCalculatePath}
-          />
-          
-          <GraphSection
-            inputAmount={inputAmount}
-            mesoMarketRates={mesoMarketRates}
-            cashTradeRates={cashTradeRates}
-            solTradeRates={solTradeRates}
-            cashItemRates={cashItemRates}
-            mvpGrade={mvpGrade}
-            voucherDiscounts={voucherDiscounts}
-            exchangeOptions={exchangeOptions}
-            availableMileage={availableMileage}
-            mileageRates={mileageRates}
-            selectedNode={selectedNode}
-            selectedTarget={selectedTarget}
-            highlightedPath={highlightedPath}
-            arbitrageWarnings={arbitrageWarnings}
-            onNodeSelect={handleNodeSelect}
-            onReset={handleReset}
-          />
-          
-          {/* 무한동력 경고 */}
-          {arbitrageWarnings.length > 0 && (
-            <div className="arbitrage-warning">
-              <h3>⚠️ 무한동력 감지</h3>
-              <p>현재 설정에서 순환 거래로 이익을 낼 수 있는 경로가 감지되었습니다:</p>
-              {arbitrageWarnings.slice(0, 3).map((warning, index) => (
-                <div 
-                  key={index} 
-                  className={`arbitrage-item ${highlightedPath === `arbitrage-${index}` ? 'highlighted' : ''}`}
-                  onClick={() => {
-                    const pathId = `arbitrage-${index}`;
-                    setHighlightedPath(highlightedPath === pathId ? null : pathId);
-                  }}
-                  style={{ cursor: 'pointer' }}
-                >
-                  <div className="arbitrage-header">
-                    <strong>{warning.startNodeDisplay}</strong>에서 시작하여 <strong>{warning.profitRate}%</strong> 이익 
-                    ({formatNumber(warning.profit, 'currency')}원 수익)
-                  </div>
-                  <div className="arbitrage-path">
-                    경로: {warning.pathDescription}
-                  </div>
-                  <div className="arbitrage-details">
-                    {formatNumber(warning.startAmount, 'currency')}원 → {formatNumber(warning.finalAmount, 'currency')}원
-                  </div>
-                </div>
-              ))}
-              {arbitrageWarnings.length > 3 && (
-                <p>...외 {arbitrageWarnings.length - 3}개 더</p>
-              )}
-            </div>
-          )}
-          
-          <ResultsSection
-            calculationResults={calculationResults}
-            selectedSource={selectedNode}
-            sourceCurrency={sourceCurrency}
-            selectedTarget={selectedTarget}
-            targetCurrency={targetCurrency}
-            formatNumber={formatNumber}
-            getCurrencyName={getCurrencyName}
-            getCurrencyType={getCurrencyType}
-            onPathHighlight={setHighlightedPath}
-          />
-        </div>
+      {/* 탭별 설명 */}
+      <div className="tab-description">
+        {activeTab === 'currency' && (
+          <p className="app-subtitle">
+            금액을 입력하고 노드를 클릭하여 변환 경로를 탐색하세요
+          </p>
+        )}
+        {activeTab === 'scroll' && (
+          <p className="app-subtitle">
+            주문서 강화 전략을 시뮬레이션하고 최적 전략을 찾아보세요
+          </p>
+        )}
+      </div>
+      
+      {/* 탭 컨텐츠 */}
+      <div className="tab-content">
+        {activeTab === 'currency' && renderCurrencyCalculator()}
+        {activeTab === 'scroll' && <ScrollSimulator />}
       </div>
     </div>
   );
