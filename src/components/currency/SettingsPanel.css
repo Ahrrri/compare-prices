@@ -1,0 +1,928 @@
+/* ===== SettingsPanel 컴포넌트 스타일 ===== */
+
+.settings {
+  background: #e9ecef;
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+/* 마일리지 입력 스타일 */
+.mileage-input-section {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+}
+
+.mileage-section-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 2rem;
+}
+
+.mileage-amount-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.mileage-amount-row label {
+  font-weight: bold;
+  color: #495057;
+  display: block;
+}
+
+.mileage-input-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.mileage-input {
+  width: 150px;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  text-align: right;
+  font-size: 0.9rem;
+}
+
+.mileage-unit {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+/* 마일리지 변환 비율 스타일 */
+.mileage-rates-section {
+  border-left: 1px solid #dee2e6;
+  padding-left: 1rem;
+  flex: 1;
+}
+
+.mileage-rates-label {
+  font-weight: bold;
+  color: #495057;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.mileage-rates-inputs {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.mileage-rate-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.mileage-rate-item label {
+  font-size: 0.9rem;
+  color: #666;
+  min-width: 70px;
+}
+
+.mileage-rate-input {
+  width: 60px;
+  padding: 0.3rem 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  text-align: right;
+  font-size: 0.9rem;
+}
+
+.mileage-rate-unit {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.settings > div {
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* 메소마켓 시세와 MVP 선택 label에만 적용 */
+.settings .market-rate-row > label,
+.settings .mvp-selection > label {
+  margin-right: 0.5rem;
+  text-align: left;
+}
+
+/* 설정 그룹 헤더 */
+.section-header {
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  color: #555;
+  padding-top: 1.5rem;
+  border-top: 2px solid #ddd;
+}
+
+.section-header:first-of-type {
+  margin-top: 1.5rem;
+  padding-top: 0;
+  border-top: none;
+}
+
+/* 접기/펼치기 스타일 */
+.section-header.collapsible {
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.section-header.collapsible:hover {
+  color: #333;
+}
+
+.arrow {
+  display: inline-block;
+  transition: transform 0.2s ease;
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.arrow.expanded {
+  transform: rotate(90deg);
+}
+
+/* MVP 등급 선택 */
+.mvp-selection {
+  margin-bottom: 1rem;
+}
+
+.mvp-selection label {
+  font-size: 0.95rem;
+  color: #333;
+}
+
+.mvp-select {
+  padding: 0.3rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+/* 메소마켓 시세 설정 */
+.market-rates-section {
+  margin-bottom: 1.5rem;
+}
+
+.market-rate-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.market-rate-row label {
+  min-width: 200px;
+  font-size: 0.95rem;
+}
+
+.rate-input {
+  width: 110px;
+  padding: 0.3rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  text-align: right;
+}
+
+.rate-unit {
+  width: 100px;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.checkbox-group {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.checkbox-item {
+  display:inline;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.checkbox-item input[type="checkbox"] {
+  margin-right: 3px;
+}
+
+.checkbox-item label {
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+/* 그룹별 설정 - 통일된 스타일 */
+.group-section {
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 1rem;
+}
+
+.group-header {
+  width: 190px;
+  font-size: 0.95rem;
+  font-weight: bold;
+  color: #444;
+  margin-bottom: 0.8rem;
+}
+
+.group-content {
+  padding-left: 20px;
+}
+
+/* 캐시템 경매장 시세 설정 */
+.cash-item-section {
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.cash-item-header {
+  width: 190px;
+  font-size: 0.95rem;
+  font-weight: bold;
+  color: #d97706;
+  margin-bottom: 0.8rem;
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cash-item-header:hover {
+  color: #b45309;
+}
+
+.cash-item-content {
+  padding-left: 20px;
+}
+
+/* 현금거래 시세 설정 */
+.cash-trade-section {
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 1rem;
+}
+
+.cash-trade-header {
+  width: 190px;
+  font-size: 0.95rem;
+  font-weight: bold;
+  color: #2c5282;
+  margin-bottom: 0.8rem;
+}
+
+.cash-trade-content {
+  padding-left: 20px;
+}
+
+/* 솔 에르다 조각 거래 시세 설정 */
+.sol-trade-section {
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 1rem;
+}
+
+.sol-trade-header {
+  width: 190px;
+  font-size: 0.95rem;
+  font-weight: bold;
+  color: #553c9a;
+  margin-bottom: 0.8rem;
+}
+
+.sol-trade-content {
+  padding-left: 20px;
+}
+
+.group-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  gap: 8px;
+}
+
+.group-row-meso {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  margin-top: 0.8rem;
+}
+
+.trade-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.trade-row input:disabled {
+  background-color: #f5f5f5;
+  color: #999;
+  cursor: not-allowed;
+  border-color: #ddd;
+}
+
+.sol-subsection {
+  margin-bottom: 16px;
+}
+
+.sol-subsection-title {
+  font-size: 0.95em;
+  font-weight: bold;
+  margin-bottom: 8px;
+  color: #555;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+/* 캐시템 경매장 스타일 */
+.cash-item-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cash-item-header-row .checkbox-group {
+  margin: 0;
+}
+
+.cash-item-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.sort-btn {
+  padding: 4px 12px;
+  background: #f3f4f6;
+  color: #374151;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.sort-btn:hover:not(:disabled) {
+  background: #e5e7eb;
+  border-color: #9ca3af;
+}
+
+.sort-btn:disabled {
+  background: #f9fafb;
+  color: #9ca3af;
+  cursor: not-allowed;
+  border-color: #e5e7eb;
+}
+
+.cash-item-items {
+  margin-bottom: 1rem;
+}
+
+.cash-item-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  background: #fafafa;
+  flex-wrap: wrap;
+  min-width: 600px;
+}
+
+.cash-item-row:hover {
+  background: #f0f0f0;
+}
+
+.item-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+
+.item-name-input {
+  width: 150px;
+  padding: 4px 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.item-rates {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  flex: 1;
+}
+
+.rate-input.small {
+  width: 80px;
+}
+
+.cash-item-unit {
+  font-size: 0.85rem;
+  color: #666;
+  white-space: nowrap;
+}
+
+.mileage-ratio {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+  min-width: 120px;
+  margin-left: 1.5rem;
+}
+
+.ratio-select {
+  width: 90px;
+  padding: 4px 6px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  background: white;
+  cursor: pointer;
+}
+
+.item-limits {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 1.5rem;
+}
+
+.limit-input {
+  width: 50px;
+  padding: 4px 6px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.limit-unit {
+  font-size: 0.85rem;
+  color: #666;
+  margin-right: 8px;
+}
+
+.remove-item-btn {
+  padding: 4px 8px;
+  background: #ff6b6b;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.remove-item-btn:hover:not(:disabled) {
+  background: #ff5252;
+}
+
+.remove-item-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.add-item-btn {
+  padding: 8px 16px;
+  background: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  width: 100%;
+}
+
+.add-item-btn:hover:not(:disabled) {
+  background: #45a049;
+}
+
+.add-item-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  padding-bottom: 4px;
+}
+
+/* 마일리지 가치 계산 */
+.mileage-calculator {
+  margin-bottom: 1.5rem;
+}
+
+.mileage-group {
+  width: 600px;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 6px;
+  border: 1px solid #e9ecef;
+}
+
+.mileage-group-header {
+  font-size: 0.95rem;
+  font-weight: bold;
+  color: #495057;
+  margin-bottom: 0.8rem;
+}
+
+.mileage-calculation {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.calculation-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.3rem 0;
+}
+
+.calculation-row.result {
+  border-top: 1px solid #dee2e6;
+  padding-top: 0.6rem;
+  margin-top: 0.3rem;
+  font-weight: bold;
+}
+
+.calculation-row .label {
+  font-size: 0.9rem;
+  color: #6c757d;
+  min-width: 140px;
+}
+
+.calculation-row .value {
+  font-size: 0.9rem;
+  color: #495057;
+  text-align: right;
+}
+
+.calculation-row.result .value {
+  color: #28a745;
+  font-weight: bold;
+}
+
+.calculation-detail {
+  font-size: 0.85rem;
+  color: #6c757d;
+  text-align: center;
+  padding: 0.5rem;
+  background: #ffffff;
+  border-radius: 4px;
+  margin-top: 0.5rem;
+}
+
+.no-calculation {
+  text-align: center;
+  padding: 1rem;
+  color: #6c757d;
+  font-style: italic;
+}
+
+/* 상품권 설정 */
+.settings .voucher-section {
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.voucher-item {
+  margin-bottom: 0.8rem;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.voucher-checkbox {
+  margin-right: 10px;
+}
+
+.voucher-label {
+  cursor: pointer;
+  margin-right: 15px;
+  min-width: 120px;
+  font-size: 0.9rem;
+}
+
+.voucher-input {
+  width: 90px;
+  padding: 0.3rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-right: 0.5rem;
+  text-align: right;
+}
+
+.voucher-unit {
+  margin-right: 15px;
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.voucher-limit-text {
+  color: #666;
+  font-size: 0.85rem;
+}
+
+/* 솔 에르다 조각 설정 */
+.sol-trade-label {
+  min-width: 80px;
+  font-size: 0.9rem;
+}
+
+.sol-rate-input {
+  width: 90px;
+  padding: 0.3rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-right: 0.5rem;
+  text-align: right;
+}
+
+.sol-unit {
+  width: 50px;
+  margin-left: 5px;
+  margin-right: 15px;
+  font-size: 0.85rem;
+  color: #666;
+  white-space: nowrap;
+  flex-shrink: 0;
+  display: inline-block;
+}
+
+.sol-checkbox {
+  margin-right: 5px;
+}
+
+.sol-checkbox-label {
+  cursor: pointer;
+  margin-right: 10px;
+  font-size: 0.85rem;
+}
+
+.sol-checkbox-label-last {
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.sol-meso-row {
+  display: flex;
+  align-items: center;
+  padding-left: 20px;
+}
+
+/* 설정 관리 섹션 */
+.settings-management {
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+}
+
+.settings-buttons-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.settings-buttons-row:last-child {
+  margin-bottom: 0;
+}
+
+.settings-btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  min-width: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.settings-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.save-btn {
+  background: #28a745;
+  color: white;
+}
+
+.save-btn:hover {
+  background: #218838;
+}
+
+.load-btn {
+  background: #17a2b8;
+  color: white;
+}
+
+.load-btn:hover {
+  background: #138496;
+}
+
+.export-btn {
+  background: #6f42c1;
+  color: white;
+}
+
+.export-btn:hover {
+  background: #5a32a3;
+}
+
+.import-btn {
+  background: #fd7e14;
+  color: white;
+}
+
+.import-btn:hover {
+  background: #e8630a;
+}
+
+.reset-btn {
+  background: #dc3545;
+  color: white;
+}
+
+.reset-btn:hover {
+  background: #c82333;
+}
+
+.graph-update-btn {
+  background: #20c997;
+  color: white;
+}
+
+.graph-update-btn:hover {
+  background: #1aa179;
+}
+
+.graph-update-btn.has-changes {
+  background: #fd7e14;
+  color: white;
+  animation: pulse 2s infinite;
+}
+
+.graph-update-btn.has-changes:hover {
+  background: #e8630a;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(253, 126, 20, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(253, 126, 20, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(253, 126, 20, 0);
+  }
+}
+
+
+/* 직접 변환 섹션 */
+.direct-conversion {
+  margin-bottom: 0.8rem;
+  display: flex;
+  align-items: center;
+}
+
+.direct-conversion input[type="checkbox"] {
+  margin-right: 10px;
+}
+
+.direct-conversion label {
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+
+/* 새로운 마일리지 계산기 스타일 */
+.mileage-item-selector {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.selector-column {
+  flex: 1;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 6px;
+}
+
+.selector-column label {
+  display: block;
+  font-weight: bold;
+  color: #495057;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.selector-column select {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.item-info {
+  font-size: 0.85rem;
+  color: #666;
+  line-height: 1.5;
+}
+
+.item-info div {
+  margin: 0.2rem 0;
+}
+
+.mileage-result {
+  background: #e8f5e9;
+  padding: 1rem;
+  border-radius: 6px;
+  border-left: 4px solid #4caf50;
+}
+
+.calculated-rate {
+  font-size: 1rem;
+  color: #2e7d32;
+  margin-bottom: 0.5rem;
+}
+
+.calculated-rate strong {
+  font-size: 1.2rem;
+  color: #1b5e20;
+}
+
+.rate-statistics {
+  margin-top: 0.5rem;
+}
+
+.rate-statistics > div {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 0.5rem;
+}
+
+.rate-slider {
+  width: 100%;
+  margin-top: 0.5rem;
+  cursor: pointer;
+}
+
+/* 기준 품목 고정 표시 스타일 */
+.fixed-item-display {
+  padding: 0.5rem;
+  background: #e8f5e9;
+  border: 1px solid #4caf50;
+  border-radius: 4px;
+  min-height: 60px;
+}
+
+.fixed-item-display .item-name {
+  font-weight: 600;
+  color: #1b5e20;
+  margin-bottom: 0.3rem;
+}
+
+.efficiency-display {
+  color: #2e7d32;
+  font-size: 0.7rem;
+  font-weight: 500;
+  margin-top: 0.2rem;
+}
+
+/* 캐시아이템 행에서의 효율 표시 */
+.cash-item-row .efficiency-display {
+  margin-top: 0;
+  white-space: nowrap;
+  margin-left: 0.5rem;
+  min-width: 120px;
+}
