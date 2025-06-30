@@ -193,7 +193,7 @@ const ScrollSettings = ({ settings, onSettingsChange, onRunSimulation, isSimulat
         </div>
 
         <div className="setting-group">
-          <label className="setting-label">이노센트</label>
+          <label className="setting-label">아크 이노센트</label>
           <input
             type="number"
             className="setting-input"

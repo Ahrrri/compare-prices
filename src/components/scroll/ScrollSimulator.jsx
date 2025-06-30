@@ -100,7 +100,7 @@ const ScrollSimulator = () => {
 
 // 실제 시뮬레이션 함수
 const simulateScrollEnhancement = async (settings) => {
-  const { runScrollSimulation } = await import('../utils/scrollRunner.js');
+  const { runScrollSimulation } = await import('../../utils/scrollRunner.js');
   
   try {
     const results = await runScrollSimulation(settings);

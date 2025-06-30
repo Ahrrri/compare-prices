@@ -2,11 +2,11 @@ import { useState, useEffect } from 'react'
 import './App.css'
 import { createCurrencyGraph, findAllPaths, getBestPaths, formatNumber, detectArbitrage } from './utils/graphPathfinder'
 import { useCurrencySettings } from './hooks/useCurrencySettings'
-import SettingsPanel from './components/SettingsPanel'
-import AmountInput from './components/AmountInput'
-import GraphSection from './components/GraphSection'
-import ResultsSection from './components/ResultsSection'
-import ScrollSimulator from './components/ScrollSimulator'
+import SettingsPanel from './components/currency/SettingsPanel'
+import AmountInput from './components/currency/AmountInput'
+import GraphSection from './components/currency/GraphSection'
+import ResultsSection from './components/currency/ResultsSection'
+import ScrollSimulator from './components/scroll/ScrollSimulator'
 
 function App() {
   const [activeTab, setActiveTab] = useState('currency')
@@ -83,7 +83,7 @@ function App() {
     setHighlightedPath(null);
   };
 
-  // 화폐 이름 가져오기
+  // 재화 이름 가져오기
   const getCurrencyName = (currency) => {
     const names = {
       KRW: '원',
@@ -103,7 +103,7 @@ function App() {
     return names[currency] || currency;
   };
 
-  // 화폐 타입 결정
+  // 재화 타입 결정
   const getCurrencyType = (currency) => {
     if (currency === 'MESO' || currency.startsWith('MESO_')) {
       return 'meso';
@@ -308,7 +308,7 @@ function App() {
           className={`tab-button ${activeTab === 'currency' ? 'active' : ''}`}
           onClick={() => setActiveTab('currency')}
         >
-          💰 화폐 변환 계산기
+          💰 재화 변환 계산기
         </button>
         <button 
           className={`tab-button ${activeTab === 'scroll' ? 'active' : ''}`}
